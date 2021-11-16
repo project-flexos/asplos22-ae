@@ -1,0 +1,44 @@
+FROM unikraft/kraft:staging
+
+#
+# Install coccinelle
+#
+RUN set -xe; \
+    apt-get update; \
+    apt-get install -y \
+      wget \
+      bzip2 \
+      automake \
+      pkg-config \
+      ocaml-native-compilers \
+      ocaml-findlib \
+      menhir \
+      libmenhir-ocaml-dev \
+      libpcre-ocaml-dev \
+      libparmap-ocaml-dev; \
+    git clone --branch master https://github.com/coccinelle/coccinelle.git \
+      /usr/src/coccinelle; \
+    cd /usr/src/coccinelle; \
+    git checkout 99ec612852a88fae85dfad863daafccf55b874ce; \
+    ./autogen; \
+    ./configure; \
+    make; \
+    make install; \
+    mkdir /usr/local/bin/lib; \
+    ln -s /usr/local/lib/coccinelle /usr/local/bin/lib/coccinelle;
+
+#
+# Install YTT
+#
+ARG YTT_VERSION=0.32.0
+RUN set -xe; \
+    wget -O /usr/local/bin/ytt https://github.com/vmware-tanzu/carvel-ytt/releases/download/v${YTT_VERSION}/ytt-linux-amd64; \
+    chmod +x /usr/local/bin/ytt;
+
+#
+# Replace kraft with kraft-flexos
+#
+RUN set -xe; \
+    rm -Rf /usr/src/kraft; \
+    git clone --branch flexos https://github.com/ukflexos/kraft.git /usr/src/kraft; \
+    pip3 install /usr/src/kraft

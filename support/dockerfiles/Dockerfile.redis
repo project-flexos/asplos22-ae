@@ -1,0 +1,22 @@
+FROM ghcr.io/ukflexos/flexos-base:latest
+
+#
+# Cache kraft build
+#
+ARG UK_KRAFT_GITHUB_TOKEN=
+ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
+COPY .kraftrc /usr/src/unikraft/.kraftrc
+RUN set -xe; \
+    kraft list update; \
+    kraft -v list pull unikraft@staging; \
+    kraft -v list pull lib/newlib@staging; \
+    kraft -v list pull lib/pthread-embedded@staging; \
+    kraft -v list pull lib/lwip@staging; \
+    kraft -v list pull lib/redis@staging; \
+    kraft -v list pull app/redis@staging; \
+    cd /usr/src/unikraft/apps/redis; \
+    kraft configure; \
+    kraft fetch; \
+    unset UK_KRAFT_GITHUB_TOKEN
+
+WORKDIR /usr/src/unikraft/apps/redis
