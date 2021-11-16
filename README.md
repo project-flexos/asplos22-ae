@@ -84,3 +84,60 @@ required to run Virtual Machine (VM) images.
 
 All our results were run on XXX.
 
+
+## 4. Getting started
+
+1. Before running any of these experiments, prepare your host with the
+   recommendations detailed above in [prerequisites](#3-prerequisites);
+
+2. Many of the experiments use Docker as an intermediate tool for creating build
+   and test environments (along with testing Docker itself).  Please
+   [install Docker](https://docs.docker.com/get-docker/) on your system to
+   continue;
+
+3. Once Docker is installed, clone this repository
+   ```bash
+   git clone https://github.com/ukflexos/asplos22-ae.git
+   ```
+
+4. All experiments should be `prepare`d first, which installs necessary tools
+   and downloads additional resources, before they can run.  This can be done
+   for a single experiment, for example:
+   ```bash
+   make prepare-fig-07
+   ```
+   or for all experiments via:
+   ```
+   make prepare
+   ```
+5. Once one or many experiments have been prepared, they can be run, again using
+   a similar syntax as above:
+   ```bash
+   make run-fig-07
+   ```
+   or for all experiments via:
+   ```
+   make run
+   ```
+   This will generate the relevant experimental results within the experimental
+   folder of the specific experiment.
+6. To plot one or many experiment's figures, use, for example:
+   ```bash
+   make plot-fig-07
+   ```
+   or for all experiments via:
+   ```
+   make plot
+   ```
+7. You can clean, or "properclean" to completely reset any preparation, with
+   `make clean` or `make properclean` and for individual experiments, for
+   example: 
+   ```bash
+   make clean-fig-07
+   make properclean-fig-07
+   ```
+   or for all experiments via:
+   ```
+   make clean
+   make properclean
+   ```
