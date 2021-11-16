@@ -20,9 +20,9 @@ IMAGES  ?= flexos-base \
            redis
 TARGETS ?= prepare \
            run \
-					 plot \
-					 clean \
-					 properclean
+           plot \
+           clean \
+           properclean
 
 #
 # Utility vars
