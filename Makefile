@@ -39,6 +39,10 @@ DOCKER  ?= docker
 #
 # Find shortname for experiment
 #
+# Params:
+#   $1: The canonical name of the experiment, e.g. `fig-XX_short-desc`
+#   $2: The desired returning element, 1 for `fig-XX` and 2 for `short-desc`
+#
 underscore  = $(word $(2),$(subst _, ,$(1)))
 
 #
