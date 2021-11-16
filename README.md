@@ -10,16 +10,16 @@ the paper:
 > hardware/software protection mechanisms (e.g. user/kernel separation);
 > revisiting these choices after deployment requires a major refactoring effort.
 > This rigid approach shows its limits given the wide variety of modern
-> applications’ safety/performance requirements, when new hardware isola- tion
+> applications' safety/performance requirements, when new hardware isolation
 > mechanisms are rolled out, or when existing ones break.
 > 
 > We present FlexOS, a novel OS allowing users to easily specialize the
-> safety and isolation strategy of an OS at com- pilation/deployment time
+> safety and isolation strategy of an OS at compilation/deployment time
 > instead of design time. This modular LibOS is composed of fine-grained
 > components that can be isolated via a range of hardware protection mechanisms
-> with various data sharing strategies and additional software hard- ening. The
+> with various data sharing strategies and additional software hardening. The
 > OS ships with an exploration technique helping the user navigate the vast
-> safety/performance design space it un- locks. We implement a prototype of the
+> safety/performance design space it unlocks. We implement a prototype of the
 > system and demonstrate, for several applications (Redis/Nginx/SQLite),
 > FlexOS’ vast configuration space as well as the efficiency of the
 > exploration technique: we evaluate 80 FlexOS configurations for Redis and
@@ -60,10 +60,10 @@ We have organised this repository as follows:
 
  * `experiments/` - All experiments are listed in this directory.  Each
    sub-directory is named with the figure number along with a short description
-   of the experiment (e.g., `fig_01_linux-deps`).  In addition, each experiment
-   sub-directory has a corresponding `README.md` which explains in more detail
-   how the experiment works and how to run it.  Along with this, each
-   sub-directory also comes with a `Makefile` with the following targets:
+   of the experiment (e.g., `fig_06_nginx-redis-perm`).  In addition, each
+   experiment sub-directory has a corresponding `README.md` which explains in
+   more detail how the experiment works and how to run it.  Along with this,
+   each sub-directory also comes with a `Makefile` with the following targets:
     - `prepare`: prepares the experiment, by usually downloading and building
       relevant images, tools, and auxiliary services necessary for running the
       experiment.
