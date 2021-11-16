@@ -10,7 +10,7 @@ REG     ?= ghcr.io
 ORG     ?= ukflexos
 IMAGES  ?= flexos-base \
            nginx \
-					 redis
+           redis
 
 #
 # Utility vars
