@@ -66,15 +66,19 @@ $(1)-$(2):
 	$(Q)$(MAKE) -C $(WORKDIR)/experiments/$(2) $(1)
 endef
 
+#
+# Targets
+#
+
+.PHONY: prepare
+prepare: docker
+
 # Iterate over all experiments and all targets and provide an entrypoint for
 # each, e.g. `prepare-fig-XX_short-desc` and `prepare-fig-XX`.
 $(foreach EXP,$(EXPS), \
 	$(foreach TARGET,$(TARGETS),$(eval $(call create-exp-target,$(TARGET),$(EXP))) \
 ))
 
-#
-# Targets
-#
 .PHONY: docker
 docker: $(DIMAGES)
 
