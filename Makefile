@@ -69,6 +69,8 @@ endef
 #
 # Targets
 #
+.PHONY: all
+all: prepare run plot
 
 .PHONY: prepare
 prepare: docker
