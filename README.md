@@ -1,9 +1,9 @@
-# Chrysalis ASPLOS'22 Artifact Evaluation
+# FlexOS ASPLOS'22 Artifact Evaluation
 
 This repository contains the artifacts, including experiments and graphs, for
 the paper:
 
-### Chrysalis: Towards Flexible OS Isolation
+### FlexOS: Towards Flexible OS Isolation
 
  > **Abstract**:  At design time, modern operating systems are locked in a
 > specific safety and isolation strategy that mixes one or more
@@ -13,7 +13,7 @@ the paper:
 > applications’ safety/performance requirements, when new hardware isola- tion
 > mechanisms are rolled out, or when existing ones break.
 > 
-> We present Chrysalis, a novel OS allowing users to easily specialize the
+> We present FlexOS, a novel OS allowing users to easily specialize the
 > safety and isolation strategy of an OS at com- pilation/deployment time
 > instead of design time. This modular LibOS is composed of fine-grained
 > components that can be isolated via a range of hardware protection mechanisms
@@ -21,11 +21,11 @@ the paper:
 > OS ships with an exploration technique helping the user navigate the vast
 > safety/performance design space it un- locks. We implement a prototype of the
 > system and demonstrate, for several applications (Redis/Nginx/SQLite),
-> Chrysalis’ vast configuration space as well as the efficiency of the
-> exploration technique: we evaluate 80 Chrysalis configurations for Redis and
+> FlexOS’ vast configuration space as well as the efficiency of the
+> exploration technique: we evaluate 80 FlexOS configurations for Redis and
 > show how that space can be probabilistically subset to the 5 safest ones under
 > a given performance budget. We also show that, under equivalent
-> configurations, Chrysalis performs similarly or better than several
+> configurations, FlexOS performs similarly or better than several
 > baselines/competitors.
 
 
@@ -44,15 +44,15 @@ paper.
 
 Each figure, table and corresponding experiment are listed below:
 
-| Figure                                                   |                                                                    | Description                                                                                                                                                                                                                                                                                                                        | Est. runtime |
-| -------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| [`fig_06`](/experiments/fig_06_nginx-redis-perm/)        | <img src="plots/fig_06_nginx-redis-perm.svg" width="200" />        | Redis (top) and Nginx (bottom) performance for a range of configurations. Components are on the left. Software hardening can be enabled [•] or disabled [◦] for each component. The white/blue/red color indicates the compartment the component is placed into. Isolation is achieved with MPK and DSS.                           | 0h 0m        |
-| [`fig_07`](/experiments/fig_07_nginx-redis-normalized/)  | <img src="plots/fig_07_nginx-redis-normalized.svg" width="200" />  | Nginx versus Redis normalized performance.                                                                                                                                                                                                                                                                                         | 0h 0m        |
-| [`fig_08`](/experiments/fig_08_config-posit/)            | <img src="plots/fig_08_config-posit.svg" width="200" />            | Configurations poset for the Redis numbers (Figure 6).  Stars are the most secure configs. with perf. >= 500k req/s.                                                                                                                                                                                                               | 0h 0m        |
-| [`fig_09`](/experiments/fig_09_iperf-throughput/)        | <img src="plots/fig_09_iperf-throughput.svg" width="200" />        | NW throughput (iPerf) with Unikraft (baseline), Chrysalis w/o isolation, with 2 compartments backed by MPK (-_light_ = shared call stacks, -_dss_ = protected and DSS) and EPT.                                                                                                                                                    | 0h 0m        |
-| [`fig_10`](/experiments/fig_10_sqlite-exec-time/)        | <img src="plots/fig_10_sqlite-exec-time.svg" width="200" />        | Time to perform 5000 INSERT queries with SQLite on Unikraft, Chrysalis, Linux, SeL4 (with the Genode system), and CubicleOS. The isolation profile is shown on the x axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two compartments with EPT, PT2/3: two/three compartments with page-table-based isolation). | 0h 0m        |
-| [`fig_11`](/experiments/fig_11_chrysalis-alloc-latency/) | <img src="plots/fig_11_chrysalis-alloc-latency.svg" width="200" /> | Chrysalis latency microbenchmarks.                                                                                                                                                                                                                                                                                                 | 0h 0m        |
-| [`tab_01`](/experiments/fig_01_porting-effort/)          | <img src="plots/tab_01_porting-effort.svg" width="200" />          | Porting effort: size of the patch (including automatic gate replacements), number of shared variables.                                                                                                                                                                                                                             | 0h 0m        |
+| Figure                                                  |                                                                   | Description                                                                                                                                                                                                                                                                                                                     | Est. runtime |
+| ------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| [`fig_06`](/experiments/fig_06_nginx-redis-perm/)       | <img src="plots/fig_06_nginx-redis-perm.svg" width="200" />       | Redis (top) and Nginx (bottom) performance for a range of configurations. Components are on the left. Software hardening can be enabled [•] or disabled [◦] for each component. The white/blue/red color indicates the compartment the component is placed into. Isolation is achieved with MPK and DSS.                        | 0h 0m        |
+| [`fig_07`](/experiments/fig_07_nginx-redis-normalized/) | <img src="plots/fig_07_nginx-redis-normalized.svg" width="200" /> | Nginx versus Redis normalized performance.                                                                                                                                                                                                                                                                                      | 0h 0m        |
+| [`fig_08`](/experiments/fig_08_config-posit/)           | <img src="plots/fig_08_config-posit.svg" width="200" />           | Configurations poset for the Redis numbers (Figure 6).  Stars are the most secure configs. with perf. >= 500k req/s.                                                                                                                                                                                                            | 0h 0m        |
+| [`fig_09`](/experiments/fig_09_iperf-throughput/)       | <img src="plots/fig_09_iperf-throughput.svg" width="200" />       | NW throughput (iPerf) with Unikraft (baseline), FlexOS w/o isolation, with 2 compartments backed by MPK (-_light_ = shared call stacks, -_dss_ = protected and DSS) and EPT.                                                                                                                                                    | 0h 0m        |
+| [`fig_10`](/experiments/fig_10_sqlite-exec-time/)       | <img src="plots/fig_10_sqlite-exec-time.svg" width="200" />       | Time to perform 5000 INSERT queries with SQLite on Unikraft, FlexOS, Linux, SeL4 (with the Genode system), and CubicleOS. The isolation profile is shown on the x axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two compartments with EPT, PT2/3: two/three compartments with page-table-based isolation). | 0h 0m        |
+| [`fig_11`](/experiments/fig_11_flexos-alloc-latency/)   | <img src="plots/fig_11_flexos-alloc-latency.svg" width="200" />   | FlexOS latency microbenchmarks.                                                                                                                                                                                                                                                                                                 | 0h 0m        |
+| [`tab_01`](/experiments/fig_01_porting-effort/)         | <img src="plots/tab_01_porting-effort.svg" width="200" />         | Porting effort: size of the patch (including automatic gate replacements), number of shared variables.                                                                                                                                                                                                                          | 0h 0m        |
 
 ## 2. Repository structure
 
