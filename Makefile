@@ -10,7 +10,7 @@ REG     ?= ghcr.io
 ORG     ?= ukflexos
 EXPS    ?= fig-06_nginx-redis-perm \
            fig-07_nginx-redis-normalized \
-           fig-08_config-posit \
+           fig-08_config-poset \
            fig-09_iperf-throughput \
            fig-10_sqlite-exec-time \
            fig-11_flexos-alloc-latency \
