@@ -75,3 +75,12 @@ We have organised this repository as follows:
       into the [`plots/`](/plots) directory.
     - `clean`: removes intermediate build files.
  * `plots/` - Contains all resulting figures seen in the paper.
+
+## 3. Prerequistes
+
+Before you can run these experiments, you will need to prepare a physical host
+environment.  Access to the physical host environment is important as it is
+required to run Virtual Machine (VM) images.
+
+All our results were run on XXX.
+
