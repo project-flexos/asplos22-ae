@@ -1,0 +1,177 @@
+diff --git a/lib/flexos-core/include/flexos/impl/vmept.h b/lib/flexos-core/include/flexos/impl/vmept.h
+index 3afb0e8..c9d9725 100644
+--- a/lib/flexos-core/include/flexos/impl/vmept.h
++++ b/lib/flexos-core/include/flexos/impl/vmept.h
+@@ -40,6 +40,7 @@
+ #include <uk/sections.h>
+ #include <uk/plat/mm.h>
+ #include <uk/alloc.h>
++#include <uk/print.h>
+ 
+ #include <uk/thread.h>
+ 
+@@ -63,7 +64,7 @@ extern volatile uint8_t flexos_vmept_comp_id;
+ 
+ #if FLEXOS_VMEPT_DEBUG
+ 	#include <stdio.h>
+-	#define FLEXOS_VMEPT_DEBUG_PRINT(x) printf x
++	#define FLEXOS_VMEPT_DEBUG_PRINT(x) uk_pr_debug x
+ #else
+ 	#define FLEXOS_VMEPT_DEBUG_PRINT(x)
+ #endif
+diff --git a/lib/flexos-core/vmept.c b/lib/flexos-core/vmept.c
+index 7df5b89..92ec6cf 100644
+--- a/lib/flexos-core/vmept.c
++++ b/lib/flexos-core/vmept.c
+@@ -33,6 +33,7 @@
+ #include <uk/assert.h>
+ #include <uk/sched.h>
+ #include <uk/init.h>
++#include <uk/print.h>
+ 
+ #include <stdio.h>
+ 
+@@ -72,22 +73,22 @@ void _flexos_vmept_dbg_print_address_info() {
+ 		return;
+ 
+ 	first = 0;
+-	printf("printing address info for compartment %d\n", flexos_vmept_comp_id);
+-	printf("&ping1: %p\n", (void*) &ping1);
+-	printf("&ping2: %p\n", (void*) &ping2);
+-	printf("&ping3: %p\n", (void*) &ping3);
+-	printf("&ping4: %p\n", (void*) &ping4);
+-	printf("&ping5: %p\n", (void*) &ping5);
+-	printf("&ping6: %p\n", (void*) &ping6);
+-
+-	printf("&pong1: %p\n", (void*) &pong1);
+-	printf("&pong2: %p\n", (void*) &pong2);
+-	printf("&pong3: %p\n", (void*) &pong3);
+-	printf("&pong4: %p\n", (void*) &pong4);
+-	printf("&pong5: %p\n", (void*) &pong5);
+-	printf("&pong6: %p\n", (void*) &pong6);
+-
+-	printf("&reset_runs: %p\n", (void*) &reset_runs);
++	uk_pr_err("printing address info for compartment %d\n", flexos_vmept_comp_id);
++	uk_pr_err("&ping1: %p\n", (void*) &ping1);
++	uk_pr_err("&ping2: %p\n", (void*) &ping2);
++	uk_pr_err("&ping3: %p\n", (void*) &ping3);
++	uk_pr_err("&ping4: %p\n", (void*) &ping4);
++	uk_pr_err("&ping5: %p\n", (void*) &ping5);
++	uk_pr_err("&ping6: %p\n", (void*) &ping6);
++
++	uk_pr_err("&pong1: %p\n", (void*) &pong1);
++	uk_pr_err("&pong2: %p\n", (void*) &pong2);
++	uk_pr_err("&pong3: %p\n", (void*) &pong3);
++	uk_pr_err("&pong4: %p\n", (void*) &pong4);
++	uk_pr_err("&pong5: %p\n", (void*) &pong5);
++	uk_pr_err("&pong6: %p\n", (void*) &pong6);
++
++	uk_pr_err("&reset_runs: %p\n", (void*) &reset_runs);
+ #endif /* FLEXOS_VMEPT_DEBUG_PRINT_ADDR */
+ }
+ 
+@@ -240,7 +241,7 @@ void flexos_vmept_rpc_loop()
+ 			FLEXOS_VMEPT_DEBUG_PRINT(("Comp %d returning from call made from %d.\n", key_to, key_from));
+ 		} else if (state_const == FLEXOS_VMEPT_RPC_STATE_RETURNED && key_to == flexos_vmept_comp_id) {
+ 			// returns should never arrive here
+-			printf("Unexpected return in rpc loop. This is a bug!\n");
++			uk_pr_err("Unexpected return in rpc loop. This is a bug!\n");
+ 		} else {
+ 			uk_sched_yield();
+ 		}
+@@ -285,7 +286,7 @@ void flexos_vmept_master_rpc_loop()
+ 					ctrl->state = FLEXOS_VMEPT_MASTER_RPC_STATE_RETURNED;
+ 					break;
+ 				default:
+-					printf("Bad action. This is a bug!\n");
++					uk_pr_err("Bad action. This is a bug!\n");
+ 			}
+ 			// TODO: error handling ?
+ 			ctrl->state = FLEXOS_VMEPT_BUILD_MASTER_RPC_RETURN_STATE(0);
+diff --git a/lib/ukboot/boot.c b/lib/ukboot/boot.c
+index 534e679..c76fc4d 100644
+--- a/lib/ukboot/boot.c
++++ b/lib/ukboot/boot.c
+@@ -121,7 +121,7 @@ static void main_thread_func(void *arg)
+ 
+ 		/* here we need to create an rpc thread in each other compartment */
+ 		// TODO: error handling
+-		printf("Spawning rpc threads in other compartments (from main thread).\n");
++		uk_pr_debug("Spawning rpc threads in other compartments (from main thread).\n");
+ 
+ 		struct uk_thread *thread = uk_thread_current();
+ 		struct flexos_vmept_rpc_ctrl *ctrl = flexos_vmept_rpc_ctrl(FLEXOS_VMEPT_COMP_ID, thread->tid);
+@@ -131,11 +131,11 @@ static void main_thread_func(void *arg)
+ 		for (size_t i = 0; i < FLEXOS_VMEPT_COMP_COUNT; ++i) {
+ 			if (i == FLEXOS_VMEPT_COMP_ID)
+ 				continue;
+-			printf("Creating rpc thread in compartment %d. Own compartment is %d.\n", i, FLEXOS_VMEPT_COMP_ID);
++			uk_pr_debug("Creating rpc thread in compartment %d. Own compartment is %d.\n", i, FLEXOS_VMEPT_COMP_ID);
+ 			flexos_vmept_master_rpc_call_create(FLEXOS_VMEPT_COMP_ID, i, thread->tid);
+ 		}
+ 
+-		printf("Spawned rpc threads in other compartments (from main thread).\n");
++		uk_pr_debug("Spawned rpc threads in other compartments (from main thread).\n");
+ 	}
+ #endif /* CONFIG_LIBFLEXOS_VMEPT */
+ 
+diff --git a/lib/ukboot/weak_main.c b/lib/ukboot/weak_main.c
+index c6d2a05..d4e686f 100644
+--- a/lib/ukboot/weak_main.c
++++ b/lib/ukboot/weak_main.c
+@@ -2,11 +2,12 @@
+ #include <errno.h>
+ #include <uk/essentials.h>
+ #include <uk/sched.h>
++#include <uk/print.h>
+ 
+ /* Internal main */
+ int __weak main(int argc __unused, char *argv[] __unused)
+ {
+-	printf("weak main() called. This won't exit. TODO: don't waste this thread.\n");
++	uk_pr_warn("weak main() called. This won't exit. TODO: don't waste this thread.\n");
+ 	while (1) {
+ 		uk_sched_yield();
+ 	}
+diff --git a/lib/vfscore/fd.c b/lib/vfscore/fd.c
+index a5562ca..2bbf215 100644
+--- a/lib/vfscore/fd.c
++++ b/lib/vfscore/fd.c
+@@ -211,4 +211,9 @@ static void fdtable_init(void)
+ 	init_stdio();
+ }
+ 
++/* FOLKS! THIS IS BAD! TODO FIXME FLEXOS! This was done for the
++ * ASPLOS deadline, because we don't have time to ensure that constructors
++ * land into the right binary. Adress this later. */
++#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
+ UK_CTOR_PRIO(fdtable_init, 1);
++#endif
+diff --git a/lib/vfscore/main.c b/lib/vfscore/main.c
+index a08c1ee..5dee0f0 100644
+--- a/lib/vfscore/main.c
++++ b/lib/vfscore/main.c
+@@ -2363,4 +2363,9 @@ static void vfscore_init(void)
+ 	lookup_init();
+ }
+ 
++/* FOLKS! THIS IS BAD! TODO FIXME FLEXOS! This was done for the
++ * ASPLOS deadline, because we don't have time to ensure that constructors
++ * land into the right binary. Adress this later. */
++#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
+ UK_CTOR_PRIO(vfscore_init, 1);
++#endif
+diff --git a/lib/vfscore/rootfs.c b/lib/vfscore/rootfs.c
+index 7bb6f79..bf08b6f 100644
+--- a/lib/vfscore/rootfs.c
++++ b/lib/vfscore/rootfs.c
+@@ -112,4 +112,9 @@ static int vfscore_rootfs(void)
+ 	return 0;
+ }
+ 
++/* FOLKS! THIS IS BAD! TODO FIXME FLEXOS! This was done for the
++ * ASPLOS deadline, because we don't have time to ensure that constructors
++ * land into the right binary. Adress this later. */
++#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
+ uk_rootfs_initcall_prio(vfscore_rootfs, 4);
++#endif

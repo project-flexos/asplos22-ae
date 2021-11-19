@@ -1,0 +1,8 @@
+#!/bin/bash
+
+make properclean
+# git checkout . && git clean -xdf in all repositories would be fine too
+rm -rf ~/.kraftcache ~/.unikraft/libs ~/.unikraft/unikraft
+kraft list update
+kraft list pull newlib@staging tlsf@staging \
+	unikraft@staging pthread-embedded@staging sqlite@staging

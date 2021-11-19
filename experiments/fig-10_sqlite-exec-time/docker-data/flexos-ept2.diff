@@ -1,0 +1,139 @@
+diff --git a/main.c b/main.c
+index f1c2f3f..7183fda 100644
+--- a/main.c
++++ b/main.c
+@@ -6,6 +6,11 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <unistd.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <flexos/impl/main_annotation.h>
++#include <uk/print.h>
+ 
+ #define ISSPACE(X) isspace((unsigned char)(X))
+ #define ISDIGIT(X) isdigit((unsigned char)(X))
+@@ -29,7 +34,7 @@ static struct Global {
+ static void fatal_error(const char *zMsg, ...){
+   va_list ap;
+   va_start(ap, zMsg);
+-  vfprintf(stderr, zMsg, ap);
++  uk_pr_crit(stderr, zMsg, ap);
+   va_end(ap);
+   exit(1);
+ }
+@@ -146,43 +151,43 @@ int speedtest1_numbername(unsigned int n, char *zOut, int nOut){
+ 
+   if( n>=1000000000 ){
+     i += speedtest1_numbername(n/1000000000, zOut+i, nOut-i);
+-    sqlite3_snprintf(nOut-i, zOut+i, " billion");
++    //sqlite3_snprintf(nOut-i, zOut+i, " billion");
+     i += (int)strlen(zOut+i);
+     n = n % 1000000000;
+   }
+   if( n>=1000000 ){
+     if( i && i<nOut-1 ) zOut[i++] = ' ';
+     i += speedtest1_numbername(n/1000000, zOut+i, nOut-i);
+-    sqlite3_snprintf(nOut-i, zOut+i, " million");
++    //sqlite3_snprintf(nOut-i, zOut+i, " million");
+     i += (int)strlen(zOut+i);
+     n = n % 1000000;
+   }
+   if( n>=1000 ){
+     if( i && i<nOut-1 ) zOut[i++] = ' ';
+     i += speedtest1_numbername(n/1000, zOut+i, nOut-i);
+-    sqlite3_snprintf(nOut-i, zOut+i, " thousand");
++    //sqlite3_snprintf(nOut-i, zOut+i, " thousand");
+     i += (int)strlen(zOut+i);
+     n = n % 1000;
+   }
+   if( n>=100 ){
+     if( i && i<nOut-1 ) zOut[i++] = ' ';
+-    sqlite3_snprintf(nOut-i, zOut+i, "%s hundred", ones[n/100]);
++    //sqlite3_snprintf(nOut-i, zOut+i, "%s hundred", ones[n/100]);
+     i += (int)strlen(zOut+i);
+     n = n % 100;
+   }
+   if( n>=20 ){
+     if( i && i<nOut-1 ) zOut[i++] = ' ';
+-    sqlite3_snprintf(nOut-i, zOut+i, "%s", tens[n/10]);
++    //sqlite3_snprintf(nOut-i, zOut+i, "%s", tens[n/10]);
+     i += (int)strlen(zOut+i);
+     n = n % 10;
+   }
+   if( n>0 ){
+     if( i && i<nOut-1 ) zOut[i++] = ' ';
+-    sqlite3_snprintf(nOut-i, zOut+i, "%s", ones[n]);
++    //sqlite3_snprintf(nOut-i, zOut+i, "%s", ones[n]);
+     i += (int)strlen(zOut+i);
+   }
+   if( i==0 ){
+-    sqlite3_snprintf(nOut-i, zOut+i, "zero");
++    //sqlite3_snprintf(nOut-i, zOut+i, "zero");
+     i += (int)strlen(zOut+i);
+   }
+   return i;
+@@ -205,7 +210,7 @@ void speedtest1_begin_test(int iTestNum, const char *zTestName, ...){
+     zName[NAMEWIDTH] = 0;
+     n = NAMEWIDTH;
+   }
+-  printf("%4d - %s%.*s ", iTestNum, zName, NAMEWIDTH-n, zDots);
++  uk_pr_info("%4d - %s%.*s ", iTestNum, zName, NAMEWIDTH-n, zDots);
+   fflush(stdout);
+   sqlite3_free(zName);
+   g.nResult = 0;
+@@ -218,7 +223,7 @@ void speedtest1_begin_test(int iTestNum, const char *zTestName, ...){
+ void speedtest1_end_test(void){
+   sqlite3_int64 iElapseTime = speedtest1_timestamp() - g.iStart;
+   g.iTotal += iElapseTime;
+-  printf("\t%4d.%03d\n", (int)(iElapseTime/1000), (int)(iElapseTime%1000));
++  uk_pr_info("\t%4d.%03d\n", (int)(iElapseTime/1000), (int)(iElapseTime%1000));
+   if( g.pStmt ){
+     sqlite3_finalize(g.pStmt);
+     g.pStmt = 0;
+@@ -227,7 +232,7 @@ void speedtest1_end_test(void){
+ 
+ /* Report end of testing */
+ void speedtest1_final(void){
+-  printf("       TOTAL%.*s %4d.%03ds\n", NAMEWIDTH-5, zDots,
++  uk_pr_err("       TOTAL%.*s %4d.%03ds\n", NAMEWIDTH-5, zDots,
+          (int)(g.iTotal/1000), (int)(g.iTotal%1000));
+ }
+ 
+@@ -291,7 +296,7 @@ void speedtest1_run(void){
+ static void traceCallback(void *NotUsed, const char *zSql){
+   int n = (int)strlen(zSql);
+   while( n>0 && (zSql[n-1]==';' || ISSPACE(zSql[n-1])) ) n--;
+-  fprintf(stderr,"%.*s;\n", n, zSql);
++  //fprintf(stderr,"%.*s;\n", n, zSql);
+ }
+ #endif /* SQLITE_OMIT_DEPRECATED */
+ 
+@@ -316,7 +321,6 @@ void testset_main(void){
+   n = 5000;
+   speedtest1_begin_test(100, "%d INSERTs into table with no index", n);
+   //speedtest1_exec("BEGIN");
+-  //speedtest1_exec("CREATE TABLE tab (id INTEGER PRIMARY KEY, text TEXT NOT NULL);");
+   speedtest1_prepare("INSERT INTO tab VALUES (null, 'value');");
+   for(i=1; i<=n; i++){
+     speedtest1_run();
+@@ -329,7 +333,8 @@ void testset_main(void){
+ #  define sqlite3_sourceid(X) "(before 3.6.18)"
+ #endif
+ 
+-int main(int argc, char **argv){
++int main(int argc, char *argv[])
++{
+   int mmapSize = 0;             /* How big of a memory map to use */
+   const char *zTSet = "main";   /* Which --testset torun */
+   const char *zDbName = 0;      /* Name of the test database */
+@@ -338,7 +343,7 @@ int main(int argc, char **argv){
+   int rc;                       /* API return code */
+ 
+   /* Display the version of SQLite being tested */
+-  printf("-- Speedtest1 for SQLite %s %.50s\n",
++  uk_pr_err("-- Speedtest1 for SQLite %s %.50s\n",
+          sqlite3_libversion(), sqlite3_sourceid());
+ 
+   /* Process command-line arguments */
