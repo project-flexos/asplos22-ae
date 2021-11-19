@@ -147,7 +147,7 @@ Debian-based distribution with similar package versions should be suitable.
    make properclean
    ```
 
-## Beyond the Paper
+## 5. Beyond the Paper
 
 This repository contains all scripts necessary to reproduce the experiments of
 our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
@@ -161,7 +161,7 @@ on porting applications and building your own FlexOS images in the core kernel
 repository's
 [`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
 
-## Acknowledgements
+## 6. Acknowledgements
 
 This artifact would not exist without the hard work of the Unikraft community.
 We encourage interested researchers to visit the project's [web
