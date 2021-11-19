@@ -83,7 +83,7 @@ environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
 All our results were run on an Intel® Xeon® Silver 4114 with 128.0 GB RAM,
-Debian 11.1, and Linux version 5.10.0-9-amd64. This artifact may be run with
+Debian 11.1, and Linux version `5.10.70-1`. This artifact may be run with
 any processor that supports Intel MPK, typically any Intel® Xeon® Scalable
 Processor starting with the Skylake generation (but the results might differ
 from the paper). This artifact was only tested on Debian 11.1, but any
@@ -146,3 +146,23 @@ Debian-based distribution with similar package versions should be suitable.
    make clean
    make properclean
    ```
+
+## Beyond the Paper
+
+This repository contains all scripts necessary to reproduce the experiments of
+our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
+applications themselves. You can find all other repositories hosted under the
+[same GitHub organization](https://github.com/unikraft/eurosys21-artifacts).
+The FlexOS core kernel repository, in particular, lives in [this
+repository](https://github.com/project-flexos/unikraft).
+
+We hope that this code will foster further research! You can find instructions
+on porting applications and building your own FlexOS images in the core kernel
+repository's
+[`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
+
+## Acknowledgements
+
+This artifact would not exist without the hard work of the Unikraft community.
+We encourage interested researchers to visit the project's [web
+page](https://unikraft.org/) and [GitHub](https://github.com/unikraft/).
