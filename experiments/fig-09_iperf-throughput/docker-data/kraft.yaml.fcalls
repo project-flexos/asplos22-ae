@@ -1,0 +1,36 @@
+---
+specification: '0.6'
+name: iperf
+unikraft:
+  version: staging
+  kconfig:
+    - CONFIG_LIBFLEXOS=y
+targets:
+  - architecture: x86_64
+    platform: kvm
+compartments:
+  - name: comp1
+    mechanism:
+      driver: fcalls
+    default: true
+libraries:
+  tlsf:
+    version: staging
+    kconfig:
+      - CONFIG_LIBTLSF=y
+  newlib:
+    version: staging
+    kconfig:
+      - CONFIG_LIBNEWLIBC=y
+      - CONFIG_LIBNEWLIBM=y
+    compartment: comp1
+  lwip:
+    version: staging
+    kconfig:
+      - CONFIG_LWIP_IPV6=y
+    compartment: comp1
+  iperf:
+    version: staging
+    compartment: comp1
+volumes: {}
+networks: {}

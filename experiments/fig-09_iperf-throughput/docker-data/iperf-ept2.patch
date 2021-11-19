@@ -1,0 +1,86 @@
+diff --git a/lib/flexos-core/vmept.c b/lib/flexos-core/vmept.c
+index 7df5b89..eb84344 100644
+--- a/lib/flexos-core/vmept.c
++++ b/lib/flexos-core/vmept.c
+@@ -200,8 +200,6 @@ void flexos_vmept_wait_for_rpc(volatile struct flexos_vmept_rpc_ctrl *ctrl)
+ 			// return from rpc call
+ 			FLEXOS_VMEPT_DEBUG_PRINT(("Comp %d finished call.\n", flexos_vmept_comp_id));
+ 			return;
+-		} else {
+-			uk_sched_yield();
+ 		}
+ 	}
+ }
+@@ -216,6 +214,7 @@ void flexos_vmept_rpc_loop()
+ 		uk_sched_yield();
+ 	}
+ 
++	if (flexos_vmept_comp_id == 0) return;
+ 	FLEXOS_VMEPT_DEBUG_PRINT(("Starting RPC server, observing ctrl %p\n", ctrl));
+ 
+ 	uint64_t ext_state;
+@@ -254,6 +253,7 @@ void flexos_vmept_master_rpc_loop()
+ 	volatile struct flexos_vmept_master_rpc_ctrl *ctrl = flexos_vmept_master_rpc_ctrl(flexos_vmept_comp_id);
+ 	flexos_vmept_init_master_rpc_ctrl(ctrl);
+ 
++	if (flexos_vmept_comp_id == 0) return;
+ 	FLEXOS_VMEPT_DEBUG_PRINT(("Starting master rpc loop. Observing master_rpc_ctrl at %p\n", ctrl));
+ 	while (1) {
+ 		if (ctrl->state == FLEXOS_VMEPT_MASTER_RPC_STATE_CALLED && ctrl->to == flexos_vmept_comp_id) {
+@@ -273,7 +273,7 @@ void flexos_vmept_master_rpc_loop()
+ 					ctrl->state = FLEXOS_VMEPT_MASTER_RPC_STATE_RETURNED;
+ 					FLEXOS_VMEPT_DEBUG_PRINT(("Created thread with tid %d (ptr: %p) to handle RPC calls from thread with tid %d in compartment %d.\n", thread->tid, thread, tid, calling_comp));
+ 					FLEXOS_VMEPT_DEBUG_PRINT(("Mapping is set up to track (comp=%d, local_tid=%d) -> %p.\n", calling_comp, tid, flexos_vmept_thread_map_lookup(&thread_map, calling_comp, tid)));
+-					break;
++					return;
+ 				case FLEXOS_VMEPT_MASTER_RPC_ACTION_DESTROY:
+ 					FLEXOS_VMEPT_DEBUG_PRINT(("Handling destroy.\n"));
+ 					thread = flexos_vmept_thread_map_lookup(&thread_map, calling_comp, (uint8_t) tid);
+diff --git a/lib/ukboot/weak_main.c b/lib/ukboot/weak_main.c
+index c6d2a05..e47d243 100644
+--- a/lib/ukboot/weak_main.c
++++ b/lib/ukboot/weak_main.c
+@@ -7,6 +7,7 @@
+ int __weak main(int argc __unused, char *argv[] __unused)
+ {
+ 	printf("weak main() called. This won't exit. TODO: don't waste this thread.\n");
++	uk_sched_thread_remove(uk_sched_get_default(), uk_thread_current());
+ 	while (1) {
+ 		uk_sched_yield();
+ 	}
+diff --git a/lib/uksched/sched.c b/lib/uksched/sched.c
+index 3e415f3..a6fdaab 100644
+--- a/lib/uksched/sched.c
++++ b/lib/uksched/sched.c
+@@ -356,18 +356,20 @@ struct uk_thread *uk_sched_thread_create(struct uk_sched *sched,
+ 		goto err;
+ 
+ #if CONFIG_LIBFLEXOS_VMEPT
+-	/* here we need to create an rpc thread in each other compartment */
+-	// TODO: error handling
+-	printf("Spawning rpc threads in other compartments.\n");
+-	volatile struct flexos_vmept_rpc_ctrl * ctrl = flexos_vmept_rpc_ctrl(flexos_vmept_comp_id, thread->tid);
+-	flexos_vmept_init_rpc_ctrl(ctrl);
+-	thread->ctrl = ctrl;
+-	for (size_t i = 0; i < FLEXOS_VMEPT_COMP_COUNT; ++i) {
+-		if (i == flexos_vmept_comp_id)
+-			continue;
+-		flexos_vmept_master_rpc_call_create(flexos_vmept_comp_id, i, thread->tid);
++	if(flexos_vmept_comp_id == 1) {
++		/* here we need to create an rpc thread in each other compartment */
++		// TODO: error handling
++		printf("Spawning rpc threads in other compartments.\n");
++		volatile struct flexos_vmept_rpc_ctrl * ctrl = flexos_vmept_rpc_ctrl(flexos_vmept_comp_id, thread->tid);
++		flexos_vmept_init_rpc_ctrl(ctrl);
++		thread->ctrl = ctrl;
++		for (size_t i = 0; i < FLEXOS_VMEPT_COMP_COUNT; ++i) {
++			if (i == flexos_vmept_comp_id)
++				continue;
++			flexos_vmept_master_rpc_call_create(flexos_vmept_comp_id, i, thread->tid);
++		}
++		printf("Spawned rpc threads in other compartments.\n");
+ 	}
+-	printf("Spawned rpc threads in other compartments.\n");
+ #endif /* CONFIG_LIBFLEXOS_VMEPT */
+ 
+ 	rc = uk_sched_thread_add(sched, thread, attr);
