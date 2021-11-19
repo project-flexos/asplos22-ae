@@ -1,12 +1,12 @@
 # You can easily build it with the following command:
-# $ docker build --tag flexos-iperf -f flexos-iperf.dockerfile .
+# $ docker build --tag flexos-sqlite -f flexos-sqlite.dockerfile .
 #
 # If the build fails because you are rate-limited by GitHub, generate an app
 # token () and run instead:
-# $ docker build --build-arg UK_KRAFT_GITHUB_TOKEN="<YOUR TOKEN>" --tag flexos-iperf
+# $ docker build --build-arg UK_KRAFT_GITHUB_TOKEN="<YOUR TOKEN>" --tag flexos-sqlite
 #
 # and run with:
-# $ docker run --privileged --security-opt seccomp:unconfined -ti flexos-iperf bash
+# $ docker run --privileged --security-opt seccomp:unconfined -ti flexos-sqlite bash
 #
 # (--security-opt seccomp:unconfined to limit docker overhead)
 
