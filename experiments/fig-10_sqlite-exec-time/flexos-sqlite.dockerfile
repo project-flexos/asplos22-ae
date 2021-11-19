@@ -45,7 +45,6 @@ RUN wget https://raw.githubusercontent.com/unikraft/kraft/6217d48668cbdf0847c786
 RUN chmod a+x /root/qemu-guest
 
 COPY docker-data/kraftcleanup /usr/local/bin/kraftcleanup
-COPY docker-data/build-images.sh /root/
 COPY docker-data/kraftrc.default /root/.kraftrc
 
 RUN git clone https://github.com/project-flexos/kraft.git
@@ -66,6 +65,7 @@ RUN git clone https://github.com/qemu/qemu.git
 
 WORKDIR /root/qemu
 
+RUN apt install -y ninja-build
 RUN git checkout 9ad4c7c9b63f89c308fd988d509bed1389953c8b
 COPY docker-data/0001-Myshmem.patch /root/0001-Myshmem.patch
 RUN git apply /root/0001-Myshmem.patch

@@ -1,0 +1,146 @@
+From 3d52c49ba35dc9c673b8cf43b8623a6874a1ff43 Mon Sep 17 00:00:00 2001
+From: Stefan Teodorescu <stefanl.teodorescu@gmail.com>
+Date: Wed, 3 Mar 2021 09:48:43 +0200
+Subject: [PATCH] Myshmem
+
+---
+ hw/misc/meson.build |  1 +
+ hw/misc/myshmem.c   | 88 +++++++++++++++++++++++++++++++++++++++++++++
+ softmmu/runstate.c  |  1 +
+ softmmu/vl.c        |  1 +
+ 4 files changed, 91 insertions(+)
+ create mode 100644 hw/misc/myshmem.c
+
+diff --git a/hw/misc/meson.build b/hw/misc/meson.build
+index 6292839..34dcaa1 100644
+--- a/hw/misc/meson.build
++++ b/hw/misc/meson.build
+@@ -39,6 +39,7 @@ softmmu_ss.add(when: 'CONFIG_PUV3', if_true: files('puv3_pm.c'))
+ subdir('macio')
+ 
+ softmmu_ss.add(when: 'CONFIG_IVSHMEM_DEVICE', if_true: files('ivshmem.c'))
++softmmu_ss.add(files('myshmem.c'))
+ 
+ softmmu_ss.add(when: 'CONFIG_ALLWINNER_H3', if_true: files('allwinner-h3-ccu.c'))
+ specific_ss.add(when: 'CONFIG_ALLWINNER_H3', if_true: files('allwinner-cpucfg.c'))
+diff --git a/hw/misc/myshmem.c b/hw/misc/myshmem.c
+new file mode 100644
+index 0000000..b990205
+--- /dev/null
++++ b/hw/misc/myshmem.c
+@@ -0,0 +1,88 @@
++#include "qemu/osdep.h"
++#include "qemu/units.h"
++#include "qapi/error.h"
++#include "qemu/cutils.h"
++#include "hw/qdev-properties.h"
++#include "hw/qdev-properties-system.h"
++#include "sysemu/kvm.h"
++#include "migration/blocker.h"
++#include "migration/vmstate.h"
++#include "qemu/error-report.h"
++#include "qemu/event_notifier.h"
++#include "qemu/module.h"
++#include "qom/object_interfaces.h"
++#include "chardev/char-fe.h"
++#include "sysemu/hostmem.h"
++#include "sysemu/qtest.h"
++#include "qapi/visitor.h"
++#include "exec/address-spaces.h"
++
++#include <sys/mman.h>
++#include <sys/stat.h>        /* For mode constants */
++#include <fcntl.h>           /* For O_* constants */
++
++#include "qom/object.h"
++
++#define TYPE_MY_SHMEM "myshmem"
++
++struct MyShmem {
++	DeviceState parent_obj;
++
++	char *file;
++	uint64_t size;
++	uint64_t paddr;
++	MemoryRegion region;
++};
++
++struct MyShmemClass {
++
++};
++
++typedef struct MyShmem MyShmem;
++typedef struct MyShmemClass MyShmemClass;
++
++OBJECT_DEFINE_TYPE(MyShmem,
++		my_shmem,
++		MY_SHMEM,
++		DEVICE);
++
++static Property myshmem_properties[] = {
++	DEFINE_PROP_STRING("file", MyShmem, file),
++	DEFINE_PROP_UINT64("size", MyShmem, size, 0),
++	DEFINE_PROP_UINT64("paddr", MyShmem, paddr, 0),
++	DEFINE_PROP_END_OF_LIST(),
++};
++
++static void my_shmem_realize(DeviceState *dev, Error **errp)
++{
++	unsigned long shm_size;
++	int shm_fd;
++	void *shared_memory;
++
++	MyShmem *myshmem = (MyShmem *) dev;
++	shm_size = myshmem->size;
++	shm_fd = shm_open(myshmem->file, O_CREAT | O_RDWR, 0666);
++	if (ftruncate(shm_fd, shm_size))
++		printf("ftruncate failed\n");
++	shared_memory = mmap(NULL, shm_size, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
++
++	memory_region_init_ram_ptr(&myshmem->region, NULL, "vram", shm_size, shared_memory);
++	memory_region_add_subregion(get_system_memory(), myshmem->paddr, &myshmem->region);
++}
++
++static void my_shmem_class_init(ObjectClass *oc, void *data)
++{
++	DeviceClass *dc = DEVICE_CLASS(oc);
++
++	device_class_set_props(dc, myshmem_properties);
++	dc->realize = my_shmem_realize;
++}
++
++static void my_shmem_init(Object *obj)
++{
++}
++
++static void my_shmem_finalize(Object *obj)
++{
++	printf("my shmem finalize called\n");
++}
+diff --git a/softmmu/runstate.c b/softmmu/runstate.c
+index 2874417..3ab41a0 100644
+--- a/softmmu/runstate.c
++++ b/softmmu/runstate.c
+@@ -713,6 +713,7 @@ static bool main_loop_should_exit(void)
+     return false;
+ }
+ 
++extern void *shared_memory;
+ void qemu_main_loop(void)
+ {
+ #ifdef CONFIG_PROFILER
+diff --git a/softmmu/vl.c b/softmmu/vl.c
+index b219ce1..862aa9c 100644
+--- a/softmmu/vl.c
++++ b/softmmu/vl.c
+@@ -3448,6 +3448,7 @@ void qemu_init(int argc, char **argv, char **envp)
+             case QEMU_OPTION_nouserconfig:
+                 /* Nothing to be parsed here. Especially, do not error out below. */
+                 break;
++
+             default:
+                 if (os_parse_cmd_args(popt->index, optarg)) {
+                     error_report("Option not supported in this build");
+-- 
+2.30.2
+
