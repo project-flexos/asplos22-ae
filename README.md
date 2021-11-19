@@ -82,7 +82,12 @@ Before you can run these experiments, you will need to prepare a physical host
 environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
-All our results were run on XXX.
+All our results were run on an Intel® Xeon® Silver 4114 with 128.0 GB RAM,
+Debian 11.1, and Linux version 5.10.0-9-amd64. This artifact may be run with
+any processor that supports Intel MPK, typically any Intel® Xeon® Scalable
+Processor starting with the Skylake generation (but the results might differ
+from the paper). This artifact was only tested on Debian 11.1, but any
+Debian-based distribution with similar package versions should be suitable.
 
 
 ## 4. Getting started
