@@ -1,5 +1,9 @@
 # You can easily build it with the following command:
-# $ docker build --tag flexos-iperf .
+# $ docker build --tag flexos-iperf -f flexos-iperf.dockerfile .
+#
+# If the build fails because you are rate-limited by GitHub, generate an app
+# token () and run instead:
+# $ docker build --build-arg UK_KRAFT_GITHUB_TOKEN="<YOUR TOKEN>" --tag flexos-iperf
 #
 # and run with:
 # $ docker run --privileged --security-opt seccomp:unconfined -ti flexos-iperf bash
@@ -11,6 +15,11 @@ FROM debian:10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+ARG UK_KRAFT_GITHUB_TOKEN=
+ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
+
+# TODO: many of these first steps should probably be part of the flexos base image
+
 RUN echo "deb-src http://deb.debian.org/debian buster main contrib non-free" \
 	>> /etc/apt/sources.list
 RUN echo "deb-src http://security.debian.org/ buster/updates main contrib non-free" \
@@ -20,13 +29,14 @@ RUN echo "deb-src http://deb.debian.org/debian/ buster-updates main contrib non-
 
 RUN apt update
 RUN apt build-dep -y coccinelle
+RUN apt build-dep -y qemu-system-x86
 RUN apt install -y flex bison wget unzip python3-pip git bc libffi-dev \
         build-essential libncurses-dev python3 expect-dev moreutils \
 	flex unzip bison wget libxml2-utils tclsh python python-tempita python-six \
 	python-future python-ply xorriso qemu-system-x86 qemu qemu-kvm vim \
 	qemu-system qemu-utils curl gawk git procps socat uuid-runtime python3-pip \
 	libiperf-dev bc net-tools bridge-utils libiscsi-dev librbd1 libnfs-dev \
-	libgfapi0 iperf dnsmasq
+	libgfapi0 iperf dnsmasq ninja-build
 
 ##############
 # Tools
@@ -61,8 +71,6 @@ WORKDIR /root/qemu
 RUN git checkout 9ad4c7c9b63f89c308fd988d509bed1389953c8b
 COPY docker-data/0001-Myshmem.patch /root/0001-Myshmem.patch
 RUN git apply /root/0001-Myshmem.patch
-RUN apt build-dep -y qemu-system-x86
-RUN apt install ninja-build
 RUN ./configure --target-list=x86_64-softmmu
 RUN sed -i -e 's/-lstdc++ -Wl,--end-group/-lrt -lstdc++ -Wl,--end-group/g' build/build.ninja
 RUN make -j8
@@ -101,9 +109,6 @@ RUN sed -i "s/# CONFIG_LIBFLEXOS_GATE_INTELPKU_SHARED_STACKS is not set/CONFIG_L
 RUN cd iperf-mpk2-noisolstack && rm -rf images build
 RUN cd iperf-mpk2-noisolstack && make prepare && kraft -v build --no-progress --fast --compartmentalize
 RUN cd iperf-mpk2-noisolstack && /root/build-images.sh && rm -rf build/
-
-ARG UK_KRAFT_GITHUB_TOKEN=
-ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
 
 # build flexos with 2 ept compartments (iperf/rest)
 RUN kraftcleanup
