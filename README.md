@@ -76,7 +76,7 @@ We have organised this repository as follows:
     - `clean`: removes intermediate build files.
  * `plots/` - Contains all resulting figures seen in the paper.
 
-## 3. Prerequistes
+## 3. Prerequisites
 
 Before you can run these experiments, you will need to prepare a physical host
 environment.  Access to the physical host environment is important as it is
@@ -98,11 +98,13 @@ Debian-based distribution with similar package versions should be suitable.
 2. Many of the experiments use Docker as an intermediate tool for creating build
    and test environments (along with testing Docker itself).  Please
    [install Docker](https://docs.docker.com/get-docker/) on your system to
-   continue;
+   continue. This artifact makes heavy use of Docker containers, and so we
+   recommend you to use a recent version of Docker to avoid storage pool issues.
+   See [troubleshooting](#5-troubleshooting).
 
 3. Once Docker is installed, clone this repository
    ```bash
-   git clone https://github.com/ukflexos/asplos22-ae.git
+   git clone https://github.com/project-flexos/asplos22-ae.git
    ```
 
 4. All experiments should be `prepare`d first, which installs necessary tools
@@ -147,7 +149,19 @@ Debian-based distribution with similar package versions should be suitable.
    make properclean
    ```
 
-## 5. Beyond the Paper
+## 5. Troubleshooting
+
+- **Problem**: Docker containers fail to build with errors indicating
+  insufficient memory available.
+
+  **Solution**: This artifact makes heavy use of Docker containers. Older
+  versions of Docker are known to have issues with the maximum size of Docker
+  containers or of the storage pool. Check the output of `docker info`. It should
+  show `overlay2`. If it indicates `devicemapper`, your installation
+  might be old or using the Debian/Ubuntu repositories. In this case, we recommend
+  a fresh reinstall of Docker.
+
+## 6. Beyond the Paper
 
 This repository contains all scripts necessary to reproduce the experiments of
 our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
@@ -161,7 +175,7 @@ on porting applications and building your own FlexOS images in the core kernel
 repository's
 [`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
 
-## 6. Acknowledgements
+## 7. Acknowledgements
 
 This artifact would not exist without the hard work of the Unikraft community.
 We encourage interested researchers to visit the project's [web

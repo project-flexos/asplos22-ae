@@ -4,10 +4,15 @@
 WORKDIR ?= $(CURDIR)
 
 #
+# Parameters
+#
+KRAFT_TOKEN ?=
+
+#
 # General configuration
 #
 REG     ?= ghcr.io
-ORG     ?= ukflexos
+ORG     ?= project-flexos
 EXPS    ?= fig-06_nginx-redis-perm \
            fig-07_nginx-redis-normalized \
            fig-08_config-poset \
@@ -17,7 +22,8 @@ EXPS    ?= fig-06_nginx-redis-perm \
            tab-01_porting-effort
 IMAGES  ?= flexos-base \
            nginx \
-           redis
+           redis \
+           flexos-ae-base
 TARGETS ?= prepare \
            run \
            plot \
@@ -89,5 +95,6 @@ $(DIMAGES): TAG ?= latest
 $(DIMAGES):
 	$(Q)$(DOCKER) build \
 		--tag $(REG)/$(ORG)/$(@:docker-%=%):$(TAG) \
+		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--file $(WORKDIR)/support/dockerfiles/Dockerfile.$(@:docker-%=%) \
 		$(WORKDIR)/support/dockerfiles

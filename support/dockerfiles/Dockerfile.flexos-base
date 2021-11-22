@@ -40,5 +40,5 @@ RUN set -xe; \
 #
 RUN set -xe; \
     rm -Rf /usr/src/kraft; \
-    git clone --branch flexos https://github.com/ukflexos/kraft.git /usr/src/kraft; \
+    git clone --branch staging https://github.com/project-flexos/kraft.git /usr/src/kraft; \
     pip3 install /usr/src/kraft

@@ -12,6 +12,9 @@ architecture = "x86_64"
 origins = [
   "https://github.com/project-flexos/lib-newlib.git",
   "https://github.com/project-flexos/lib-tlsf.git",
+  "https://github.com/project-flexos/lib-lwip.git",
+  "https://github.com/project-flexos/lib-iperf.git",
+  "https://github.com/project-flexos/app-iperf.git",
   "https://github.com/project-flexos/lib-sqlite.git",
   "https://github.com/project-flexos/app-sqlite.git",
   "https://github.com/project-flexos/unikraft.git",

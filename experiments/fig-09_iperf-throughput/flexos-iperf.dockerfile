@@ -10,75 +10,10 @@
 #
 # (--security-opt seccomp:unconfined to limit docker overhead)
 
-# Choose the base image for our final image
-FROM debian:10
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM ghcr.io/project-flexos/flexos-ae-base:latest
 
 ARG UK_KRAFT_GITHUB_TOKEN=
 ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
-
-# TODO: many of these first steps should probably be part of the flexos base image
-
-RUN echo "deb-src http://deb.debian.org/debian buster main contrib non-free" \
-	>> /etc/apt/sources.list
-RUN echo "deb-src http://security.debian.org/ buster/updates main contrib non-free" \
-	>> /etc/apt/sources.list
-RUN echo "deb-src http://deb.debian.org/debian/ buster-updates main contrib non-free" \
-	>> /etc/apt/sources.list
-
-RUN apt update
-RUN apt build-dep -y coccinelle
-RUN apt build-dep -y qemu-system-x86
-RUN apt install -y flex bison wget unzip python3-pip git bc libffi-dev \
-        build-essential libncurses-dev python3 expect-dev moreutils \
-	flex unzip bison wget libxml2-utils tclsh python python-tempita python-six \
-	python-future python-ply xorriso qemu-system-x86 qemu qemu-kvm vim \
-	qemu-system qemu-utils curl gawk git procps socat uuid-runtime python3-pip \
-	libiperf-dev bc net-tools bridge-utils libiscsi-dev librbd1 libnfs-dev \
-	libgfapi0 iperf dnsmasq ninja-build
-
-##############
-# Tools
-
-WORKDIR /root
-
-RUN wget https://raw.githubusercontent.com/unikraft/kraft/6217d48668cbdf0847c7864bc6368a6adb94f6a6/scripts/qemu-guest
-RUN chmod a+x /root/qemu-guest
-
-COPY docker-data/kraftcleanup /usr/local/bin/kraftcleanup
-COPY docker-data/build-images.sh /root/
-COPY docker-data/kraftrc.default /root/.kraftrc
-
-RUN git clone https://github.com/project-flexos/kraft.git
-RUN cd /root/kraft && git checkout a928f65036861051a17506a90dcaf81dbe1b6214 && pip3 install -e .
-
-RUN git clone https://github.com/coccinelle/coccinelle
-RUN cd coccinelle && git checkout ae337fce1512ff15aabc3ad5b6d2e537f97ab62a && \
-			./autogen && ./configure && make && make install
-
-# fix a bug in Coccinelle
-RUN mkdir /usr/local/bin/lib
-RUN ln -s /usr/local/lib/coccinelle /usr/local/bin/lib/coccinelle
-
-##############
-# FlexOS EPT QEMU
-
-RUN git clone https://github.com/qemu/qemu.git
-
-WORKDIR /root/qemu
-
-RUN git checkout 9ad4c7c9b63f89c308fd988d509bed1389953c8b
-COPY docker-data/0001-Myshmem.patch /root/0001-Myshmem.patch
-RUN git apply /root/0001-Myshmem.patch
-RUN ./configure --target-list=x86_64-softmmu
-RUN sed -i -e 's/-lstdc++ -Wl,--end-group/-lrt -lstdc++ -Wl,--end-group/g' build/build.ninja
-RUN make -j8
-RUN cp build/qemu-system-x86_64 /root/qemu-system-ept
-RUN cp -r build/pc-bios /root/pc-bios
-RUN rm /root/0001-Myshmem.patch
-
-WORKDIR /root
 
 ##############
 # FlexOS (KVM)
@@ -139,16 +74,6 @@ RUN mv /root/.unikraft /root/flexos
 ##############
 # Unikraft 0.5 (KVM and linuxu)
 # Performance is similar to Unikraft 0.4, so omit it.
-
-RUN mkdir /root/unikraft-mainline
-
-WORKDIR /root/unikraft-mainline
-
-RUN git clone https://github.com/unikraft/unikraft.git
-RUN cd /root/unikraft-mainline/unikraft && \
-       git checkout fd5779120a5938d5c814583cb0f59046b1756cd3
-
-RUN mkdir libs apps
 
 WORKDIR /root/unikraft-mainline/libs
 
