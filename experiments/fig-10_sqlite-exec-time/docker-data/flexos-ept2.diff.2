@@ -1,3 +1,60 @@
+diff --git a/include/uk/plat/memory.h b/include/uk/plat/memory.h
+index 8471a92..ac3a189 100644
+--- a/include/uk/plat/memory.h
++++ b/include/uk/plat/memory.h
+@@ -139,10 +139,8 @@ static inline int ukplat_memregion_find_next(int i, int sflags,
+  *         A return value < 0 means that there is no initrd module,
+  *         `mrd` may be filled out with undefined values.
+  */
+-static inline int ukplat_memregion_find_initrd0(struct ukplat_memregion_desc *mrd)
+-{
+-	return ukplat_memregion_find_next(-1, UKPLAT_MEMRF_INITRD, (mrd));
+-}
++#define ukplat_memregion_find_initrd0(mrd) \
++	ukplat_memregion_find_next(-1, UKPLAT_MEMRF_INITRD, (mrd))
+ 
+ /**
+  * Sets the platform memory allocator and triggers the platform memory mappings
+diff --git a/lib/cpio/cpio.c b/lib/cpio/cpio.c
+index 5236dea..e27e99b 100644
+--- a/lib/cpio/cpio.c
++++ b/lib/cpio/cpio.c
+@@ -41,7 +41,6 @@
+ 
+ #include <uk/cpio.h>
+ #include <uk/essentials.h>
+-#include <flexos/isolation.h>
+ #include <sys/mount.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -170,14 +169,14 @@ static enum cpio_error read_section(struct cpio_header **header_ptr,
+ 		return -CPIO_MALFORMED_FILE;
+ 	}
+ 	if (IS_FILE(header_mode) && header_filesize != 0) {
+-		//flexos_gate(ukdebug, uk_pr_debug, "Creating file %s...\n", path_from_root);
++		uk_pr_debug("Creating file %s...\n", path_from_root);
+ 		int fd = open(path_from_root, O_CREAT | O_RDWR);
+ 
+ 		if (fd < 0) {
+ 			*header_ptr = NULL;
+ 			return -CPIO_FILE_CREATE_FAILED;
+ 		}
+-		//flexos_gate(ukdebug, uk_pr_debug, "File %s created\n", path_from_root);
++		uk_pr_debug("File %s created\n", path_from_root);
+ 		char *data_location = (char *)ALIGN_4(
+ 		    (char *)(header) + sizeof(struct cpio_header)
+ 		    + header_namesize);
+@@ -199,8 +198,8 @@ static enum cpio_error read_section(struct cpio_header **header_ptr,
+ 			}
+ 			bytes_to_write -= bytes_written;
+ 		}
+-		//if (chmod(path_from_root, header_mode & 0777) < 0)
+-			//flexos_gate(ukdebug, uk_pr_info, "chmod on file %s failed\n", path_from_root);
++		if (chmod(path_from_root, header_mode & 0777) < 0)
++			uk_pr_info("chmod on file %s failed\n", path_from_root);
+ 		if (close(fd) < 0) {
+ 			*header_ptr = NULL;
+ 			return -CPIO_FILE_CLOSE_FAILED;
 diff --git a/lib/flexos-core/include/flexos/impl/vmept.h b/lib/flexos-core/include/flexos/impl/vmept.h
 index 3afb0e8..c9d9725 100644
 --- a/lib/flexos-core/include/flexos/impl/vmept.h
@@ -88,11 +145,204 @@ index 7df5b89..92ec6cf 100644
  			}
  			// TODO: error handling ?
  			ctrl->state = FLEXOS_VMEPT_BUILD_MASTER_RPC_RETURN_STATE(0);
+diff --git a/lib/ramfs/ramfs_vfsops.c b/lib/ramfs/ramfs_vfsops.c
+index b30b5a7..15be8ce 100644
+--- a/lib/ramfs/ramfs_vfsops.c
++++ b/lib/ramfs/ramfs_vfsops.c
+@@ -36,7 +36,6 @@
+ #include <vfscore/vnode.h>
+ #include <vfscore/mount.h>
+ #include <vfscore/dentry.h>
+-#include <flexos/isolation.h>
+ 
+ #include "ramfs.h"
+ 
+@@ -80,7 +79,7 @@ ramfs_mount(struct mount *mp, const char *dev __unused,
+ {
+ 	struct ramfs_node *np;
+ 
+-	//flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("%s: dev=%s\n"), __func__, dev);
++	uk_pr_debug("%s: dev=%s\n", __func__, dev);
+ 
+ 	/* Create a root node */
+ 	np = ramfs_allocate_node("/", VDIR);
+diff --git a/lib/ramfs/ramfs_vnops.c b/lib/ramfs/ramfs_vnops.c
+index a982955..0cad5df 100644
+--- a/lib/ramfs/ramfs_vnops.c
++++ b/lib/ramfs/ramfs_vnops.c
+@@ -126,7 +126,7 @@ ramfs_add_node(struct ramfs_node *dnp, char *name, int type)
+ 	if (np == NULL)
+ 		return NULL;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &ramfs_lock);
++	uk_mutex_lock(&ramfs_lock);
+ 
+ 	/* Link to the directory list */
+ 	if (dnp->rn_child == NULL) {
+@@ -140,7 +140,7 @@ ramfs_add_node(struct ramfs_node *dnp, char *name, int type)
+ 
+ 	set_times_to_now(&(dnp->rn_mtime), &(dnp->rn_ctime), NULL);
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++	uk_mutex_unlock(&ramfs_lock);
+ 	return np;
+ }
+ 
+@@ -152,7 +152,7 @@ ramfs_remove_node(struct ramfs_node *dnp, struct ramfs_node *np)
+ 	if (dnp->rn_child == NULL)
+ 		return EBUSY;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &ramfs_lock);
++	uk_mutex_lock(&ramfs_lock);
+ 
+ 	/* Unlink from the directory list */
+ 	if (dnp->rn_child == np) {
+@@ -161,7 +161,7 @@ ramfs_remove_node(struct ramfs_node *dnp, struct ramfs_node *np)
+ 		for (prev = dnp->rn_child; prev->rn_next != np;
+ 			 prev = prev->rn_next) {
+ 			if (prev->rn_next == NULL) {
+-				flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++				uk_mutex_unlock(&ramfs_lock);
+ 				return ENOENT;
+ 			}
+ 		}
+@@ -171,7 +171,7 @@ ramfs_remove_node(struct ramfs_node *dnp, struct ramfs_node *np)
+ 
+ 	set_times_to_now(&(dnp->rn_mtime), &(dnp->rn_ctime), NULL);
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++	uk_mutex_unlock(&ramfs_lock);
+ 	return 0;
+ }
+ 
+@@ -215,7 +215,7 @@ ramfs_lookup(struct vnode *dvp, char *name, struct vnode **vpp)
+ 	if (*name == '\0')
+ 		return ENOENT;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &ramfs_lock);
++	uk_mutex_lock(&ramfs_lock);
+ 
+ 	len = strlen(name);
+ 	dnp = dvp->v_data;
+@@ -228,17 +228,17 @@ ramfs_lookup(struct vnode *dvp, char *name, struct vnode **vpp)
+ 		}
+ 	}
+ 	if (found == 0) {
+-		flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++		uk_mutex_unlock(&ramfs_lock);
+ 		return ENOENT;
+ 	}
+ 	if (vfscore_vget(dvp->v_mount, inode_count++, &vp)) {
+ 		/* found in cache */
+ 		*vpp = vp;
+-		flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++		uk_mutex_unlock(&ramfs_lock);
+ 		return 0;
+ 	}
+ 	if (!vp) {
+-		flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++		uk_mutex_unlock(&ramfs_lock);
+ 		return ENOMEM;
+ 	}
+ 	vp->v_data = np;
+@@ -246,7 +246,7 @@ ramfs_lookup(struct vnode *dvp, char *name, struct vnode **vpp)
+ 	vp->v_type = np->rn_type;
+ 	vp->v_size = np->rn_size;
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++	uk_mutex_unlock(&ramfs_lock);
+ 
+ 	*vpp = vp;
+ 
+@@ -258,7 +258,7 @@ ramfs_mkdir(struct vnode *dvp, char *name, mode_t mode)
+ {
+ 	struct ramfs_node *np;
+ 
+-	//flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("mkdir %s\n"), name);
++	uk_pr_debug("mkdir %s\n", name);
+ 	if (strlen(name) > NAME_MAX)
+ 		return ENAMETOOLONG;
+ 
+@@ -329,8 +329,8 @@ ramfs_rmdir(struct vnode *dvp, struct vnode *vp, char *name __unused)
+ static int
+ ramfs_remove(struct vnode *dvp, struct vnode *vp, char *name __maybe_unused)
+ {
+-	//flexos_gate(ukdebug, uk_pr_debug, "remove %s in %s\n", name,
+-	//	 RAMFS_NODE(dvp)->rn_name);
++	uk_pr_debug("remove %s in %s\n", name,
++		 RAMFS_NODE(dvp)->rn_name);
+ 	return ramfs_remove_node(dvp->v_data, vp->v_data);
+ }
+ 
+@@ -342,8 +342,8 @@ ramfs_truncate(struct vnode *vp, off_t length)
+ 	void *new_buf;
+ 	size_t new_size;
+ 
+-	//flexos_gate(ukdebug, uk_pr_debug, "truncate %s length=%lld\n", RAMFS_NODE(vp)->rn_name,
+-	//	 (long long) length);
++	uk_pr_debug("truncate %s length=%lld\n", RAMFS_NODE(vp)->rn_name,
++		 (long long) length);
+ 	np = vp->v_data;
+ 
+ 	if (length == 0) {
+@@ -385,7 +385,7 @@ ramfs_create(struct vnode *dvp, char *name, mode_t mode)
+ 	if (strlen(name) > NAME_MAX)
+ 		return ENAMETOOLONG;
+ 
+-	//flexos_gate(ukdebug, uk_pr_debug, "create %s in %s\n", name, RAMFS_NODE(dvp)->rn_name);
++	uk_pr_debug("create %s in %s\n", name, RAMFS_NODE(dvp)->rn_name);
+ 	if (!S_ISREG(mode))
+ 		return EINVAL;
+ 
+@@ -541,7 +541,7 @@ ramfs_readdir(struct vnode *vp, struct vfscore_file *fp, struct dirent *dir)
+ 	struct ramfs_node *np, *dnp;
+ 	int i;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &ramfs_lock);
++	uk_mutex_lock(&ramfs_lock);
+ 
+ 	set_times_to_now(&(((struct ramfs_node *) vp->v_data)->rn_atime),
+ 			 NULL, NULL);
+@@ -556,14 +556,14 @@ ramfs_readdir(struct vnode *vp, struct vfscore_file *fp, struct dirent *dir)
+ 		dnp = vp->v_data;
+ 		np = dnp->rn_child;
+ 		if (np == NULL) {
+-			flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++			uk_mutex_unlock(&ramfs_lock);
+ 			return ENOENT;
+ 		}
+ 
+ 		for (i = 0; i != (fp->f_offset - 2); i++) {
+ 			np = np->rn_next;
+ 			if (np == NULL) {
+-				flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++				uk_mutex_unlock(&ramfs_lock);
+ 				return ENOENT;
+ 			}
+ 		}
+@@ -581,7 +581,7 @@ ramfs_readdir(struct vnode *vp, struct vfscore_file *fp, struct dirent *dir)
+ 
+ 	fp->f_offset++;
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &ramfs_lock);
++	uk_mutex_unlock(&ramfs_lock);
+ 	return 0;
+ }
+ 
 diff --git a/lib/ukboot/boot.c b/lib/ukboot/boot.c
-index 534e679..c76fc4d 100644
+index 41935e2..c2c88a9 100644
 --- a/lib/ukboot/boot.c
 +++ b/lib/ukboot/boot.c
-@@ -121,7 +121,7 @@ static void main_thread_func(void *arg)
+@@ -89,8 +89,6 @@
+ int main(int argc, char *argv[]) __weak;
+ 
+ static void main_thread_func(void *arg) __noreturn __attribute__((section(".text_comp_exclusive")));
+-extern const struct vfscore_fs_type *uk_fslist_start;
+-extern const struct vfscore_fs_type *uk_fslist_end;
+ 
+ struct thread_main_arg {
+ 	int argc;
+@@ -123,7 +121,7 @@ static void main_thread_func(void *arg)
  
  		/* here we need to create an rpc thread in each other compartment */
  		// TODO: error handling
@@ -101,7 +351,7 @@ index 534e679..c76fc4d 100644
  
  		struct uk_thread *thread = uk_thread_current();
  		struct flexos_vmept_rpc_ctrl *ctrl = flexos_vmept_rpc_ctrl(FLEXOS_VMEPT_COMP_ID, thread->tid);
-@@ -131,11 +131,11 @@ static void main_thread_func(void *arg)
+@@ -133,11 +131,11 @@ static void main_thread_func(void *arg)
  		for (size_t i = 0; i < FLEXOS_VMEPT_COMP_COUNT; ++i) {
  			if (i == FLEXOS_VMEPT_COMP_ID)
  				continue;
@@ -115,6 +365,31 @@ index 534e679..c76fc4d 100644
  	}
  #endif /* CONFIG_LIBFLEXOS_VMEPT */
  
+@@ -403,24 +401,6 @@ do {									\
+ 					 (void *) __END);
+ 	PROTECT_SECTION("shared", 15, (void *) __SHARED_START,
+ 				      (void *) __SHARED_END);
+-#if CONFIG_LIBVFSCORE
+-	/* vfscore's compartment: we should rather pass this via a macro */
+-	PROTECT_SECTION("ukfslist", /* __FLEXOS MARKER__: vfscore compartment */,
+-			(void *) &uk_fslist_start, (void *) &uk_fslist_end);
+-
+-#if CONFIG_LIBCPIO
+-	struct ukplat_memregion_desc memregion_desc;
+-	int initrd;
+-
+-	initrd = ukplat_memregion_find_initrd0(&memregion_desc);
+-	if (initrd != -1) {
+-		ukplat_memregion_get(initrd, &memregion_desc);
+-		PROTECT_SECTION("initrd", /* __FLEXOS MARKER__: vfscore compartment */,
+-			(void *) memregion_desc.base,
+-			(void *) round_pgup((size_t) memregion_desc.base + memregion_desc.len));
+-	}
+-#endif /* CONFIG_LIBCPIO */
+-#endif /* CONFIG_LIBVFSCORE */
+ 
+ 	/* TODO FLEXOS: the size of the heap should probably be a config variable. */
+ 	ASSIGN_HEAP("shared", 15 /* key */, 1000 /* size */, flexos_shared_alloc);
 diff --git a/lib/ukboot/weak_main.c b/lib/ukboot/weak_main.c
 index c6d2a05..d4e686f 100644
 --- a/lib/ukboot/weak_main.c
@@ -133,6 +408,189 @@ index c6d2a05..d4e686f 100644
  	while (1) {
  		uk_sched_yield();
  	}
+diff --git a/lib/vfscore/dentry.c b/lib/vfscore/dentry.c
+index a3b2a9d..337bb39 100644
+--- a/lib/vfscore/dentry.c
++++ b/lib/vfscore/dentry.c
+@@ -76,13 +76,7 @@ dentry_alloc(struct dentry *parent_dp, struct vnode *vp, const char *path)
+ 		return NULL;
+ 	}
+ 
+-	//flexos_gate_r(libc, dp->d_path, strdup, path);
+-	size_t size = strlen(path) + 1;
+-	dp->d_path = malloc(size);
+-	if (dp->d_path) {
+-		memcpy(dp->d_path, path, size);
+-	}
+-
++	dp->d_path = strdup(path);
+ 	if (!dp->d_path) {
+ 		free(dp);
+ 		return NULL;
+@@ -98,19 +92,19 @@ dentry_alloc(struct dentry *parent_dp, struct vnode *vp, const char *path)
+ 	if (parent_dp) {
+ 		dref(parent_dp);
+ 
+-		flexos_gate(uklock, uk_mutex_lock, &parent_dp->d_lock);
++		uk_mutex_lock(&parent_dp->d_lock);
+ 		// Insert dp into its parent's children list.
+ 		uk_list_add(&dp->d_child_link, &parent_dp->d_child_list);
+-		flexos_gate(uklock, uk_mutex_unlock, &parent_dp->d_lock);
++		uk_mutex_unlock(&parent_dp->d_lock);
+ 	}
+ 	dp->d_parent = parent_dp;
+ 
+ 	vn_add_name(vp, dp);
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	uk_hlist_add_head(&dp->d_link,
+ 			  &dentry_hash_table[dentry_hash(mp, path)]);
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ 	return dp;
+ };
+ 
+@@ -119,15 +113,15 @@ dentry_lookup(struct mount *mp, char *path)
+ {
+ 	struct dentry *dp;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	uk_hlist_for_each_entry(dp, &dentry_hash_table[dentry_hash(mp, path)], d_link) {
+ 		if (dp->d_mount == mp && !strncmp(dp->d_path, path, PATH_MAX)) {
+ 			dp->d_refcnt++;
+-			flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++			uk_mutex_unlock(&dentry_hash_lock);
+ 			return dp;
+ 		}
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ 	return NULL;                /* not found */
+ }
+ 
+@@ -135,13 +129,13 @@ static void dentry_children_remove(struct dentry *dp)
+ {
+ 	struct dentry *entry = NULL;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dp->d_lock);
++	uk_mutex_lock(&dp->d_lock);
+ 	uk_list_for_each_entry(entry, &dp->d_child_list, d_child_link) {
+ 		UK_ASSERT(entry);
+ 		UK_ASSERT(entry->d_refcnt > 0);
+ 		uk_hlist_del(&entry->d_link);
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &dp->d_lock);
++	uk_mutex_unlock(&dp->d_lock);
+ 
+ }
+ 
+@@ -158,22 +152,22 @@ dentry_move(struct dentry *dp, struct dentry *parent_dp, char *path)
+ 	}
+ 
+ 	if (old_pdp) {
+-		flexos_gate(uklock, uk_mutex_lock, &old_pdp->d_lock);
++		uk_mutex_lock(&old_pdp->d_lock);
+ 		// Remove dp from its old parent's children list.
+ 		uk_list_del(&dp->d_child_link);
+-		flexos_gate(uklock, uk_mutex_unlock, &old_pdp->d_lock);
++		uk_mutex_unlock(&old_pdp->d_lock);
+ 	}
+ 
+ 	if (parent_dp) {
+ 		dref(parent_dp);
+ 
+-		flexos_gate(uklock, uk_mutex_lock, &parent_dp->d_lock);
++		uk_mutex_lock(&parent_dp->d_lock);
+ 		// Insert dp into its new parent's children list.
+ 		uk_list_add(&dp->d_child_link, &parent_dp->d_child_list);
+-		flexos_gate(uklock, uk_mutex_unlock, &parent_dp->d_lock);
++		uk_mutex_unlock(&parent_dp->d_lock);
+ 	}
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	// Remove all dp's child dentries from the hashtable.
+ 	dentry_children_remove(dp);
+ 	// Remove dp with outdated hash info from the hashtable.
+@@ -185,7 +179,7 @@ dentry_move(struct dentry *dp, struct dentry *parent_dp, char *path)
+ 	// Insert dp updated hash info into the hashtable.
+ 	uk_hlist_add_head(&dp->d_link,
+ 			  &dentry_hash_table[dentry_hash(dp->d_mount, path)]);
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ 
+ 	if (old_pdp) {
+ 		drele(old_pdp);
+@@ -198,11 +192,11 @@ dentry_move(struct dentry *dp, struct dentry *parent_dp, char *path)
+ void
+ dentry_remove(struct dentry *dp)
+ {
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	uk_hlist_del(&dp->d_link);
+ 	/* put it on a fake list for drele() to work*/
+ 	uk_hlist_add_head(&dp->d_link, &fake);
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ }
+ 
+ void
+@@ -211,9 +205,9 @@ dref(struct dentry *dp)
+ 	UK_ASSERT(dp);
+ 	UK_ASSERT(dp->d_refcnt > 0);
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	dp->d_refcnt++;
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ }
+ 
+ void
+@@ -222,21 +216,21 @@ drele(struct dentry *dp)
+ 	UK_ASSERT(dp);
+ 	UK_ASSERT(dp->d_refcnt > 0);
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &dentry_hash_lock);
++	uk_mutex_lock(&dentry_hash_lock);
+ 	if (--dp->d_refcnt) {
+-		flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++		uk_mutex_unlock(&dentry_hash_lock);
+ 		return;
+ 	}
+ 	uk_hlist_del(&dp->d_link);
+ 	vn_del_name(dp->d_vnode, dp);
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &dentry_hash_lock);
++	uk_mutex_unlock(&dentry_hash_lock);
+ 
+ 	if (dp->d_parent) {
+-		flexos_gate(uklock, uk_mutex_lock, &dp->d_parent->d_lock);
++		uk_mutex_lock(&dp->d_parent->d_lock);
+ 		// Remove dp from its parent's children list.
+ 		uk_list_del(&dp->d_child_link);
+-		flexos_gate(uklock, uk_mutex_unlock, &dp->d_parent->d_lock);
++		uk_mutex_unlock(&dp->d_parent->d_lock);
+ 
+ 		drele(dp->d_parent);
+ 	}
+diff --git a/lib/vfscore/extra.ld b/lib/vfscore/extra.ld
+index 3bd74e4..173b235 100644
+--- a/lib/vfscore/extra.ld
++++ b/lib/vfscore/extra.ld
+@@ -1,10 +1,8 @@
+ SECTIONS
+ {
+ 	.uk_fs_list : {
+-		. = ALIGN(0x1000);
+ 		PROVIDE(uk_fslist_start = .);
+ 		KEEP (*(.uk_fs_list))
+-		. = ALIGN(0x1000);
+                 PROVIDE(uk_fslist_end = .);
+ 	}
+ }
 diff --git a/lib/vfscore/fd.c b/lib/vfscore/fd.c
 index a5562ca..2bbf215 100644
 --- a/lib/vfscore/fd.c
@@ -147,11 +605,324 @@ index a5562ca..2bbf215 100644
 +#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
  UK_CTOR_PRIO(fdtable_init, 1);
 +#endif
+diff --git a/lib/vfscore/include/vfscore/file.h b/lib/vfscore/include/vfscore/file.h
+index 979c5b9..42b7e00 100644
+--- a/lib/vfscore/include/vfscore/file.h
++++ b/lib/vfscore/include/vfscore/file.h
+@@ -37,7 +37,6 @@
+ #include <stdint.h>
+ #include <sys/types.h>
+ #include <vfscore/dentry.h>
+-#include <flexos/isolation.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -61,15 +60,8 @@ struct vfscore_file {
+ 	struct uk_mutex f_lock;
+ };
+ 
+-static inline void FD_LOCK(struct vfscore_file *fp)
+-{
+-	flexos_gate(uklock, uk_mutex_lock, &(fp->f_lock));
+-}
+-
+-static inline void FD_UNLOCK(struct vfscore_file *fp)
+-{
+-	flexos_gate(uklock, uk_mutex_unlock, &(fp->f_lock));
+-}
++#define FD_LOCK(fp)       uk_mutex_lock(&(fp->f_lock))
++#define FD_UNLOCK(fp)     uk_mutex_unlock(&(fp->f_lock))
+ 
+ int vfscore_alloc_fd(void);
+ int vfscore_reserve_fd(int fd);
 diff --git a/lib/vfscore/main.c b/lib/vfscore/main.c
-index a08c1ee..5dee0f0 100644
+index b0b5d82..5dee0f0 100644
 --- a/lib/vfscore/main.c
 +++ b/lib/vfscore/main.c
-@@ -2363,4 +2363,9 @@ static void vfscore_init(void)
+@@ -57,18 +57,6 @@
+ int	vfs_debug = VFSDB_FLAGS;
+ #endif
+ 
+-static inline
+-void _VFSCORE_SET_ERRNO(int errcode)
+-{
+-	errno = errcode;
+-}
+-
+-static inline
+-void VFSCORE_SET_ERRNO(int errcode)
+-{
+-	flexos_gate(libc, _VFSCORE_SET_ERRNO, errcode);
+-}
+-
+ /* This macro is for defining an alias of the 64bit version of a
+  * syscall to the regular one. It seams we can make the logic which is
+  * choosing the right call simpler then in common libc.
+@@ -82,7 +70,7 @@ static mode_t global_umask = S_IWGRP | S_IWOTH;
+ 
+ static inline int libc_error(int err)
+ {
+-    VFSCORE_SET_ERRNO(err);
++    errno = err;
+     return -1;
+ }
+ 
+@@ -159,7 +147,7 @@ int open(const char *pathname, int flags, ...)
+ 	out_fput:
+ 	fdrop(fp);
+ 	out_errno:
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	trace_vfs_open_err(error);
+ 	return -1;
+ }
+@@ -183,7 +171,7 @@ int openat(int dirfd, const char *pathname, int flags, ...)
+ 	struct vfscore_file *fp;
+ 	int error = fget(dirfd, &fp);
+ 	if (error) {
+-		VFSCORE_SET_ERRNO(error);
++		errno = error;
+ 		return -1;
+ 	}
+ 
+@@ -686,7 +674,7 @@ int ioctl(int fd, unsigned long int request, ...)
+ 
+ 	out_errno:
+ 	trace_vfs_ioctl_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -748,7 +736,7 @@ int __fxstat(int ver __unused, int fd, struct stat *st)
+ 
+ 	out_errno:
+ 	trace_vfs_fstat_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -776,7 +764,7 @@ int __fxstatat(int ver __unused, int dirfd, const char *pathname, struct stat *s
+ 	struct vfscore_file *fp;
+ 	int error = fget(dirfd, &fp);
+ 	if (error) {
+-		VFSCORE_SET_ERRNO(error);
++		errno = error;
+ 		return -1;
+ 	}
+ 
+@@ -854,7 +842,7 @@ DIR *opendir(const char *path)
+ 
+ 	dir = malloc(sizeof(*dir));
+ 	if (!dir) {
+-        	VFSCORE_SET_ERRNO(ENOMEM);
++		errno = ENOMEM;
+ 		goto out_err;
+ 	}
+ 
+@@ -866,7 +854,7 @@ DIR *opendir(const char *path)
+ 		goto out_free_dir;
+ 
+ 	if (!S_ISDIR(st.st_mode)) {
+-        	VFSCORE_SET_ERRNO(ENOTDIR);
++		errno = ENOTDIR;
+ 		goto out_free_dir;
+ 	}
+ 
+@@ -886,12 +874,12 @@ DIR *fdopendir(int fd)
+ 		return NULL;
+ 	}
+ 	if (!S_ISDIR(st.st_mode)) {
+-        	VFSCORE_SET_ERRNO(ENOTDIR);
++		errno = ENOTDIR;
+ 		return NULL;
+ 	}
+ 	dir = malloc(sizeof(*dir));
+ 	if (!dir) {
+-        	VFSCORE_SET_ERRNO(ENOMEM);
++		errno = ENOMEM;
+ 		return NULL;
+ 	}
+ 	dir->fd = fd;
+@@ -954,7 +942,7 @@ int scandir(const char *path, struct dirent ***res,
+ 		free(names);
+ 		return -1;
+ 	}
+-        VFSCORE_SET_ERRNO(old_errno);
++	errno = old_errno;
+ 
+ 	if (cmp)
+ 		qsort(names, cnt, sizeof *names, (int (*)(const void *, const void *))cmp);
+@@ -971,7 +959,7 @@ struct dirent *readdir(DIR *dir)
+ 	if (ret)
+ 		return ERR2PTR(-ret);
+ 
+-        VFSCORE_SET_ERRNO(0);
++	errno = 0;
+ 	return result;
+ }
+ 
+@@ -1081,7 +1069,7 @@ mkdir(const char *pathname, mode_t mode)
+ 	return 0;
+ 	out_errno:
+ 	trace_vfs_mkdir_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -1320,14 +1308,14 @@ int symlink(const char *oldpath, const char *newpath)
+ 
+ 	error = ENOENT;
+ 	if (oldpath == NULL || newpath == NULL) {
+-        	VFSCORE_SET_ERRNO(ENOENT);
++		errno = ENOENT;
+ 		trace_vfs_symlink_err(error);
+ 		return (-1);
+ 	}
+ 
+ 	error = sys_symlink(oldpath, newpath);
+ 	if (error) {
+-		VFSCORE_SET_ERRNO(error);
++		errno = error;
+ 		trace_vfs_symlink_err(error);
+ 		return (-1);
+ 	}
+@@ -1360,7 +1348,7 @@ int unlink(const char *pathname)
+ 	return 0;
+ 	out_errno:
+ 	trace_vfs_unlink_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -1388,7 +1376,7 @@ int __xstat(int ver __unused, const char *pathname, struct stat *st)
+ 
+ 	out_errno:
+ 	trace_vfs_stat_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -1397,7 +1385,7 @@ LFS64(__xstat);
+ int stat(const char *pathname, struct stat *st)
+ {
+ 	if (!pathname) {
+-        	VFSCORE_SET_ERRNO(EINVAL);
++		errno = EINVAL;
+ 		return -1;
+ 	}
+ 	return __xstat(1, pathname, st);
+@@ -1467,7 +1455,7 @@ int __statfs(const char *pathname, struct statfs *buf)
+ 	return 0;
+ 	out_errno:
+ 	trace_vfs_statfs_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ __weak_alias(__statfs, statfs);
+@@ -1498,7 +1486,7 @@ int __fstatfs(int fd, struct statfs *buf)
+ 
+ 	out_errno:
+ 	trace_vfs_fstatfs_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ __weak_alias(__fstatfs, fstatfs);
+@@ -1616,7 +1604,7 @@ int dup(int oldfd)
+ 	fdrop(fp);
+ 	out_errno:
+ 	trace_vfs_dup_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -1764,19 +1752,19 @@ int fcntl(int fd, int cmd, ...)
+ 		fp->f_flags |= O_CLOEXEC;
+ 		break;
+ 	case F_SETLK:
+-		flexos_gate(ukdebug, uk_pr_warn, FLEXOS_SHARED_LITERAL("fcntl(F_SETLK) stubbed\n"));
++		uk_pr_warn("fcntl(F_SETLK) stubbed\n");
+ 		break;
+ 	case F_GETLK:
+-		flexos_gate(ukdebug, uk_pr_warn, FLEXOS_SHARED_LITERAL("fcntl(F_GETLK) stubbed\n"));
++		uk_pr_warn("fcntl(F_GETLK) stubbed\n");
+ 		break;
+ 	case F_SETLKW:
+-		flexos_gate(ukdebug, uk_pr_warn, FLEXOS_SHARED_LITERAL("fcntl(F_SETLKW) stubbed\n"));
++		uk_pr_warn("fcntl(F_SETLKW) stubbed\n");
+ 		break;
+ 	case F_SETOWN:
+-		flexos_gate(ukdebug, uk_pr_warn, FLEXOS_SHARED_LITERAL("fcntl(F_SETOWN) stubbed\n"));
++		uk_pr_warn("fcntl(F_SETOWN) stubbed\n");
+ 		break;
+ 	default:
+-		flexos_gate(ukdebug, uk_pr_err, FLEXOS_SHARED_LITERAL("unsupported fcntl cmd 0x%x\n"), cmd);
++		uk_pr_err("unsupported fcntl cmd 0x%x\n", cmd);
+ 		error = EINVAL;
+ 	}
+ 
+@@ -1788,7 +1776,7 @@ int fcntl(int fd, int cmd, ...)
+ 
+ out_errno:
+ 	trace_vfs_fcntl_err(error);
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -1984,7 +1972,7 @@ UK_SYSCALL_DEFINE(ssize_t, readlink, const char *, pathname, char *, buf, size_t
+ 
+ 	return size;
+ 	out_errno:
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -2081,7 +2069,7 @@ UK_SYSCALL_DEFINE(int, futimesat, int, dirfd, const char*, pathname, const struc
+ 	return 0;
+ 
+ out_errno:
+-	VFSCORE_SET_ERRNO(error);
++	errno = error;
+ 	return -1;
+ }
+ 
+@@ -2099,7 +2087,7 @@ UK_SYSCALL_DEFINE(int, utimensat, int, dirfd, const char*, pathname, const struc
+ 
+ 	if (error) {
+ 		trace_vfs_utimensat_err(error);
+-		VFSCORE_SET_ERRNO(error);
++		errno = error;
+ 		return -1;
+ 	}
+ 
+@@ -2118,7 +2106,7 @@ int futimens(int fd, const struct timespec times[2])
+ 	int error = sys_futimens(fd, times);
+ 	if (error) {
+ 		trace_vfs_futimens_err(error);
+-        	VFSCORE_SET_ERRNO(error);
++		errno = error;
+ 		return -1;
+ 	}
+ 
+@@ -2360,7 +2348,7 @@ fs_noop(void)
+ int chroot(const char *path __unused)
+ {
+ 	WARN_STUBBED();
+-        VFSCORE_SET_ERRNO(ENOSYS);
++	errno = ENOSYS;
+ 	return -1;
+ }
+ 
+@@ -2375,4 +2363,9 @@ static void vfscore_init(void)
  	lookup_init();
  }
  
@@ -161,11 +932,365 @@ index a08c1ee..5dee0f0 100644
 +#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
  UK_CTOR_PRIO(vfscore_init, 1);
 +#endif
+diff --git a/lib/vfscore/mount.c b/lib/vfscore/mount.c
+index 8b20f95..0433fb1 100644
+--- a/lib/vfscore/mount.c
++++ b/lib/vfscore/mount.c
+@@ -52,7 +52,6 @@
+ #include <vfscore/prex.h>
+ #include <vfscore/dentry.h>
+ #include <vfscore/vnode.h>
+-#include <flexos/isolation.h>
+ 
+ /*
+  * List for VFS mount points.
+@@ -120,7 +119,7 @@ mount(const char *dev, const char *dir, const char *fsname, unsigned long flags,
+ 	struct vnode *vp = NULL;
+ 	int error;
+ 
+-	// flexos_gate(ukdebug, uk_pr_info, FLEXOS_SHARED_LITERAL("VFS: mounting %s at %s\n"), fsname, dir);
++	uk_pr_info("VFS: mounting %s at %s\n", fsname, dir);
+ 
+ 	if (!dir || *dir == '\0')
+ 		return ENOENT;
+@@ -149,16 +148,16 @@ mount(const char *dev, const char *dir, const char *fsname, unsigned long flags,
+ 	/* static mutex sys_mount_lock; */
+ 	/* SCOPE_LOCK(sys_mount_lock); */
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 	uk_list_for_each_entry(mp, &mount_list, mnt_list) {
+ 		if (!strcmp(mp->m_path, dir) ||
+ 		    (device && mp->m_dev == device)) {
+ 			error = EBUSY;  /* Already mounted */
+-			flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++			uk_mutex_unlock(&mount_lock);
+ 			goto err1;
+ 		}
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ 	/*
+ 	 * Create VFS mount entry.
+ 	 */
+@@ -206,7 +205,7 @@ mount(const char *dev, const char *dir, const char *fsname, unsigned long flags,
+ 	vp->v_flags = VROOT;
+ 	vp->v_mode = S_IFDIR | S_IRUSR | S_IWUSR | S_IXUSR;
+ 
+-	mp->m_root = dentry_alloc(NULL, vp, FLEXOS_SHARED_LITERAL("/"));
++	mp->m_root = dentry_alloc(NULL, vp, "/");
+ 	if (!mp->m_root) {
+ 		error = ENOMEM;
+ 		vput(vp);
+@@ -226,9 +225,9 @@ mount(const char *dev, const char *dir, const char *fsname, unsigned long flags,
+ 	/*
+ 	 * Insert to mount list
+ 	 */
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 	uk_list_add_tail(&mp->mnt_list, &mount_list);
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ 
+ 	return 0;   /* success */
+  err4:
+@@ -263,9 +262,9 @@ umount2(const char *path, int flags)
+ 	struct mount *mp, *tmp;
+ 	int error, pathlen;
+ 
+-	flexos_gate(ukdebug, uk_pr_info, FLEXOS_SHARED_LITERAL("VFS: unmounting %s\n"), path);
++	uk_pr_info("VFS: unmounting %s\n", path);
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 
+ 	pathlen = strlen(path);
+ 	if (pathlen >= MAXPATHLEN) {
+@@ -306,7 +305,7 @@ found:
+ 		device_close(mp->m_dev);
+ 	free(mp);
+  out:
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ 	return error;
+ }
+ 
+@@ -369,7 +368,7 @@ sys_pivot_root(const char *new_root, const char *put_old)
+ void sync(void)
+ {
+ 	struct mount *mp;
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 
+ 	/* Call each mounted file system. */
+ 	uk_list_for_each_entry(mp, &mount_list, mnt_list) {
+@@ -378,7 +377,7 @@ void sync(void)
+ #ifdef HAVE_BUFFERS
+ 	bio_sync();
+ #endif
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ }
+ 
+ /*
+@@ -426,7 +425,7 @@ vfs_findroot(const char *path, struct mount **mp, char **root)
+ 		return -1;
+ 
+ 	/* Find mount point from nearest path */
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 	uk_list_for_each_entry(tmp, &mount_list, mnt_list) {
+ 		len = count_match(path, tmp->m_path);
+ 		if (len > max_len) {
+@@ -434,7 +433,7 @@ vfs_findroot(const char *path, struct mount **mp, char **root)
+ 			m = tmp;
+ 		}
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ 	if (m == NULL)
+ 		return -1;
+ 	*root = (char *)(path + max_len);
+@@ -485,15 +484,15 @@ void
+ vfscore_mount_dump(void)
+ {
+ 	struct mount *mp;
+-	flexos_gate(uklock, uk_mutex_lock, &mount_lock);
++	uk_mutex_lock(&mount_lock);
+ 
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("vfscore_mount_dump\n"));
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("dev      count root\n"));
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("-------- ----- --------\n"));
++	uk_pr_debug("vfscore_mount_dump\n");
++	uk_pr_debug("dev      count root\n");
++	uk_pr_debug("-------- ----- --------\n");
+ 
+ 	uk_list_for_each_entry(mp, &mount_list, mnt_list) {
+-		flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("%8p %5d %s\n"), mp->m_dev, mp->m_count, mp->m_path);
++		uk_pr_debug("%8p %5d %s\n", mp->m_dev, mp->m_count, mp->m_path);
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &mount_lock);
++	uk_mutex_unlock(&mount_lock);
+ }
+ #endif
+diff --git a/lib/vfscore/pipe.c b/lib/vfscore/pipe.c
+index cae72a8..57d9b70 100644
+--- a/lib/vfscore/pipe.c
++++ b/lib/vfscore/pipe.c
+@@ -102,8 +102,8 @@ static struct pipe_buf *pipe_buf_alloc(int capacity)
+ 	pipe_buf->capacity = capacity;
+ 	pipe_buf->cons = 0;
+ 	pipe_buf->prod = 0;
+-	flexos_gate(uklock, uk_mutex_init,&pipe_buf->rdlock);
+-	flexos_gate(uklock, uk_mutex_init,&pipe_buf->wrlock);
++	uk_mutex_init(&pipe_buf->rdlock);
++	uk_mutex_init(&pipe_buf->wrlock);
+ 	flexos_gate(libuksched, uk_waitq_init, &pipe_buf->rdwq);
+ 	flexos_gate(libuksched, uk_waitq_init, &pipe_buf->wrwq);
+ 
+@@ -256,7 +256,7 @@ static int pipe_write(struct vnode *vnode,
+ 		return -EPIPE;
+ 	}
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &pipe_buf->wrlock);
++	uk_mutex_lock(&pipe_buf->wrlock);
+ 	while (data_available && uio_idx < buf->uio_iovcnt) {
+ 		struct iovec *iovec = &buf->uio_iov[uio_idx];
+ 		unsigned long off = 0;
+@@ -274,7 +274,7 @@ static int pipe_write(struct vnode *vnode,
+ 				} else {
+ 					/* Wait until data available */
+ 					while (!pipe_buf_can_write(pipe_buf)) {
+-						flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->wrlock);
++						uk_mutex_unlock(&pipe_buf->wrlock);
+ 						do {
+ 							struct uk_thread *__current;
+ 							unsigned long flags;
+@@ -285,7 +285,7 @@ static int pipe_write(struct vnode *vnode,
+ 								__current = uk_thread_current();
+ 								/* protect the list */
+ 								flags = ukplat_lcpu_save_irqf();
+-								flexos_gate(libuksched, uk_waitq_add, &pipe_buf->wrwq, __wait);
++								uk_waitq_add(&pipe_buf->wrwq, __wait);
+ 								flexos_gate(libuksched, uk_thread_set_wakeup_time, __current, 0);
+ 								flexos_gate(libuksched, clear_runnable, __current);
+ 								flexos_gate(libuksched, uk_sched_thread_blocked, __current);
+@@ -297,10 +297,10 @@ static int pipe_write(struct vnode *vnode,
+ 							flags = ukplat_lcpu_save_irqf();
+ 							/* need to wake up */
+ 							flexos_gate(libuksched, uk_thread_wake, __current);
+-							flexos_gate(libuksched, uk_waitq_remove, &pipe_buf->wrwq, __wait);
++							uk_waitq_remove(&pipe_buf->wrwq, __wait);
+ 							ukplat_lcpu_restore_irqf(flags);
+ 						} while (0);
+-						flexos_gate(uklock, uk_mutex_lock, &pipe_buf->wrlock);
++						uk_mutex_lock(&pipe_buf->wrlock);
+ 					}
+ 				}
+ 
+@@ -317,7 +317,7 @@ static int pipe_write(struct vnode *vnode,
+ 
+ 		uio_idx++;
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->wrlock);
++	uk_mutex_unlock(&pipe_buf->wrlock);
+ 
+ 	return 0;
+ }
+@@ -332,9 +332,9 @@ static int pipe_read(struct vnode *vnode,
+ 	bool data_available = true;
+ 	int uio_idx = 0;
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &pipe_buf->rdlock);
++	uk_mutex_lock(&pipe_buf->rdlock);
+ 	if (nonblocking && !pipe_buf_can_read(pipe_buf)) {
+-		flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->rdlock);
++		uk_mutex_unlock(&pipe_buf->rdlock);
+ 		return EAGAIN;
+ 	}
+ 
+@@ -355,7 +355,7 @@ static int pipe_read(struct vnode *vnode,
+ 				} else {
+ 					/* Wait until data available */
+ 					while (!pipe_buf_can_read(pipe_buf)) {
+-						flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->rdlock);
++						uk_mutex_unlock(&pipe_buf->rdlock);
+ 						do {
+ 							struct uk_thread *__current;
+ 							unsigned long flags;
+@@ -366,7 +366,7 @@ static int pipe_read(struct vnode *vnode,
+ 								__current = uk_thread_current();
+ 								/* protect the list */
+ 								flags = ukplat_lcpu_save_irqf();
+-								flexos_gate(libuksched, uk_waitq_add, &pipe_buf->rdwq, __wait);
++								uk_waitq_add(&pipe_buf->rdwq, __wait);
+ 								flexos_gate(libuksched, uk_thread_set_wakeup_time, __current, 0);
+ 								flexos_gate(libuksched, clear_runnable, __current);
+ 								flexos_gate(libuksched, uk_sched_thread_blocked, __current);
+@@ -378,10 +378,10 @@ static int pipe_read(struct vnode *vnode,
+ 							flags = ukplat_lcpu_save_irqf();
+ 							/* need to wake up */
+ 							flexos_gate(libuksched, uk_thread_wake, __current);
+-							flexos_gate(libuksched, uk_waitq_remove, &pipe_buf->rdwq, __wait);
++							uk_waitq_remove(&pipe_buf->rdwq, __wait);
+ 							ukplat_lcpu_restore_irqf(flags);
+ 						} while (0);
+-						flexos_gate(uklock, uk_mutex_lock, &pipe_buf->rdlock);
++						uk_mutex_lock(&pipe_buf->rdlock);
+ 					}
+ 				}
+ 
+@@ -398,7 +398,7 @@ static int pipe_read(struct vnode *vnode,
+ 
+ 		uio_idx++;
+ 	}
+-	flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->rdlock);
++	uk_mutex_unlock(&pipe_buf->rdlock);
+ 
+ 	return 0;
+ }
+@@ -440,9 +440,9 @@ static int pipe_ioctl(struct vnode *vnode,
+ 
+ 	switch (com) {
+ 	case FIONREAD:
+-		flexos_gate(uklock, uk_mutex_lock, &pipe_buf->rdlock);
++		uk_mutex_lock(&pipe_buf->rdlock);
+ 		*((int *) data) = pipe_buf_get_available(pipe_buf);
+-		flexos_gate(uklock, uk_mutex_unlock, &pipe_buf->rdlock);
++		uk_mutex_unlock(&pipe_buf->rdlock);
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -540,7 +540,7 @@ static int pipe_fd_alloc(struct pipe_file *pipe_file, int flags)
+ 		goto ERR_ALLOC_VNODE;
+ 	}
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &p_vnode->v_lock);
++	uk_mutex_unlock(&p_vnode->v_lock);
+ 
+ 	p_dentry = dentry_alloc(NULL, p_vnode, "/");
+ 	if (!p_dentry) {
 diff --git a/lib/vfscore/rootfs.c b/lib/vfscore/rootfs.c
-index 7bb6f79..bf08b6f 100644
+index 990ba53..bf08b6f 100644
 --- a/lib/vfscore/rootfs.c
 +++ b/lib/vfscore/rootfs.c
-@@ -112,4 +112,9 @@ static int vfscore_rootfs(void)
+@@ -45,7 +45,6 @@
+ #include <uk/cpio.h>
+ #include <string.h>
+ #endif
+-#include <flexos/isolation.h>
+ 
+ static const char *rootfs   = CONFIG_LIBVFSCORE_ROOTFS;
+ 
+@@ -72,53 +71,50 @@ UK_LIB_PARAM_STR(rootdev);
+ UK_LIB_PARAM_STR(rootopts);
+ UK_LIB_PARAM(rootflags, __u64);
+ 
+-#ifdef CONFIG_LIBINITRAMFS
+-static inline int _rootfs_initramfs()
++static int vfscore_rootfs(void)
+ {
+-	struct ukplat_memregion_desc memregion_desc __attribute__((flexos_whitelist));
++	/*
++	 * Initialization of the root filesystem '/'
++	 * NOTE: Any additional sub mount points (like '/dev' with devfs)
++	 * have to be mounted later.
++	 */
++	if (!rootfs || rootfs[0] == '\0') {
++		uk_pr_crit("Parameter 'vfs.rootfs' is invalid\n");
++		return -1;
++	}
++
++#ifdef CONFIG_LIBINITRAMFS
++	struct ukplat_memregion_desc memregion_desc;
+ 	int initrd;
+ 	enum cpio_error error;
+ 
+-	flexos_gate_r(libukplat, initrd, ukplat_memregion_find_initrd0, &memregion_desc);
++	initrd = ukplat_memregion_find_initrd0(&memregion_desc);
+ 	if (initrd != -1) {
+-		flexos_gate(libukplat, ukplat_memregion_get, initrd, &memregion_desc);
++		ukplat_memregion_get(initrd, &memregion_desc);
+ 		if (mount("", "/", "ramfs", 0, NULL) < 0)
+ 			return -CPIO_MOUNT_FAILED;
+ 
+ 		error =
+ 		    cpio_extract("/", memregion_desc.base, memregion_desc.len);
+ 		if (error < 0)
+-			flexos_gate(ukdebug, uk_pr_err, FLEXOS_SHARED_LITERAL("Failed to mount initrd\n"));
++			uk_pr_err("Failed to mount initrd\n");
+ 		return error;
+ 	}
+-	flexos_gate(ukdebug, uk_pr_err, FLEXOS_SHARED_LITERAL("Failed to mount initrd\n"));
++	uk_pr_err("Failed to mount initrd\n");
+ 	return -CPIO_NO_MEMREGION;
+-}
+-#endif
+-
+-__attribute__((libukboot_callback))
+-static int vfscore_rootfs(void)
+-{
+-	/*
+-	 * Initialization of the root filesystem '/'
+-	 * NOTE: Any additional sub mount points (like '/dev' with devfs)
+-	 * have to be mounted later.
+-	 */
+-	if (!rootfs || rootfs[0] == '\0') {
+-		flexos_gate(ukdebug, uk_pr_crit, FLEXOS_SHARED_LITERAL("Parameter 'vfs.rootfs' is invalid\n"));
+-		return -1;
+-	}
+-
+-#ifdef CONFIG_LIBINITRAMFS
+-	return _rootfs_initramfs();
+ #else
+-	flexos_gate(ukdebug, uk_pr_info, "Mount %s to /...\n", rootfs);
++	uk_pr_info("Mount %s to /...\n", rootfs);
+ 	if (mount(rootdev, "/", rootfs, rootflags, rootopts) != 0) {
+-		flexos_gate(ukdebug, uk_pr_crit, FLEXOS_SHARED_LITERAL("Failed to mount /: %d\n"), errno);
++		uk_pr_crit("Failed to mount /: %d\n", errno);
+ 		return -1;
+ 	}
+ #endif
  	return 0;
  }
  
@@ -175,3 +1300,151 @@ index 7bb6f79..bf08b6f 100644
 +#if !CONFIG_LIBFLEXOS_VMEPT || FLEXOS_VMEPT_COMP_ID == 1
  uk_rootfs_initcall_prio(vfscore_rootfs, 4);
 +#endif
+diff --git a/lib/vfscore/stdio.c b/lib/vfscore/stdio.c
+index 519e247..459efa2 100644
+--- a/lib/vfscore/stdio.c
++++ b/lib/vfscore/stdio.c
+@@ -41,12 +41,10 @@
+ #include <vfscore/uio.h>
+ #include <vfscore/vnode.h>
+ #include <vfscore/mount.h>
+-#include <flexos/isolation.h>
+ 
+ static int __write_fn(void *dst __unused, void *src, size_t *cnt)
+ {
+-	int ret;
+-	flexos_gate_r(libukplat, ret, ukplat_coutk, src, *cnt);
++	int ret = ukplat_coutk(src, *cnt);
+ 
+ 	if (ret < 0)
+ 		/* TODO: remove -1 when vfscore switches to negative
+@@ -222,7 +220,7 @@ void init_stdio(void)
+ 	UK_ASSERT(fd == 0);
+ 	vfscore_install_fd(0, &stdio_file);
+ 	if (dup2(0, 1) != 1)
+-		flexos_gate(ukdebug, uk_pr_err, FLEXOS_SHARED_LITERAL("failed to dup to stdin\n"));
++		uk_pr_err("failed to dup to stdin\n");
+ 	if (dup2(0, 2) != 2)
+-		flexos_gate(ukdebug, uk_pr_err, FLEXOS_SHARED_LITERAL("failed to dup to stderr\n"));
++		uk_pr_err("failed to dup to stderr\n");
+ }
+diff --git a/lib/vfscore/syscalls.c b/lib/vfscore/syscalls.c
+index 66a2792..735cdc7 100644
+--- a/lib/vfscore/syscalls.c
++++ b/lib/vfscore/syscalls.c
+@@ -214,7 +214,7 @@ sys_open(char *path, int flags, mode_t mode, struct vfscore_file **fpp)
+ 	fp->f_dentry = dp;
+ 	dp = NULL;
+ 
+-	flexos_gate(uklock, uk_mutex_init, &fp->f_lock);
++	uk_mutex_init(&fp->f_lock);
+ 
+ 	error = VOP_OPEN(vp, fp);
+ 	if (error) {
+diff --git a/lib/vfscore/vnode.c b/lib/vfscore/vnode.c
+index 8e60011..38a5b19 100644
+--- a/lib/vfscore/vnode.c
++++ b/lib/vfscore/vnode.c
+@@ -89,16 +89,8 @@ static struct uk_list_head vnode_table[VNODE_BUCKETS];
+  * lock this global lock to access internal data.
+  */
+ static struct uk_mutex vnode_lock __section(".data_shared") = UK_MUTEX_INITIALIZER(vnode_lock);
+-
+-static inline void VNODE_LOCK()
+-{
+-	flexos_gate(uklock, uk_mutex_lock, &vnode_lock);
+-}
+-
+-static inline void VNODE_UNLOCK()
+-{
+-	flexos_gate(uklock, uk_mutex_unlock, &vnode_lock);
+-}
++#define VNODE_LOCK()	uk_mutex_lock(&vnode_lock)
++#define VNODE_UNLOCK()	uk_mutex_unlock(&vnode_lock)
+ 
+ /* TODO: implement mutex_owned */
+ #define VNODE_OWNED()	(1)
+@@ -129,7 +121,7 @@ vn_lookup(struct mount *mp, uint64_t ino)
+ 	uk_list_for_each_entry(vp, &vnode_table[vn_hash(mp, ino)], v_link) {
+ 		if (vp->v_mount == mp && vp->v_ino == ino) {
+ 			vp->v_refcnt++;
+-			flexos_gate(uklock, uk_mutex_lock, &vp->v_lock);
++			uk_mutex_lock(&vp->v_lock);
+ 			return vp;
+ 		}
+ 	}
+@@ -159,7 +151,7 @@ vn_lock(struct vnode *vp)
+ 	UK_ASSERT(vp);
+ 	UK_ASSERT(vp->v_refcnt > 0);
+ 
+-	flexos_gate(uklock, uk_mutex_lock, &vp->v_lock);
++	uk_mutex_lock(&vp->v_lock);
+ 	DPRINTF(VFSDB_VNODE, ("vn_lock:   %s\n", vn_path(vp)));
+ }
+ 
+@@ -172,7 +164,7 @@ vn_unlock(struct vnode *vp)
+ 	UK_ASSERT(vp);
+ 	UK_ASSERT(vp->v_refcnt >= 0);
+ 
+-	flexos_gate(uklock, uk_mutex_unlock, &vp->v_lock);
++	uk_mutex_unlock(&vp->v_lock);
+ 	DPRINTF(VFSDB_VNODE, ("vn_lock:   %s\n", vn_path(vp)));
+ }
+ 
+@@ -212,7 +204,7 @@ vfscore_vget(struct mount *mp, uint64_t ino, struct vnode **vpp)
+ 	vp->v_mount = mp;
+ 	vp->v_refcnt = 1;
+ 	vp->v_op = mp->m_op->vfs_vnops;
+-	flexos_gate(uklock, uk_mutex_init,&vp->v_lock);
++	uk_mutex_init(&vp->v_lock);
+ 	/*
+ 	 * Request to allocate fs specific data for vnode.
+ 	 */
+@@ -222,7 +214,7 @@ vfscore_vget(struct mount *mp, uint64_t ino, struct vnode **vpp)
+ 		return 0;
+ 	}
+ 	vfs_busy(vp->v_mount);
+-	flexos_gate(uklock, uk_mutex_lock, &vp->v_lock);
++	uk_mutex_lock(&vp->v_lock);
+ 
+ 	uk_list_add(&vp->v_link, &vnode_table[vn_hash(mp, ino)]);
+ 	VNODE_UNLOCK();
+@@ -258,7 +250,7 @@ vput(struct vnode *vp)
+ 	if (vp->v_op->vop_inactive)
+ 		VOP_INACTIVE(vp);
+ 	vfs_unbusy(vp->v_mount);
+-	flexos_gate(uklock, uk_mutex_unlock, &vp->v_lock);
++	uk_mutex_unlock(&vp->v_lock);
+ 	flexos_free_whitelist(vp);
+ }
+ 
+@@ -464,16 +456,16 @@ vnode_dump(void)
+ 
+ 	VNODE_LOCK();
+ 
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("Dump vnode\n"));
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL(" vnode            mount            type  refcnt path\n"));
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL(" ---------------- ---------------- ----- ------ ------------------------------\n"));
++	uk_pr_debug("Dump vnode\n");
++	uk_pr_debug(" vnode            mount            type  refcnt path\n");
++	uk_pr_debug(" ---------------- ---------------- ----- ------ ------------------------------\n");
+ 
+ 	for (i = 0; i < VNODE_BUCKETS; i++) {
+ 		uk_list_for_each_entry(vp, &vnode_table[i], v_link) {
+ 			mp = vp->v_mount;
+ 
+ 
+-			flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL(" %016lx %016lx %s %6d %s%s\n"),
++			uk_pr_debug(" %016lx %016lx %s %6d %s%s\n",
+ 				    (unsigned long) vp,
+ 				    (unsigned long) mp, type[vp->v_type],
+ 				    vp->v_refcnt,
+@@ -481,7 +473,7 @@ vnode_dump(void)
+ 				    vn_path(vp));
+ 		}
+ 	}
+-	flexos_gate(ukdebug, uk_pr_debug, FLEXOS_SHARED_LITERAL("\n"));
++	uk_pr_debug("\n");
+ 	VNODE_UNLOCK();
+ }
+ #endif
