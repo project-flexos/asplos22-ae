@@ -22,7 +22,7 @@ WORKDIR /root
 
 # build flexos with 3 compartments (vfscore+ramfs/uktime/rest)
 RUN kraftcleanup
-RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
+RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 COPY docker-data/sqlite-flexos-mpk3.config /root/.unikraft/apps/sqlite/.config
 COPY docker-data/sqlite.cpio /root/.unikraft/apps/sqlite/
 COPY docker-data/kraft.yaml.mpk3 /root/.unikraft/apps/sqlite/kraft.yaml
@@ -38,7 +38,7 @@ COPY docker-data/sqlite-flexos-ept2.config /root/.unikraft/apps/sqlite-ept2/.con
 COPY docker-data/kraft.yaml.ept2 /root/.unikraft/apps/sqlite-ept2/kraft.yaml
 COPY docker-data/flexos-ept2.diff /root/.unikraft/apps/sqlite-ept2/
 COPY docker-data/flexos-ept2.diff.2 /root/.unikraft/apps/sqlite-ept2/
-RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0 && \
+RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a && \
 	git apply /root/.unikraft/apps/sqlite-ept2/flexos-ept2.diff.2
 # no --no-progress here
 RUN cd /root/.unikraft/apps/sqlite-ept2 && git apply flexos-ept2.diff && \
@@ -47,7 +47,7 @@ COPY docker-data/kvmflexosept2-start.sh /root/.unikraft/apps/sqlite-ept2/kvm-sta
 
 # build flexos with no compartments
 RUN kraftcleanup
-RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
+RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 RUN mv /root/.unikraft/apps/sqlite /root/.unikraft/apps/sqlite-fcalls
 COPY docker-data/sqlite-flexos-fcalls.config /root/.unikraft/apps/sqlite-fcalls/.config
 COPY docker-data/sqlite.cpio /root/.unikraft/apps/sqlite-fcalls/
