@@ -7,6 +7,10 @@
 
 apt install -y bc
 
+mkdir -p /out/results
+final=/out/results/iperf.dat
+rm $final && touch $final
+
 tmp=$(mktemp)
 touch $tmp
 
@@ -45,9 +49,11 @@ parse_output() {
   fi
 }
 
+
 output_avg() {
   avg=$(echo "scale=3; $total / $runs" | bc -l )
   echo -e "AVERAGE = ${avg}s (${total}/${runs})" >> $tmp
+  echo "$1 $2 $avg" >> $final
   total=0
   runs=0
 }
@@ -58,7 +64,7 @@ benchmark_process() {
     script .out -c "./process-start.sh"
     parse_output $j
   done
-  output_avg
+  output_avg $2 $3
 }
 
 benchmark_linuxu() {
@@ -67,7 +73,7 @@ benchmark_linuxu() {
     script .out -c "./linuxu-start.sh"
     parse_output $j
   done
-  output_avg
+  output_avg $2 $3
 }
 
 benchmark_kvm() {
@@ -81,59 +87,63 @@ benchmark_kvm() {
     wait
     parse_output $j
   done
-  output_avg
+  output_avg $2 $3
 }
 
 # ---------
 # BENCHMARK
 # ---------
 
-# Linux userland
-
-pushd linux-userland
-benchmark_process "linux-userland"
-popd
-
 # Unikraft 0.5
 
 pushd unikraft-mainline/apps
 pushd app-sqlite-kvm
-benchmark_kvm "unikraft-mainline"
+benchmark_kvm "unikraft-mainline" 1 "\"NONE\""
 popd
 pushd app-sqlite-linuxu
-benchmark_linuxu "unikraft-mainline"
+benchmark_linuxu "unikraft-mainline" 2 "\"NONE\""
 popd
 popd
 
 # FlexOS NONE
 
 pushd flexos/apps/sqlite-fcalls
-benchmark_kvm "flexos-nompk"
+benchmark_kvm "flexos-nompk" 4 "\"NONE\""
 popd
 
 # FlexOS MPK 3 COMP
 
 pushd flexos/apps/sqlite-mpk3
-benchmark_kvm "flexos-mpk3"
+benchmark_kvm "flexos-mpk3" 5 "\"MPK3\""
 popd
 
 # FlexOS EPT 2 COMP
 
 pushd flexos/apps/sqlite-ept2
-benchmark_kvm "flexos-ept2"
+benchmark_kvm "flexos-ept2" 6 "\"EPT2\""
 popd
+
+# Linux userland
+
+pushd linux-userland
+benchmark_process "linux-userland" 8 "\"PT2\""
+popd
+
+# SeL4
+
+# TODO
 
 # CubicleOS NO MPK
 
 pushd cubicleos/CubicleOS/CubicleOS/app-sqlite
-benchmark_linuxu "cubicleos-nompk"
+benchmark_linuxu "cubicleos-nompk" 12 "\"NONE\""
 popd
 
 # CubicleOS MPK 3 COMP
 
 pushd cubicleos/CubicleOS/CubicleOS/kernel
 # pre-configured for the 3-compartment scenario
-benchmark_linuxu "cubicleos-mpk3"
+benchmark_linuxu "cubicleos-mpk3" 13 "\"MPK3\""
 popd
 
 cat $tmp

@@ -142,11 +142,13 @@ RUN gcc main.c -lsqlite3 -O2 -o ./sqlite-benchmark
 ##############
 # Genode (KVM) 3 compartments
 
-ADD https://www.doc.ic.ac.uk/~vsartako/asplos/genode.tar.gz /
-ADD https://www.doc.ic.ac.uk/~vsartako/asplos/tch.tar.xz  /
-RUN tar -xf /genode.tar.gz
-RUN tar -xf /tch.tar.xz
-COPY docker-data/main.c /
+RUN mkdir -p /root/genode
+ADD https://www.doc.ic.ac.uk/~vsartako/asplos/genode.tar.gz /root/genode
+ADD https://www.doc.ic.ac.uk/~vsartako/asplos/tch.tar.xz  /root/genode
+WORKDIR /root/genode
+RUN tar -xf genode.tar.gz
+RUN tar -xf tch.tar.xz
+COPY docker-data/main.c .
 
 ##############
 # Finish
