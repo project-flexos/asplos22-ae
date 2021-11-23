@@ -13,7 +13,7 @@ trap "cleanup" EXIT
 
 /root/qemu-guest \
 	-k /root/flexos/apps/sqlite-fcalls/build/sqlite_kvm-x86_64 \
-	-m 3000 -a "-mmap 0 database.db" -i /root/flexos/apps/sqlite-fcalls/sqlite.cpio
+	-m 1000 -a "-mmap 0 database.db" -i /root/flexos/apps/sqlite-fcalls/sqlite.cpio
 
 # stop server
 pkill qemu-system-x86
