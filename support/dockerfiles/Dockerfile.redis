@@ -1,4 +1,4 @@
-FROM ghcr.io/ukflexos/flexos-base:latest
+FROM ghcr.io/project-flexos/flexos-base:latest
 
 #
 # Cache kraft build
