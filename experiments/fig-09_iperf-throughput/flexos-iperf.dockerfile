@@ -24,7 +24,7 @@ WORKDIR /root/.unikraft/apps
 
 # build flexos with 2 mpk compartments (iperf/rest) and private stacks
 RUN kraftcleanup
-RUN cd /root/.unikraft/unikraft && git checkout e5bd1a9d1bf343542a1b2b8f6c626aa6c9baae74
+RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 COPY docker-data/iperf-flexos-mpk2.config /root/.unikraft/apps/iperf/.config
 RUN cd iperf && make prepare && kraft -v build --no-progress --fast --compartmentalize
@@ -34,7 +34,7 @@ RUN mv iperf iperf-mpk2-isolstack
 
 # build flexos with 2 mpk compartments (iperf/rest) and shared stacks
 RUN kraftcleanup
-RUN cd /root/.unikraft/unikraft && git checkout e5bd1a9d1bf343542a1b2b8f6c626aa6c9baae74
+RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 RUN rm -rf /root/.unikraft/apps/iperf && cp -r iperf-mpk2-isolstack iperf-mpk2-noisolstack
 RUN sed -i "s/CONFIG_LIBFLEXOS_GATE_INTELPKU_PRIVATE_STACKS=y/# CONFIG_LIBFLEXOS_GATE_INTELPKU_PRIVATE_STACKS is not set/g" \
@@ -50,7 +50,7 @@ RUN cd iperf-mpk2-noisolstack && /root/build-images.sh && rm -rf build/
 # build flexos with 2 ept compartments (iperf/rest)
 RUN kraftcleanup
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
-RUN cd /root/.unikraft/unikraft && git checkout e5bd1a9d1bf343542a1b2b8f6c626aa6c9baae74
+RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
 COPY docker-data/iperf-ept2.patch /root/iperf-ept2.patch
 RUN cd /root/.unikraft/unikraft && git apply /root/iperf-ept2.patch
 COPY docker-data/iperf-flexos-ept2.config iperf/.config
@@ -61,7 +61,7 @@ RUN mv iperf iperf-ept2
 
 # build flexos with no compartments
 RUN kraftcleanup
-RUN cd /root/.unikraft/unikraft && git checkout e5bd1a9d1bf343542a1b2b8f6c626aa6c9baae74
+RUN cd /root/.unikraft/unikraft && git checkout f1b961c044947c9d3fe679cac9832e143fee0ea0
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 RUN mv /root/.unikraft/apps/iperf /root/.unikraft/apps/iperf-fcalls
 COPY docker-data/iperf-flexos-fcalls.config /root/.unikraft/apps/iperf-fcalls/.config
