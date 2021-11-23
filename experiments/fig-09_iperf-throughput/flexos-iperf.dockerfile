@@ -15,6 +15,8 @@ FROM ghcr.io/project-flexos/flexos-ae-base:latest
 ARG UK_KRAFT_GITHUB_TOKEN=
 ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
 
+COPY docker-data/build-images.sh /root/
+
 ##############
 # FlexOS (KVM)
 
