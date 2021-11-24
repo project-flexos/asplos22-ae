@@ -26,9 +26,9 @@ WORKDIR /root/.unikraft/apps
 RUN kraftcleanup
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
-COPY docker-data/iperf-flexos-mpk2.config /root/.unikraft/apps/iperf/.config
+COPY docker-data/configs/iperf-flexos-mpk2.config /root/.unikraft/apps/iperf/.config
 RUN cd iperf && make prepare && kraft -v build --no-progress --fast --compartmentalize
-COPY docker-data/kvmflexos-start.sh /root/.unikraft/apps/iperf/kvm-start.sh
+COPY docker-data/start-scripts/kvmflexos-start.sh /root/.unikraft/apps/iperf/kvm-start.sh
 RUN cd iperf && /root/build-images.sh && rm -rf build/
 RUN mv iperf iperf-mpk2-isolstack
 
@@ -53,10 +53,10 @@ RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/l
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 COPY docker-data/iperf-ept2.patch /root/iperf-ept2.patch
 RUN cd /root/.unikraft/unikraft && git apply /root/iperf-ept2.patch
-COPY docker-data/iperf-flexos-ept2.config iperf/.config
-COPY docker-data/kraft.yaml.ept2 iperf/kraft.yaml
+COPY docker-data/configs/iperf-flexos-ept2.config iperf/.config
+COPY docker-data/configs/kraft.yaml.ept2 iperf/kraft.yaml
 RUN cd iperf && /root/build-images.sh && rm -rf build/
-COPY docker-data/kvmflexosept2-start.sh iperf/kvm-start.sh
+COPY docker-data/start-scripts/kvmflexosept2-start.sh iperf/kvm-start.sh
 RUN mv iperf iperf-ept2
 
 # build flexos with no compartments
@@ -64,12 +64,12 @@ RUN kraftcleanup
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 RUN mv /root/.unikraft/apps/iperf /root/.unikraft/apps/iperf-fcalls
-COPY docker-data/iperf-flexos-fcalls.config /root/.unikraft/apps/iperf-fcalls/.config
+COPY docker-data/configs/iperf-flexos-fcalls.config /root/.unikraft/apps/iperf-fcalls/.config
 COPY docker-data/img.cpio /root/.unikraft/apps/iperf-fcalls/
-COPY docker-data/kraft.yaml.fcalls /root/.unikraft/apps/iperf-fcalls/kraft.yaml
+COPY docker-data/configs/kraft.yaml.fcalls /root/.unikraft/apps/iperf-fcalls/kraft.yaml
 RUN cd iperf-fcalls && make prepare && kraft -v build --no-progress --fast --compartmentalize
 RUN cd iperf-fcalls && /root/build-images.sh && rm -rf build/
-COPY docker-data/kvmflexos-start.sh /root/.unikraft/apps/iperf-fcalls/kvm-start.sh
+COPY docker-data/start-scripts/kvmflexos-start.sh /root/.unikraft/apps/iperf-fcalls/kvm-start.sh
 
 RUN mv /root/.unikraft /root/flexos
 
@@ -101,7 +101,7 @@ WORKDIR /root/unikraft-mainline/apps
 RUN cp -r /root/flexos/apps/iperf-fcalls/ app-iperf
 # use unikraft baseline branch
 RUN cd app-iperf && git clean -xdf && git checkout . && git checkout 7cda87c1b39398b7338a01bb59bdefdcc03efd73
-COPY docker-data/iperf-unikraft.config app-iperf/.config
+COPY docker-data/configs/iperf-unikraft.config app-iperf/.config
 RUN cd app-iperf && /root/build-images.sh && rm -rf build/
 RUN cp /root/flexos/apps/iperf-fcalls/kvm-start.sh app-iperf/kvm-start.sh
 
