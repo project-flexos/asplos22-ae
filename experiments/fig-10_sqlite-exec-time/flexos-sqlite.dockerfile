@@ -144,15 +144,17 @@ RUN gcc main.c -lsqlite3 -O2 -o ./sqlite-benchmark
 
 ADD https://www.doc.ic.ac.uk/~vsartako/asplos/genode.tar.gz /root
 ADD https://www.doc.ic.ac.uk/~vsartako/asplos/tch.tar.xz  /root
-RUN cd / && tar -xf /root/genode/tch.tar.xz
-RUN cd /root && tar -xf genode.tar.gz
-WORKDIR /root/genode
+RUN cd / && tar -xf /root/tch.tar.xz
+RUN cd / && tar -xf /root/genode.tar.gz
+WORKDIR /genode
 RUN mv /root/genode.tar.gz .
 RUN mv /root/tch.tar.xz .
 COPY docker-data/main.c repos/sqlite/src/sqlite/main.c
 RUN sed -i '/<arg value="--size" \/>/d' repos/sqlite/run/sqlite.run
 RUN sed -i '/<arg value="100" \/>/d' repos/sqlite/run/sqlite.run
 RUN sed -i '/<arg value="--stats" \/>/d' repos/sqlite/run/sqlite.run
+# this triggers warnings that skew results
+RUN sed -i 's/osFchown(fd,uid,gid)/0/g' /genode/repos/sqlite/src/sqlite/sqlite3.c
 RUN ./tool/create_builddir x86_64
 COPY docker-data/configs/genode.conf build/x86_64/etc/build.conf
 
