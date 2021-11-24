@@ -13,3 +13,15 @@ Time to perform 5000 INSERT queries with SQLite on Unikraft, FlexOS, Linux, SeL4
 axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two
 compartments with EPT, PT2/3: two/three compartments with page-table-based
 isolation).
+
+## Troubleshooting
+
+- **Problem**: The run script hangs while benchmarking CubicleOS, with messages
+  such as
+   ```
+   cannot allocate memory for SQLITE
+   ```
+
+  **Solution**: This is a known CubicleOS bug. In this case, simply terminate the
+  current run with `CTRL-C`; the results for this run will not be considered in the
+  final average.

@@ -45,4 +45,6 @@ clean:
 
 .PHONY: properclean
 properclean:
+	$(DOCKER) image rm flexos-sqlite
+	$(DOCKER) image prune
 	rm -rf results $(PLOT)
