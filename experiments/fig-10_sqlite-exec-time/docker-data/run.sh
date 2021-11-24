@@ -141,9 +141,7 @@ popd
 # SeL4
 
 # TODO
-pushd genode
 benchmark_genode "genode-sel4" 10 "PT3"
-popd
 
 # CubicleOS NO MPK
 
