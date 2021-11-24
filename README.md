@@ -168,14 +168,19 @@ our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
 applications themselves. You can find all other repositories hosted under the
 [same GitHub organization](https://github.com/unikraft/eurosys21-artifacts).
 The FlexOS core kernel repository, in particular, lives in [this
-repository](https://github.com/project-flexos/unikraft).
-
-We hope that this code will foster further research! You can find instructions
-on porting applications and building your own FlexOS images in the core kernel
-repository's
+repository](https://github.com/project-flexos/unikraft).  You can find
+instructions on porting applications and building your own FlexOS images in the
+core kernel repository's
 [`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
 
-## 7. Acknowledgements
+## 7. Disclaimer
+
+This artifact is the first release of a research proof-of-concept for flexible
+OS isolation. Like any research prototype, it contains hacks, bugs, and TODOs. We
+do not recommend using it in production, but whish that it will foster further
+research!
+
+## 8. Acknowledgements
 
 This artifact would not exist without the hard work of the Unikraft community.
 We encourage interested researchers to visit the project's [web

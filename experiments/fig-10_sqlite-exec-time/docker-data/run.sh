@@ -38,7 +38,8 @@ header() {
 
 parse_output() {
   # remove everything before TOTAL in case one of the images uses uk_pr_* functions
-  res=`cat .out | sed "s/.*TOTAL/TOTAL/g" | awk -e '$0 ~ /TOTAL.../ {print $2}' | sed 's/[a-zA-Z]//g' | tr -d '\r'`
+  res=`cat .out | tr -dc '[:alnum:]\n\r .' | sed "s/.*TOTAL/TOTAL/g" \
+	  | awk -e '$0 ~ /TOTAL.../ {print $2}' | sed 's/[a-zA-Z]//g' | tr -d '\r'`
   if [ -z "$res" ]
   then
     echo -e "${1}\tERROR" >> $tmp
@@ -140,7 +141,6 @@ popd
 
 # SeL4
 
-# TODO
 benchmark_genode "genode-sel4" 10 "PT3"
 
 # CubicleOS NO MPK
