@@ -8,7 +8,7 @@
 apt install -y bc
 
 mkdir -p /out/results
-final=/out/results/iperf.dat
+final=/out/results/sqlite.dat
 rm $final && touch $final
 
 tmp=$(mktemp)
