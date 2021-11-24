@@ -23,6 +23,7 @@ EXPS    ?= fig-06_nginx-redis-perm \
 IMAGES  ?= flexos-base \
            nginx \
            redis \
+           plot \
            flexos-ae-base
 TARGETS ?= prepare \
            run \
