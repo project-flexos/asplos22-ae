@@ -1,0 +1,372 @@
+digraph g {
+    ratio=0.6;
+    node [style="filled,setlinewidth(3)", shape=circle, color=black, fillcolor=white]
+    edge [arrowsize=1.8, len=.75]
+    /* everything in same compartment, no hardening */
+    R1N1S1L1 [label="", tooltip="R1 N1 S1 L1", fillcolor="#000000", shape=doublecircle]
+
+    /* redis+newlib+uksched in 1 compartment, lwip in the other ------------- */
+    R1N1S1L2 [label="", tooltip="R1 N1 S1 L2", fillcolor="#202020"]
+    /* + hardening on 1 component */
+    R1HN1S1L2 [label="", tooltip="R1H N1 S1 L2", fillcolor="#ababab"]
+    R1N1HS1L2 [label="", tooltip="R1 N1H S1 L2", fillcolor="#d2d2d2"]
+    R1N1S1HL2 [label="", tooltip="R1 N1 S1H L2", fillcolor="#5c5c5c"]
+    R1N1S1L2H [label="", tooltip="R1 N1 S1 L2H", fillcolor="#747474"]
+    /* hardening on two components */
+    R1HN1HS1L2 [label="", tooltip="R1H N1H S1 L2", fillcolor="#ebebeb"]
+    R1HN1S1HL2 [label="", tooltip="R1H N1 S1H L2", fillcolor="#b1b1b1"]
+    R1HN1S1L2H [label="", tooltip="R1H N1 S1 L2H", fillcolor="#bababa"]
+    R1N1HS1HL2 [label="", tooltip="R1 N1H S1H L2", fillcolor="#d2d2d2"]
+    R1N1HS1L2H [label="", tooltip="R1 N1H S1 L2H", fillcolor="#d9d9d9"]
+    R1N1S1HL2H [label="", tooltip="R1 N1 S1H L2H", fillcolor="#7e7e7e"]
+    /* hardening on 3 components */
+    R1HN1HS1HL2 [label="", tooltip="R1H N1H S1H L2", fillcolor="#ebebeb"]
+    R1HN1S1HL2H [label="", tooltip="R1H N1 S1H L2H", fillcolor="#bcbcbc", color="red", shape=star]
+    R1HN1HS1L2H [label="", tooltip="R1H N1H S1 L2H", fillcolor="#efefef"]
+    R1N1HS1HL2H [label="", tooltip="R1 N1H S1H L2H", fillcolor="#dddddd"]
+    /* hardening everywhere */
+    R1HN1HS1HL2H [label="", tooltip="R1H N1H S1H L2H", fillcolor="#f1f1f1"]
+
+    /* redis+newlib+lwip in 1 compartment, uksched in the other ------------- */
+    R1N1S2L1 [label="", tooltip="R1 N1 S2 L1", fillcolor="#8a8a8a"]
+    /* + hardening on 1 component */
+    R1HN1S2L1 [label="", tooltip="R1H N1 S2 L1", fillcolor="#cecece"]
+    R1N1HS2L1 [label="", tooltip="R1 N1H S2 L1", fillcolor="#e6e6e6"]
+    R1N1S2HL1 [label="", tooltip="R1 N1 S2H L1", fillcolor="#ababab"]
+    R1N1S2L1H [label="", tooltip="R1 N1 S2 L1H", fillcolor="#aeaeae"]
+    /* hardening on two components */
+    R1HN1HS2L1 [label="", tooltip="R1H N1H S2 L1", fillcolor="#f8f8f8"]
+    R1HN1S2HL1 [label="", tooltip="R1H N1 S2H L1", fillcolor="#d4d4d4"]
+    R1HN1S2L1H [label="", tooltip="R1H N1 S2 L1H", fillcolor="#eeeeee"]
+    R1N1HS2HL1 [label="", tooltip="R1 N1H S2H L1", fillcolor="#e8e8e8"]
+    R1N1HS2L1H [label="", tooltip="R1 N1H S2 L1H", fillcolor="#e9e9e9"]
+    R1N1S2HL1H [label="", tooltip="R1 N1 S2H L1H", fillcolor="#b0b0b0", color="red", shape=star]
+    /* hardening on 3 components */
+    R1HN1HS2HL1 [label="", tooltip="R1H N1H S2H L1", fillcolor="#f9f9f9"]
+    R1HN1S2HL1H [label="", tooltip="R1H N1 S2H L1H", fillcolor="#d9d9d9"]
+    R1HN1HS2L1H [label="", tooltip="R1H N1H S2 L1H", fillcolor="#f9f9f9"]
+    R1N1HS2HL1H [label="", tooltip="R1 N1H S2H L1H", fillcolor="#eeeeee"]
+    /* hardening everywhere */
+    R1HN1HS2HL1H [label="", tooltip="R1H N1H S2H L1H", fillcolor="#fbfbfb"]
+
+    /* redis+newlib in 1 compartment, uksched+lwip in the other ------------- */
+    R2N2S1L1 [label="", tooltip="R2 N2 S1 L1", fillcolor="#949494"]
+    /* + hardening on 1 component */
+    R2HN2S1L1 [label="", tooltip="R2H N2 S1 L1", fillcolor="#d2d2d2"]
+    R2N2HS1L1 [label="", tooltip="R2 N2H S1 L1", fillcolor="#e8e8e8"]
+    R2N2S1HL1 [label="", tooltip="R2 N2 S1H L1", fillcolor="#acacac"]
+    R2N2S1L1H [label="", tooltip="R2 N2 S1 L1H", fillcolor="#b1b1b1"]
+    /* hardening on two components */
+    R2HN2HS1L1 [label="", tooltip="R2H N2H S1 L1", fillcolor="#fafafa"]
+    R2HN2S1HL1 [label="", tooltip="R2H N2 S1H L1", fillcolor="#d4d4d4"]
+    R2HN2S1L1H [label="", tooltip="R2H N2 S1 L1H", fillcolor="#dadada"]
+    R2N2HS1HL1 [label="", tooltip="R2 N2H S1H L1", fillcolor="#ebebeb"]
+    R2N2HS1L1H [label="", tooltip="R2 N2H S1 L1H", fillcolor="#ececec"]
+    R2N2S1HL1H [label="", tooltip="R2 N2 S1H L1H", shape=star, color="red", fillcolor="#b6b6b6"]
+    /* hardening on 3 components */
+    R2HN2HS1HL1 [label="", tooltip="R2H N2H S1H L1", fillcolor="#f9f9f9"]
+    R2HN2S1HL1H [label="", tooltip="R2H N2 S1H L1H", fillcolor="#dbdbdb"]
+    R2HN2HS1L1H [label="", tooltip="R2H N2H S1 L1H", fillcolor="#fbfbfb"]
+    R2N2HS1HL1H [label="", tooltip="R2 N2H S1H L1H", fillcolor="#ededed"]
+    /* hardening everywhere */
+    R2HN2HS1HL1H [label="", tooltip="R2H N2H S1H L1H", fillcolor="#ffffff"]
+
+    /* everything in 1 compartment ------------------------------------------ */
+    /* + hardening on 1 component */
+    R1HN1S1L1 [label="", tooltip="R1H N1 S1 L1", fillcolor="#a0a0a0"]
+    R1N1HS1L1 [label="", tooltip="R1 N1H S1 L1", fillcolor="#cfcfcf"]
+    R1N1S1HL1 [label="", tooltip="R1 N1 S1H L1", fillcolor="#4c4c4c"]
+    R1N1S1L1H [label="", tooltip="R1 N1 S1 L1H", fillcolor="#676767"]
+    /* hardening on two components */
+    R1HN1HS1L1 [label="", tooltip="R1H N1H S1 L1", fillcolor="#e7e7e7"]
+    R1HN1S1HL1 [label="", tooltip="R1H N1 S1H L1", fillcolor="#a7a7a7"]
+    R1HN1S1L1H [label="", tooltip="R1H N1 S1 L1H", fillcolor="#b2b2b2"]
+    R1N1HS1HL1 [label="", tooltip="R1 N1H S1H L1", fillcolor="#d2d2d2"]
+    R1N1HS1L1H [label="", tooltip="R1 N1H S1 L1H", fillcolor="#d6d6d6"]
+    R1N1S1HL1H [label="", tooltip="R1 N1 S1H L1H", fillcolor="#727272"]
+    /* hardening on 3 components */
+    R1HN1HS1HL1 [label="", tooltip="R1H N1H S1H L1" fillcolor="#ebebeb"]
+    R1HN1S1HL1H [label="", tooltip="R1H N1 S1H L1H", shape=star, color="red", fillcolor="#b9b9b9"]
+    R1HN1HS1L1H [label="", tooltip="R1H N1H S1 L1H", fillcolor="#ededed"]
+    R1N1HS1HL1H [label="", tooltip="R1 N1H S1H L1H", fillcolor="#d8d8d8"]
+    /* hardening everywhere */
+    R1HN1HS1HL1H [label="", tooltip="R1H N1H S1H L1H", fillcolor="#ededed"]
+
+    /* redis+newlib in 1 comp, uksched in another, lwip in another------------ */
+    R1N1S2L3 [label="", tooltip="R1 N1 S2 L3", fillcolor="#8e8e8e"]
+    /* + hardening on 1 component */
+    R1HN1S2L3 [label="", tooltip="R1H N1 S2 L3", fillcolor="#d3d3d3"]
+    R1N1HS2L3 [label="", tooltip="R1 N1H S2 L3", fillcolor="#e7e7e7"]
+    R1N1S2HL3 [label="", tooltip="R1 N1 S2H L3", fillcolor="#acacac"]
+    R1N1S2L3H [label="", tooltip="R1 N1 S2 L3H", fillcolor="#b1b1b1"]
+    /* hardening on two components */
+    R1HN1HS2L3 [label="", tooltip="R1H N1H S2 L3", fillcolor="#f9f9f9"]
+    R1HN1S2HL3 [label="", tooltip="R1H N1 S2H L3", fillcolor="#d4d4d4"]
+    R1HN1S2L3H [label="", tooltip="R1H N1 S2 L3H", fillcolor="#d8d8d8"]
+    R1N1HS2HL3 [label="", tooltip="R1 N1H S2H L3", fillcolor="#ececec"]
+    R1N1HS2L3H [label="", tooltip="R1 N1H S2 L3H", fillcolor="#ececec"]
+    R1N1S2HL3H [label="", tooltip="R1 N1 S2H L3H", shape=star, color="red", fillcolor="#bababa"]
+    /* hardening on 3 components */
+    R1HN1HS2HL3 [label="", tooltip="R1H N1H S2H L3", fillcolor="#fcfcfc"]
+    R1HN1S2HL3H [label="", tooltip="R1H N1 S2H L3H", fillcolor="#dbdbdb"]
+    R1HN1HS2L3H [label="", tooltip="R1H N1H S2 L3H", fillcolor="#fbfbfb"]
+    R1N1HS2HL3H [label="", tooltip="R1 N1H S2H L3H", fillcolor="#f2f2f2"]
+    /* hardening everywhere */
+    R1HN1HS2HL3H [label="", tooltip="R1H N1H S2H L3H", fillcolor="#fefefe"]
+
+    /* LINKS ================================================================ */
+
+    /* high level links wrt adding more compartments */
+    R1N1S1L1 -> R1N1S1L2
+    R1N1S1L1 -> R1N1S2L1
+    R1N1S1L1 -> R2N2S1L1
+
+    R1N1S1L2 -> R1N1S2L3
+    R1N1S2L1 -> R1N1S2L3
+    R2N2S1L1 -> R1N1S2L3
+
+    /* links for redis+newlib+uksched in 1 compartment, lwip in the other ---- */
+    /* hadening on 1 */
+    R1N1S1L2 -> R1HN1S1L2
+    R1N1S1L2 -> R1N1HS1L2
+    R1N1S1L2 -> R1N1S1HL2
+    R1N1S1L2 -> R1N1S1L2H
+
+    /* hardening on 2 */
+    R1HN1S1L2 -> R1HN1HS1L2
+    R1HN1S1L2 -> R1HN1S1HL2
+    R1HN1S1L2 -> R1HN1S1L2H
+
+    R1N1HS1L2 -> R1HN1HS1L2
+    R1N1HS1L2 -> R1N1HS1HL2
+    R1N1HS1L2 -> R1N1HS1L2H
+
+    R1N1S1HL2 -> R1HN1S1HL2
+    R1N1S1HL2 -> R1N1HS1HL2
+    R1N1S1HL2 -> R1N1S1HL2H
+
+    R1N1S1L2H -> R1HN1S1L2H
+    R1N1S1L2H -> R1N1HS1L2H
+    R1N1S1L2H -> R1N1S1HL2H
+
+    /* hadening on 3 */
+    R1HN1HS1L2 -> R1HN1HS1HL2
+    R1HN1HS1L2 -> R1HN1HS1L2H
+
+    R1HN1S1HL2 -> R1HN1HS1HL2
+    R1HN1S1HL2 -> R1HN1S1HL2H
+
+    R1HN1S1L2H -> R1HN1S1HL2H
+    R1HN1S1L2H -> R1HN1HS1L2H
+
+    R1N1HS1HL2 -> R1HN1HS1HL2
+    R1N1HS1HL2 -> R1N1HS1HL2H
+
+    R1N1HS1L2H -> R1HN1HS1L2H
+    R1N1HS1L2H -> R1N1HS1HL2H
+
+    R1N1S1HL2H -> R1HN1S1HL2H
+    R1N1S1HL2H -> R1N1HS1HL2H
+
+    /* hardening everywhere */
+    R1HN1HS1HL2 -> R1HN1HS1HL2H
+    R1HN1S1HL2H -> R1HN1HS1HL2H
+    R1HN1HS1L2H -> R1HN1HS1HL2H
+    R1N1HS1HL2H -> R1HN1HS1HL2H
+
+    /* links for redis+newlib+lwip in 1 compartment, uksched in the other ---- */
+    /* hadening on 1 */
+    R1N1S2L1 -> R1HN1S2L1
+    R1N1S2L1 -> R1N1HS2L1
+    R1N1S2L1 -> R1N1S2HL1
+    R1N1S2L1 -> R1N1S2L1H
+
+    /* hardening on 2 */
+    R1HN1S2L1 -> R1HN1HS2L1
+    R1HN1S2L1 -> R1HN1S2HL1
+    R1HN1S2L1 -> R1HN1S2L1H
+
+    R1N1HS2L1 -> R1HN1HS2L1
+    R1N1HS2L1 -> R1N1HS2HL1
+    R1N1HS2L1 -> R1N1HS2L1H
+
+    R1N1S2HL1 -> R1HN1S2HL1
+    R1N1S2HL1 -> R1N1HS2HL1
+    R1N1S2HL1 -> R1N1S2HL1H
+
+    R1N1S2L1H -> R1HN1S2L1H
+    R1N1S2L1H -> R1N1HS2L1H
+    R1N1S2L1H -> R1N1S2HL1H
+
+    /* hadening on 3 */
+    R1HN1HS2L1 -> R1HN1HS2HL1
+    R1HN1HS2L1 -> R1HN1HS2L1H
+
+    R1HN1S2HL1 -> R1HN1HS2HL1
+    R1HN1S2HL1 -> R1HN1S2HL1H
+
+    R1HN1S2L1H -> R1HN1S2HL1H
+    R1HN1S2L1H -> R1HN1HS2L1H
+
+    R1N1HS2HL1 -> R1HN1HS2HL1
+    R1N1HS2HL1 -> R1N1HS2HL1H
+
+    R1N1HS2L1H -> R1HN1HS2L1H
+    R1N1HS2L1H -> R1N1HS2HL1H
+
+    R1N1S2HL1H -> R1HN1S2HL1H
+    R1N1S2HL1H -> R1N1HS2HL1H
+
+    /* hardening everywhere */
+    R1HN1HS2HL1 -> R1HN1HS2HL1H
+    R1HN1S2HL1H -> R1HN1HS2HL1H
+    R1HN1HS2L1H -> R1HN1HS2HL1H
+    R1N1HS2HL1H -> R1HN1HS2HL1H
+
+    /* links for redis+newlib in 1 compartment, uksched+lwip in the other ---- */
+    /* hadening on 1 */
+    R2N2S1L1 -> R2HN2S1L1
+    R2N2S1L1 -> R2N2HS1L1
+    R2N2S1L1 -> R2N2S1HL1
+    R2N2S1L1 -> R2N2S1L1H
+
+    /* hardening on 2 */
+    R2HN2S1L1 -> R2HN2HS1L1
+    R2HN2S1L1 -> R2HN2S1HL1
+    R2HN2S1L1 -> R2HN2S1L1H
+
+    R2N2HS1L1 -> R2HN2HS1L1
+    R2N2HS1L1 -> R2N2HS1HL1
+    R2N2HS1L1 -> R2N2HS1L1H
+
+    R2N2S1HL1 -> R2HN2S1HL1
+    R2N2S1HL1 -> R2N2HS1HL1
+    R2N2S1HL1 -> R2N2S1HL1H
+
+    R2N2S1L1H -> R2HN2S1L1H
+    R2N2S1L1H -> R2N2HS1L1H
+    R2N2S1L1H -> R2N2S1HL1H
+
+    /* hadening on 3 */
+    R2HN2HS1L1 -> R2HN2HS1HL1
+    R2HN2HS1L1 -> R2HN2HS1L1H
+
+    R2HN2S1HL1 -> R2HN2HS1HL1
+    R2HN2S1HL1 -> R2HN2S1HL1H
+
+    R2HN2S1L1H -> R2HN2S1HL1H
+    R2HN2S1L1H -> R2HN2HS1L1H
+
+    R2N2HS1HL1 -> R2HN2HS1HL1
+    R2N2HS1HL1 -> R2N2HS1HL1H
+
+    R2N2HS1L1H -> R2HN2HS1L1H
+    R2N2HS1L1H -> R2N2HS1HL1H
+
+    R2N2S1HL1H -> R2HN2S1HL1H
+    R2N2S1HL1H -> R2N2HS1HL1H
+
+    /* hardening everywhere */
+    R2HN2HS1HL1 -> R2HN2HS1HL1H
+    R2HN2S1HL1H -> R2HN2HS1HL1H
+    R2HN2HS1L1H -> R2HN2HS1HL1H
+    R2N2HS1HL1H -> R2HN2HS1HL1H
+
+    /* links for everything in a single compartment ------------------------ */
+    /* hadening on 1 */
+    R1N1S1L1 -> R1HN1S1L1
+    R1N1S1L1 -> R1N1HS1L1
+    R1N1S1L1 -> R1N1S1HL1
+    R1N1S1L1 -> R1N1S1L1H
+
+    /* hardening on 2 */
+    R1HN1S1L1 -> R1HN1HS1L1
+    R1HN1S1L1 -> R1HN1S1HL1
+    R1HN1S1L1 -> R1HN1S1L1H
+
+    R1N1HS1L1 -> R1HN1HS1L1
+    R1N1HS1L1 -> R1N1HS1HL1
+    R1N1HS1L1 -> R1N1HS1L1H
+
+    R1N1S1HL1 -> R1HN1S1HL1
+    R1N1S1HL1 -> R1N1HS1HL1
+    R1N1S1HL1 -> R1N1S1HL1H
+
+    R1N1S1L1H -> R1HN1S1L1H
+    R1N1S1L1H -> R1N1HS1L1H
+    R1N1S1L1H -> R1N1S1HL1H
+
+    /* hadening on 3 */
+    R1HN1HS1L1 -> R1HN1HS1HL1
+    R1HN1HS1L1 -> R1HN1HS1L1H
+
+    R1HN1S1HL1 -> R1HN1HS1HL1
+    R1HN1S1HL1 -> R1HN1S1HL1H
+
+    R1HN1S1L1H -> R1HN1S1HL1H
+    R1HN1S1L1H -> R1HN1HS1L1H
+
+    R1N1HS1HL1 -> R1HN1HS1HL1
+    R1N1HS1HL1 -> R1N1HS1HL1H
+
+    R1N1HS1L1H -> R1HN1HS1L1H
+    R1N1HS1L1H -> R1N1HS1HL1H
+
+    R1N1S1HL1H -> R1HN1S1HL1H
+    R1N1S1HL1H -> R1N1HS1HL1H
+
+    /* hardening everywhere */
+    R1HN1HS1HL1 -> R1HN1HS1HL1H
+    R1HN1S1HL1H -> R1HN1HS1HL1H
+    R1HN1HS1L1H -> R1HN1HS1HL1H
+    R1N1HS1HL1H -> R1HN1HS1HL1H
+
+    /* links for redis+newlib/uksched/lwip */
+    /* hadening on 1 */
+    R1N1S2L3 -> R1HN1S2L3
+    R1N1S2L3 -> R1N1HS2L3
+    R1N1S2L3 -> R1N1S2HL3
+    R1N1S2L3 -> R1N1S2L3H
+
+    /* hardening on 2 */
+    R1HN1S2L3 -> R1HN1HS2L3
+    R1HN1S2L3 -> R1HN1S2HL3
+    R1HN1S2L3 -> R1HN1S2L3H
+
+    R1N1HS2L3 -> R1HN1HS2L3
+    R1N1HS2L3 -> R1N1HS2HL3
+    R1N1HS2L3 -> R1N1HS2L3H
+
+    R1N1S2HL3 -> R1HN1S2HL3
+    R1N1S2HL3 -> R1N1HS2HL3
+    R1N1S2HL3 -> R1N1S2HL3H
+
+    R1N1S2L3H -> R1HN1S2L3H
+    R1N1S2L3H -> R1N1HS2L3H
+    R1N1S2L3H -> R1N1S2HL3H
+
+    /* hadening on 3 */
+    R1HN1HS2L3 -> R1HN1HS2HL3
+    R1HN1HS2L3 -> R1HN1HS2L3H
+
+    R1HN1S2HL3 -> R1HN1HS2HL3
+    R1HN1S2HL3 -> R1HN1S2HL3H
+
+    R1HN1S2L3H -> R1HN1S2HL3H
+    R1HN1S2L3H -> R1HN1HS2L3H
+
+    R1N1HS2HL3 -> R1HN1HS2HL3
+    R1N1HS2HL3 -> R1N1HS2HL3H
+
+    R1N1HS2L3H -> R1HN1HS2L3H
+    R1N1HS2L3H -> R1N1HS2HL3H
+
+    R1N1S2HL3H -> R1HN1S2HL3H
+    R1N1S2HL3H -> R1N1HS2HL3H
+
+    /* hardening everywhere */
+    R1HN1HS2HL3 -> R1HN1HS2HL3H
+    R1HN1S2HL3H -> R1HN1HS2HL3H
+    R1HN1HS2L3H -> R1HN1HS2HL3H
+    R1N1HS2HL3H -> R1HN1HS2HL3H
+}
