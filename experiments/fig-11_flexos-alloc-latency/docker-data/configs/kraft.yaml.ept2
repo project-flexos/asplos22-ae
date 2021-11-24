@@ -1,0 +1,36 @@
+---
+specification: '0.6'
+name: flexos-microbenchmarks
+unikraft:
+  version: staging
+  kconfig:
+    - CONFIG_LIBFLEXOS=y
+targets:
+  - architecture: x86_64
+    platform: kvm
+compartments:
+  - name: comp1
+    mechanism:
+      driver: vmept
+      noisolstack: false
+    default: true
+  - name: comp2
+    mechanism:
+      driver: vmept
+      noisolstack: true
+libraries:
+  tlsf:
+    version: staging
+    kconfig:
+      - CONFIG_LIBTLSF=y
+  newlib:
+    version: staging
+    kconfig:
+      - CONFIG_LIBNEWLIBC=y
+      - CONFIG_LIBNEWLIBM=y
+    compartment: comp1
+  flexos-microbenchmarks:
+    version: staging
+    compartment: comp2
+volumes: {}
+networks: {}

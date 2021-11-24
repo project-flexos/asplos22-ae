@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# -----
+
+# EDIT ME if you run me elsewhere
+
+QEMU_BIN="/root/qemu-system-ept"
+
+# -----
+
+# you should not need to edit these
+
+MEM=2G
+
+run() {
+  TEMP=$(mktemp -d)
+
+  # run compartment 0
+  $QEMU_BIN -enable-kvm -daemonize -display none \
+    -device myshmem,file=/data_shared,size=0x2000,paddr=0x105000 \
+    -device myshmem,file=/rpc_page,size=0x100000,paddr=0x800000000 \
+    -device myshmem,file=/heap,size=0x8000000,paddr=0x4000000000 \
+    -kernel ${1}.comp0 -m $MEM -L /root/pc-bios
+
+  # let it boot
+  sleep 2
+
+  # run compartment 1
+  $QEMU_BIN -enable-kvm -daemonize -display none \
+    -device myshmem,file=/data_shared,paddr=0x105000,size=0x2000 \
+    -device myshmem,file=/rpc_page,paddr=0x800000000,size=0x100000 \
+    -device myshmem,file=/heap,paddr=0x4000000000,size=0x8000000 \
+    -kernel ${1}.comp1 -m $MEM -L /root/pc-bios
+
+  # let it boot
+  sleep 2
+}
+
+killimg() {
+  pkill -9 qemu-system-x86
+  pkill -9 qemu-system-ept
+}
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+if [ $# -gt 2 ]; then
+  die "Usage:\t$0 run <image>\n\t$0 kill"
+elif [ $# -eq 0 ]; then
+  die "Usage:\t$0 run <image>\n\t$0 kill"
+else
+  case "$1" in
+    run)
+      run $2
+      ;;
+    kill)
+      killimg
+      ;;
+    *)
+      die "'$1': unsupported argument."
+      ;;
+  esac
+fi
