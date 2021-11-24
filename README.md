@@ -151,6 +151,11 @@ Debian-based distribution with similar package versions should be suitable.
 
 ## 5. Troubleshooting
 
+Note that each experiment folder (e.g., `experiments/fig-10_sqlite-exec-time/`)
+has its own `README.md` and corresponding troubleshooting section. If you are
+searching information regarding a particular experiment, take a look there as
+well!
+
 - **Problem**: Docker containers fail to build with errors indicating
   insufficient memory available.
 

@@ -52,7 +52,7 @@ parse_output() {
 
 
 output_avg() {
-  avg=$(echo "scale=3; $total / $runs" | bc -l )
+  avg=$(echo "scale=3; $total / $runs" | bc -l | awk '{printf "%f", $0}')
   echo -e "AVERAGE = ${avg}s (${total}/${runs})" >> $tmp
   echo "$1 $2 $avg" >> $final
   total=0
@@ -155,5 +155,8 @@ pushd cubicleos/CubicleOS/CubicleOS/kernel
 # pre-configured for the 3-compartment scenario
 benchmark_linuxu "cubicleos-mpk3" 13 "\"MPK3\""
 popd
+
+# some of the KVM experiments mess the terminal up
+reset
 
 cat $tmp
