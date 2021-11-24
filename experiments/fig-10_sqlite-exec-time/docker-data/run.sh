@@ -90,6 +90,15 @@ benchmark_kvm() {
   output_avg $2 $3
 }
 
+benchmark_genode() {
+  header $1 "KVM"
+  for j in $( seq 0 $REPS ); do
+    script .out -c "make -C /genode/build/x86_64 KERNEL=sel4 BOARD=pc run/sqlite"
+    parse_output $j
+  done
+  output_avg $2 $3
+}
+
 # ---------
 # BENCHMARK
 # ---------
@@ -132,6 +141,9 @@ popd
 # SeL4
 
 # TODO
+pushd genode
+benchmark_genode "genode-sel4" 10 "PT3"
+popd
 
 # CubicleOS NO MPK
 
