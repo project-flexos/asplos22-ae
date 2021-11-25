@@ -53,7 +53,7 @@ run-linux:
 	$(WORKDIR)/tools/benchmark_linux.sh $(RESULTS) $(WORKDIR)/linux-latency $(ISOLED_CPU)
 
 .PHONY: run
-run: run-linux run-flexos
+run: run-flexos run-linux
 
 .PHONY: plot
 plot:

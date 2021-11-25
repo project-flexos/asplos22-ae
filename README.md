@@ -155,6 +155,11 @@ Debian-based distribution with similar package versions should be suitable.
    make properclean
    ```
 
+**Note**: some experiments have a slightly different workflow. Figure 8
+is only a plot and requires some manual steps. Figure 11 requires a reboot
+of the machine with different kernel parameters. In all of these cases, the
+local `README.md` provides appropriate explanations.
+
 ## 5. Troubleshooting
 
 Note that each experiment folder (e.g., `experiments/fig-10_sqlite-exec-time/`)
