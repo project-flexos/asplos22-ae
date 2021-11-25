@@ -15,27 +15,24 @@ MEM=2G
 run() {
   TEMP=$(mktemp -d)
 
+  {
+    sleep 3
+    # run compartment 1
+    $QEMU_BIN -enable-kvm -daemonize -display none \
+      -device myshmem,file=/data_shared,paddr=0x105000,size=0x2000 \
+      -device myshmem,file=/rpc_page,paddr=0x800000000,size=0x100000 \
+      -device myshmem,file=/heap,paddr=0x4000000000,size=0x8000000 \
+      -initrd /root/img.cpio -cpu host \
+      -kernel ${1}.comp1 -m $MEM -L /root/pc-bios
+  } &
+
   # run compartment 0
-  $QEMU_BIN -enable-kvm -daemonize -display none \
+  $QEMU_BIN -enable-kvm -nographic \
     -device myshmem,file=/data_shared,size=0x2000,paddr=0x105000 \
     -device myshmem,file=/rpc_page,size=0x100000,paddr=0x800000000 \
     -device myshmem,file=/heap,size=0x8000000,paddr=0x4000000000 \
-    -initrd /root/img.cpio \
+    -initrd /root/img.cpio -cpu host \
     -kernel ${1}.comp0 -m $MEM -L /root/pc-bios
-
-  # let it boot
-  sleep 2
-
-  # run compartment 1
-  $QEMU_BIN -enable-kvm -daemonize -display none \
-    -device myshmem,file=/data_shared,paddr=0x105000,size=0x2000 \
-    -device myshmem,file=/rpc_page,paddr=0x800000000,size=0x100000 \
-    -device myshmem,file=/heap,paddr=0x4000000000,size=0x8000000 \
-    -initrd /root/img.cpio \
-    -kernel ${1}.comp1 -m $MEM -L /root/pc-bios
-
-  # let it boot
-  sleep 2
 }
 
 killimg() {

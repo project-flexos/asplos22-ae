@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function run {
-	/root/qemu-guest -k $1 -x -m 1024 -a "" \
-		-i /root/flexos/apps/iperf-fcalls/img.cpio
+	/root/qemu-guest -k $1 -m 1024 -a "" \
+		-i /root/img.cpio
 }
 
 function killimg {

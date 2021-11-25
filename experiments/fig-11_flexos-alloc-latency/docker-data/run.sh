@@ -33,30 +33,30 @@ heap3=
 
 get_val() {
   echo `cat .out | tr -dc '[:alnum:]\n\r .' \
-	  | sed "s/.*$0,/$0,/g" \
-	  | awk -e "\$0 ~ /$0,/ {print \$2}" \
+	  | sed "s/.*$1,/$1,/g" \
+	  | awk -v str="$1" -e '\$0 ~ /$str,/ {print \$2}' \
 	  | sed 's/[a-zA-Z]//g' | tr -d '\r'`
 }
 
 set_val() {
-  if [ -n "$0" ]; then
-    if [ -n "$(eval $1)" ]; then
+  if [ -n "$1" ]; then
+    if [ -n "${!2}" ]; then
       echo "ERROR: the same measurement is reevaluated twice. Is this a bug?"
       exit 1
     fi
-    eval $1=$0
+    eval $2=$1
   fi
 }
 
 parse_output() {
   tentative=$(get_val "pku-dss")
-  set_val $tentative "mpkdss_cost"
+  set_val "$tentative" "mpkdss_cost"
 
   tentative=$(get_val "pku-heap")
-  set_val $tentative "mpklight_cost"
+  set_val "$tentative" "mpklight_cost"
 
   tentative=$(get_val "ept")
-  set_val $tentative "ept_cost"
+  set_val "$tentative" "ept_cost"
 
   tentative=$(get_val "fcall")
   # don't use set_val here, that measurement will pop again all the time...
@@ -67,29 +67,28 @@ parse_output() {
   fi
 
   tentative=$(get_val "dss1")
-  set_val $tentative "dss1"
+  set_val "$tentative" "dss1"
   tentative=$(get_val "dss2")
-  set_val $tentative "dss2"
+  set_val "$tentative" "dss2"
   tentative=$(get_val "dss3")
-  set_val $tentative "dss3"
+  set_val "$tentative" "dss3"
 
   tentative=$(get_val "heap1")
-  set_val $tentative "heap1"
+  set_val "$tentative" "heap1"
   tentative=$(get_val "heap2")
-  set_val $tentative "heap2"
+  set_val "$tentative" "heap2"
   tentative=$(get_val "heap3")
-  set_val $tentative "heap3"
+  set_val "$tentative" "heap3"
 }
 
 benchmark_kvm() {
-  header $1 "KVM"
   {
     sleep 3
     killall -9 qemu-system-x86
   } &
-  script .out -c "./kvm-start.sh"
+  script .out -c "./kvm-start.sh flexos-microbenchmarks_kvm-x86_64"
   wait
-  parse_output $j
+  parse_output
 }
 
 # ---------
