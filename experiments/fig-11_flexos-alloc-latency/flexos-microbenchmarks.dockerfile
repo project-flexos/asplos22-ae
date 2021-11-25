@@ -46,8 +46,7 @@ RUN cd microbenchmarks-mpk2-noisolstack && /root/build-images.sh && rm -rf build
 # build flexos with 2 ept compartments (microbenchmarks/rest)
 RUN kraftcleanup
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
-COPY docker-data/microbenchmarks-ept2.patch /root/microbenchmarks-ept2.patch
-RUN cd /root/.unikraft/unikraft && git apply /root/microbenchmarks-ept2.patch
+RUN cd /root/.unikraft/unikraft && git apply /root/ept2-tmpfix.patch
 COPY docker-data/configs/microbenchmarks-flexos-ept2.config microbenchmarks/.config
 COPY docker-data/configs/kraft.yaml.ept2 microbenchmarks/kraft.yaml
 RUN cd microbenchmarks && /root/build-images.sh && rm -rf build/
@@ -55,11 +54,6 @@ COPY docker-data/start-scripts/kvmflexosept2-start.sh microbenchmarks/kvm-start.
 RUN mv microbenchmarks microbenchmarks-ept2
 
 RUN mv /root/.unikraft /root/flexos
-
-##############
-# Linux (function calls, syscalls with and without KPTI)
-
-# TODO
 
 ##############
 # Finish

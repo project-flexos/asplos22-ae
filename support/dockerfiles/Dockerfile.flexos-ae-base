@@ -62,6 +62,13 @@ RUN cp build/qemu-system-x86_64 /root/qemu-system-ept
 RUN cp -r build/pc-bios /root/pc-bios
 RUN rm /root/0001-Myshmem.patch
 
+# The version of EPT used in this artifact is not up-to-date with our
+# latest developments. Unfortunately, we weren't able to integrate the
+# latest version of the backend in the artifact. In order to obtain the
+# same performance behavior, this hack patch mimics the behavior of the
+# new backend. It is used by a number of figures.
+COPY resources/ept2-tmpfix.patch /root/
+
 ##############
 # Unikraft 0.5 (KVM and linuxu)
 # Performance is similar to Unikraft 0.4, so omit it.
@@ -75,5 +82,7 @@ RUN cd /root/unikraft-mainline/unikraft && \
 	git checkout fd5779120a5938d5c814583cb0f59046b1756cd3
 
 RUN mkdir libs apps
+
+COPY resources/img.cpio /root/
 
 WORKDIR /root

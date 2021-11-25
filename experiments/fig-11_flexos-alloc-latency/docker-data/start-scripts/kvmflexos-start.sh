@@ -1,10 +1,8 @@
 #!/bin/bash
 
-NETIF=uk0
-IP="172.130.0.2"
-
 function run {
-	/root/qemu-guest -k $1 -x -m 1024 -a ""
+	/root/qemu-guest -k $1 -x -m 1024 -a "" \
+		-i /root/flexos/apps/iperf-fcalls/img.cpio
 }
 
 function killimg {

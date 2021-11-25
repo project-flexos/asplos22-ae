@@ -51,8 +51,7 @@ RUN cd iperf-mpk2-noisolstack && /root/build-images.sh && rm -rf build/
 RUN kraftcleanup
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
-COPY docker-data/iperf-ept2.patch /root/iperf-ept2.patch
-RUN cd /root/.unikraft/unikraft && git apply /root/iperf-ept2.patch
+RUN cd /root/.unikraft/unikraft && git apply /root/ept2-tmpfix.patch
 COPY docker-data/configs/iperf-flexos-ept2.config iperf/.config
 COPY docker-data/configs/kraft.yaml.ept2 iperf/kraft.yaml
 RUN cd iperf && /root/build-images.sh && rm -rf build/
@@ -65,7 +64,6 @@ RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75
 RUN sed -i "s/TCP_WND 32766/TCP_WND 65335/g" /root/.unikraft/libs/lwip/include/lwipopts.h
 RUN mv /root/.unikraft/apps/iperf /root/.unikraft/apps/iperf-fcalls
 COPY docker-data/configs/iperf-flexos-fcalls.config /root/.unikraft/apps/iperf-fcalls/.config
-COPY docker-data/img.cpio /root/.unikraft/apps/iperf-fcalls/
 COPY docker-data/configs/kraft.yaml.fcalls /root/.unikraft/apps/iperf-fcalls/kraft.yaml
 RUN cd iperf-fcalls && make prepare && kraft -v build --no-progress --fast --compartmentalize
 RUN cd iperf-fcalls && /root/build-images.sh && rm -rf build/
