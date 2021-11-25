@@ -98,7 +98,7 @@ function on {
 	prompt "This script is going enable KPTI on this machine, which requires a reboot. "
 
 	echo -n "[I] Command line before changes: "
-	echo $(cat $GRUB_FILE | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+	echo $(cat $GRUB_FILE | grep "GRUB_CMDLINE_LINUX=" | sed "s/.*GRUB_CMDLINE_LINUX=//g")
 
 	cp $GRUB_FILE /tmp/.tmp_grub
 
@@ -107,7 +107,7 @@ function on {
 	sed -i "s/nopti//g" /tmp/.tmp_grub
 
 	echo -n "[I] Command line after changes: "
-	echo $(cat /tmp/.tmp_grub | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+	echo $(cat /tmp/.tmp_grub | grep "GRUB_CMDLINE_LINUX=" | sed "s/.*GRUB_CMDLINE_LINUX=//g")
 
 	prompt ""
 
