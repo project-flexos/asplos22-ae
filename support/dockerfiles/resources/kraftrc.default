@@ -17,6 +17,8 @@ origins = [
   "https://github.com/project-flexos/app-iperf.git",
   "https://github.com/project-flexos/lib-sqlite.git",
   "https://github.com/project-flexos/app-sqlite.git",
+  "https://github.com/project-flexos/app-flexos-microbenchmarks.git",
+  "https://github.com/project-flexos/lib-flexos-microbenchmarks.git",
   "https://github.com/project-flexos/unikraft.git",
   "https://github.com/project-flexos/lib-pthread-embedded.git"
 ]

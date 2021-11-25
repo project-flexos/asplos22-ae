@@ -5,4 +5,5 @@ make properclean
 rm -rf ~/.kraftcache ~/.unikraft/libs ~/.unikraft/unikraft
 kraft list update
 kraft list pull newlib@staging tlsf@staging lwip@staging \
-	unikraft@staging pthread-embedded@staging iperf@staging sqlite@staging
+	unikraft@staging pthread-embedded@staging iperf@staging sqlite@staging \
+	flexos-microbenchmarks@staging
