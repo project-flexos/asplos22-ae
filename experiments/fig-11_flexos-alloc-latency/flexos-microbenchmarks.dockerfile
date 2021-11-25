@@ -37,6 +37,7 @@ RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75
 RUN rm -rf /root/.unikraft/apps/flexos-microbenchmarks
 RUN cp -r flexos-microbenchmarks-mpk2-isolstack flexos-microbenchmarks-mpk2-isolstack-heap
 WORKDIR /root/.unikraft/apps/flexos-microbenchmarks-mpk2-isolstack-heap
+RUN git checkout main.c
 RUN sed -i "s/CONFIG_LIBFLEXOS_ENABLE_DSS=y/# CONFIG_LIBFLEXOS_ENABLE_DSS is not set/g" \
 	.config
 RUN rm -rf build && make prepare && kraft -v build --no-progress --fast --compartmentalize
@@ -50,6 +51,7 @@ RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75
 RUN rm -rf /root/.unikraft/apps/flexos-microbenchmarks
 RUN cp -r flexos-microbenchmarks-mpk2-isolstack flexos-microbenchmarks-mpk2-noisolstack
 WORKDIR /root/.unikraft/apps/flexos-microbenchmarks-mpk2-noisolstack
+RUN git checkout main.c
 RUN sed -i "s/CONFIG_LIBFLEXOS_GATE_INTELPKU_PRIVATE_STACKS=y/# CONFIG_LIBFLEXOS_GATE_INTELPKU_PRIVATE_STACKS is not set/g" \
 	.config
 RUN sed -i "s/CONFIG_LIBFLEXOS_ENABLE_DSS=y/# CONFIG_LIBFLEXOS_ENABLE_DSS is not set/g" \
