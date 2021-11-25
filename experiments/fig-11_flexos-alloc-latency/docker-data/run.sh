@@ -40,6 +40,7 @@ set_val() {
   if [ -n "$0" ]; then
     if [ -n "$(eval $1)" ]; then
       echo "ERROR: the same measurement is reevaluated twice. Is this a bug?"
+      exit 1
     fi
     eval $1=$0
   fi
@@ -56,7 +57,12 @@ parse_output() {
   set_val $tentative "ept_cost"
 
   tentative=$(get_val "fcall")
-  set_val $tentative "function_cost"
+  # don't use set_val here, that measurement will pop again all the time...
+  if [ -n "$tentative" ]; then
+    if [ ! -n "$function_cost" ]; then
+        $function_cost=$tentative
+    fi
+  fi
 
   tentative=$(get_val "dss1")
   set_val $tentative "dss1"
