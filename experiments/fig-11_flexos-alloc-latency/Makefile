@@ -4,8 +4,8 @@
 WORKDIR ?= $(CURDIR)
 RESULTS ?= $(WORKDIR)/results
 PLOT_FORMAT ?= svg
-DSS-PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
-LATENCY-PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
+PLOT-DSS ?= $(WORKDIR)/$(notdir $(WORKDIR))-a.$(PLOT_FORMAT)
+PLOT-LATENCY ?= $(WORKDIR)/$(notdir $(WORKDIR))-b.$(PLOT_FORMAT)
 
 #
 # Parameters

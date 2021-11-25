@@ -6,7 +6,9 @@
 
 CPU_ISOLED1=$1
 CPU_ISOLED2=$2
-GRUB_FILE="/etc/default/grub"
+GRUB_FILE="/proc/cmdline"
+
+die() { echo "$*" 1>&2 ; exit 1; }
 
 if grep -q "pti=off" $GRUB_FILE; then
 	die "[X] Not running FlexOS as KPTI is disabled."

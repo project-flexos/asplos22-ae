@@ -34,7 +34,7 @@ unset key
 set label 'Heap' at -0.25,200 rotate by 90 font ",14"
 set label 'Shared stack and DSS' at 0.15,7 rotate by 90 font ",14"
 
-plot 'dss.dat' \
+plot 'results/dss.dat' \
         using 2:xtic(1) ti col lc "black" fs pattern 1, \
      '' using 3         ti col lc "black" fs pattern 2, \
      '' using 4         ti col lc "black" fs pattern 6
