@@ -48,7 +48,7 @@ run-flexos:
 .PHONY: run-linux
 run-linux:
 	mkdir -p $(RESULTS)
-	taskset -c $(ISOLED_CPU) $(WORKDIR)/linux-latency/benchmark > $(RESULTS)/linux.dat
+	taskset -c $(ISOLED_CPU) $(WORKDIR)/linux-latency/benchmark > $(RESULTS)/latency-linux.dat
 
 .PHONY: run
 run: run-flexos run-linux
