@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
 #set -x
 
