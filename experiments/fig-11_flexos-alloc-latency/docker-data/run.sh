@@ -4,13 +4,15 @@
 
 # Do not run without KPTI
 
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
 GRUB_FILE="/etc/default/grub"
 
-if grep -Fxq "pti=off" $GRUB_FILE; then
+if grep -q "pti=off" $GRUB_FILE; then
 	die "[X] Not running FlexOS as KPTI is disabled."
 fi
 
-if grep -Fxq "nopti" $GRUB_FILE; then
+if grep -q "nopti" $GRUB_FILE; then
 	die "[X] Not running FlexOS as KPTI is disabled."
 fi
 
@@ -96,7 +98,7 @@ benchmark_kvm() {
     sleep 30
     killall -9 qemu-system-x86
   } &
-  script .out -c "./kvm-start.sh run build/flexos-microbenchmarks_kvm-x86_64"
+  script .out -c "./kvm-start.sh run build/flexos-microbenchmarks_kvm-x86_64 $CPU_ISOLED1 $CPU_ISOLED2"
   wait
   parse_output
   ./kvm-start.sh kill

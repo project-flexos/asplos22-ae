@@ -1,8 +1,11 @@
 #!/bin/bash
 
+CPU_ISOLED1=$3
+CPU_ISOLED2=$4
+
 function run {
-	/root/qemu-guest -k $1 -m 1024 -a "" \
-		-i /root/img.cpio
+	taskset -c ${CPU_ISOLED1} /root/qemu-guest -k $1 \
+		-m 1024 -a "" -i /root/img.cpio -p ${CPU_ISOLED2}
 }
 
 function killimg {

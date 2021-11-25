@@ -11,7 +11,8 @@ LATENCY-PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
 # Parameters
 #
 KRAFT_TOKEN ?=
-ISOLED_CPU ?= 5
+ISOLED_CPU1 ?= 5
+ISOLED_CPU2 ?= 6
 
 #
 # Tools
@@ -45,12 +46,13 @@ prepare: prepare-flexos prepare-linux
 .PHONY: run-flexos
 run-flexos:
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged \
-		--security-opt seccomp:unconfined -ti flexos-microbenchmarks /root/run.sh
+		--security-opt seccomp:unconfined -ti flexos-microbenchmarks \
+		/root/run.sh $(ISOLED_CPU1) $(ISOLED_CPU2)
 
 .PHONY: run-linux
 run-linux:
 	mkdir -p $(RESULTS)
-	$(WORKDIR)/tools/benchmark_linux.sh $(RESULTS) $(WORKDIR)/linux-latency $(ISOLED_CPU)
+	$(WORKDIR)/tools/benchmark_linux.sh $(RESULTS) $(WORKDIR)/linux-latency $(ISOLED_CPU1)
 
 .PHONY: run
 run: run-flexos run-linux
@@ -68,5 +70,5 @@ clean:
 
 .PHONY: properclean
 properclean: clean
-	$(DOCKER) image rm flexos-microbenchmarks
+	$(DOCKER) image rm -f flexos-microbenchmarks
 	$(DOCKER) image prune
