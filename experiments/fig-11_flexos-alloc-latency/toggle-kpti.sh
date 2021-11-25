@@ -28,25 +28,71 @@ function checks {
 	fi
 }
 
-function on {
+function prompt {
+	while true; do
+		read -p "This script is going $1 KPTI on this machine, which requires a reboot. Proceed? [y/n] " yn
+		case $yn in
+			[Yy]* ) break;;
+			[Nn]* ) exit 1;;
+			* ) echo "Please answer yes or no.";;
+		esac
+	done
+}
+
+function off {
 	checks
-	echo "[I] Editing kernel command line..."
+
+	if grep -Fxq "pti=off" $GRUB_FILE; then
+		die "[E] KPTI is already disabled."
+	fi
+
+	if grep -Fxq "nopti" $GRUB_FILE; then
+		die "[E] KPTI is already disabled."
+	fi
+
+	prompt "disable"
+
+	echo -n "[I] Editing kernel command line..."
 	sed -i "s/GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"pti=off /g" $GRUB_FILE
-	# TODO check that pti=off is now present in the file
+
+	if grep -Fxq "pti=off" $GRUB_FILE; then
+		echo " done."
+	else
+		die "\n[E] Failed to edit kernel command line."
+	fi
+
 	# TODO print the new command line
+
 	echo "[I] Reconfiguring GRUB..."
 	update-grub
+
 	echo "[W] Rebooting in 3s..."
 	sleep 3
 	reboot
 }
 
-function off {
+function on {
 	checks
+
+	if grep -Fxq "pti=on" $GRUB_FILE; then
+		die "[E] KPTI is already enabled."
+	fi
+
+	if ! grep -Fxq "nopti" $GRUB_FILE; then
+		if ! grep -Fxq "pti=off" $GRUB_FILE; then
+			die "[E] KPTI is already enabled."
+		fi
+	fi
+
+	prompt "enable"
+
 	echo "[I] Editing kernel command line..."
 	sed -i "s/pti=off//g" $GRUB_FILE
+	sed -i "s/nopti//g" $GRUB_FILE
+
 	echo "[I] Reconfiguring GRUB..."
 	update-grub
+
 	echo "[W] Rebooting in 3s..."
 	sleep 3
 	reboot
