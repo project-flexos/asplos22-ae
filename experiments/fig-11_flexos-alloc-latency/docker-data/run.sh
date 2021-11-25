@@ -81,7 +81,7 @@ parse_output() {
 
 benchmark_kvm() {
   {
-    sleep 10
+    sleep 30
     killall -9 qemu-system-x86
   } &
   script .out -c "./kvm-start.sh run build/flexos-microbenchmarks_kvm-x86_64"
