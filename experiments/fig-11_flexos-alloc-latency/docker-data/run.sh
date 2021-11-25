@@ -14,28 +14,26 @@ rm $final_alloc && touch $final_alloc
 # RESULTS
 # -------
 
-function_cost=
-mpklight_cost=
-mpkdss_cost=
-ept_cost=
+function_cost=""
+mpklight_cost=""
+mpkdss_cost=""
+ept_cost=""
 
-dss1=
-dss2=
-dss3=
+dss1=""
+dss2=""
+dss3=""
 
-heap1=
-heap2=
-heap3=
+heap1=""
+heap2=""
+heap3=""
 
 # -------
 # HELPERS
 # -------
 
 get_val() {
-  echo `cat .out | tr -dc '[:alnum:]\n\r .' \
-	  | sed "s/.*$1,/$1,/g" \
-	  | awk -v str="$1" -e '\$0 ~ /$str,/ {print \$2}' \
-	  | sed 's/[a-zA-Z]//g' | tr -d '\r'`
+  echo `cat .out | tr -dc '[:alnum:]\n\r .,-' \
+	  | sed "s/.*$1,/$1,/g" | grep "^$1," | sed "s/$1,//g" | tr -dc '[:alnum:]'`
 }
 
 set_val() {
@@ -52,7 +50,7 @@ parse_output() {
   tentative=$(get_val "pku-dss")
   set_val "$tentative" "mpkdss_cost"
 
-  tentative=$(get_val "pku-heap")
+  tentative=$(get_val "pku-shared")
   set_val "$tentative" "mpklight_cost"
 
   tentative=$(get_val "ept")
@@ -62,7 +60,7 @@ parse_output() {
   # don't use set_val here, that measurement will pop again all the time...
   if [ -n "$tentative" ]; then
     if [ ! -n "$function_cost" ]; then
-        $function_cost=$tentative
+        function_cost=$tentative
     fi
   fi
 
@@ -83,12 +81,13 @@ parse_output() {
 
 benchmark_kvm() {
   {
-    sleep 3
+    sleep 10
     killall -9 qemu-system-x86
   } &
-  script .out -c "./kvm-start.sh flexos-microbenchmarks_kvm-x86_64"
+  script .out -c "./kvm-start.sh run build/flexos-microbenchmarks_kvm-x86_64"
   wait
   parse_output
+  ./kvm-start.sh kill
 }
 
 # ---------
