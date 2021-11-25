@@ -30,7 +30,7 @@ function checks {
 
 function prompt {
 	while true; do
-		read -p "This script is going $1 KPTI on this machine, which requires a reboot. Proceed? [y/n] " yn
+		read -p "${1}Proceed? [y/n] " yn
 		case $yn in
 			[Yy]* ) break;;
 			[Nn]* ) exit 1;;
@@ -50,18 +50,28 @@ function off {
 		die "[E] KPTI is already disabled."
 	fi
 
-	prompt "disable"
+	prompt "This script is going disable KPTI on this machine, which requires a reboot. "
+
+	echo -n "[I] Command line before changes: "
+	echo $(cat $GRUB_FILE | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+
+	cp $GRUB_FILE /tmp/.tmp_grub
 
 	echo -n "[I] Editing kernel command line..."
-	sed -i "s/GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"pti=off /g" $GRUB_FILE
+	sed -i "s/GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"pti=off /g" /tmp/.tmp_grub
 
-	if grep -Fxq "pti=off" $GRUB_FILE; then
+	if grep -Fxq "pti=off" /tmp/.tmp_grub; then
 		echo " done."
 	else
 		die "\n[E] Failed to edit kernel command line."
 	fi
 
-	# TODO print the new command line
+	echo -n "[I] Command line after changes: "
+	echo $(cat /tmp/.tmp_grub | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+
+	prompt ""
+
+	cp /tmp/.tmp_grub $GRUB_FILE
 
 	echo "[I] Reconfiguring GRUB..."
 	update-grub
@@ -84,11 +94,23 @@ function on {
 		fi
 	fi
 
-	prompt "enable"
+	prompt "This script is going enable KPTI on this machine, which requires a reboot. "
+
+	echo -n "[I] Command line before changes: "
+	echo $(cat $GRUB_FILE | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+
+	cp $GRUB_FILE /tmp/.tmp_grub
 
 	echo "[I] Editing kernel command line..."
-	sed -i "s/pti=off//g" $GRUB_FILE
-	sed -i "s/nopti//g" $GRUB_FILE
+	sed -i "s/pti=off//g" /tmp/.tmp_grub
+	sed -i "s/nopti//g" /tmp/.tmp_grub
+
+	echo -n "[I] Command line after changes: "
+	echo $(cat /tmp/.tmp_grub | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+
+	prompt ""
+
+	cp /tmp/.tmp_grub $GRUB_FILE
 
 	echo "[I] Reconfiguring GRUB..."
 	update-grub
