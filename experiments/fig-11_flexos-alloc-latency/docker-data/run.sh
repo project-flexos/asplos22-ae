@@ -2,6 +2,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
+# Do not run without KPTI
+
+GRUB_FILE="/etc/default/grub"
+
+if grep -Fxq "pti=off" $GRUB_FILE; then
+	die "[X] Not running FlexOS as KPTI is disabled."
+fi
+
+if grep -Fxq "nopti" $GRUB_FILE; then
+	die "[X] Not running FlexOS as KPTI is disabled."
+fi
+
 # Run microbenchmark and process data for FlexOS.
 
 mkdir -p /out/results

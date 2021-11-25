@@ -11,12 +11,21 @@
 Gate and allocation latency microbenchmarks. FlexOS is compared with Linux
 (with and without KPTI).
 
-### :warning: Measurements without KPTI
+### Measurement workflow
 
-Measurements without KPTI require a reboot with different kernel command line
-parameters. You can achieve this using `toggle-kpti.sh on`. Once you are done
-with the measurement, we recommend that you immediately run `toggle-kpti.sh
-off` to reset the machine to its initial state.
+This experiment is somewhat special, as it requires one measurement with KPTI
+disabled on the host system. This requires changes to the kernel command line
+and a reboot. The workflow is therefore slightly different, but we tried to
+make it as streamlined as possible:
+
+1. Prepare the experiment as usual with `make prepare`
+2. Run the first numbers as usual with `make run`
+3. Disable KPTI using `./toggle-kpti.sh off`
+4. After the reboot, run `make run` again
+5. Re-enable KPTI with `./toggle-kpti.sh on`
+
+As soon as you are done with step (4), we recommend that you immediately proceed to
+step 5 to reset the machine to its initial state.
 
 Note (especially to ASPLOS'22 AE reviewers): disabling KPTI will affect all
 other measurements, not only Linux for this figure. Make sure to re-enable KPTI
