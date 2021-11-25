@@ -82,19 +82,29 @@ Before you can run these experiments, you will need to prepare a physical host
 environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
+### 3.1 Hardware & Software Dependencies
+
+All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
+be run with any processor that supports Intel MPK, typically any Intel® Xeon®
+Scalable Processor starting with the Skylake generation (but the results might
+differ from the paper).  Our machine has 128.0 GB RAM, but any system with more
+than 12GB RAM should be suitable.
+
+On the software side, This artifact was tested on Debian 11.1 and Linux version
+`5.10.70-1`.  However, we expect that it should run on many more recent or
+slightly older Debian releases.
+
+### 3.2 Isolation of Cores
+
+This artifact expects two isolated cores via `isolcpu`. TODO more here.
+
+### 3.3 Avoiding Noise
+
 All benchmarks are performance and latency sensitive, as such it is critical to
 avoid any source of noise on the machine, such as concurrently running
 processes, other users, etc. If the machine is shared (as is the case for the
 ASPLOS'22 AE setup), it is critical that the different users coordinate on the
 use of the physical machine.
-
-All our results were run on an Intel® Xeon® Silver 4114 with 128.0 GB RAM,
-Debian 11.1, and Linux version `5.10.70-1`. This artifact may be run with
-any processor that supports Intel MPK, typically any Intel® Xeon® Scalable
-Processor starting with the Skylake generation (but the results might differ
-from the paper). This artifact was only tested on Debian 11.1, but any
-Debian-based distribution with similar package versions should be suitable.
-
 
 ## 4. Getting started
 
