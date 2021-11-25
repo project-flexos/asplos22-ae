@@ -73,4 +73,12 @@ reset
 # FORMAT OUTPUT
 # -------------
 
-# TODO
+echo "1   \"function\"   $function_cost"  >> $final_latcy
+echo "3   \"MPK-light\"  $mpklight_cost"  >> $final_latcy
+echo "4   \"MPK-dss\"    $mpkdss_cost"    >> $final_latcy
+echo "5   \"EPT\"        $ept_cost"       >> $final_latcy
+
+echo "Buffers     Heap    DSS     Shared" >> $final_alloc
+echo "1           $heap1     $dss1       $function_cost" >> $final_alloc
+echo "2           $heap2     $dss2       $function_cost" >> $final_alloc
+echo "3           $heap3     $dss3       $function_cost" >> $final_alloc

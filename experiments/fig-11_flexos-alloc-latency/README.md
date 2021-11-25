@@ -14,18 +14,11 @@ Gate and allocation latency microbenchmarks. FlexOS is compared with Linux
 ### :warning: Measurements without KPTI
 
 Measurements without KPTI require a reboot with different kernel command line
-parameters. You can achieve this via the following commands:
+parameters. You can achieve this using `toggle-kpti.sh on`. Once you are done
+with the measurement, we recommend that you immediately run `toggle-kpti.sh
+off` to reset the machine to its initial state.
 
-```bash
-vim /etc/default/grub # add pti=off to GRUB_CMDLINE_LINUX_DEFAULT
-update-grub
-reboot
-cat /proc/cmdline # make sure that it contains pti=off
-```
-
-Re-enabling KPTI can be done with inverse steps.
-
-Note to ASPLOS'22 AE reviewers: disabling KPTI will affect all other
-measurements, not only Linux for this figure. Make sure to re-enable KPTI as
-soon as you are done with this measurement. Cooperation among reviewers for
+Note (especially to ASPLOS'22 AE reviewers): disabling KPTI will affect all
+other measurements, not only Linux for this figure. Make sure to re-enable KPTI
+as soon as you are done with this measurement. Cooperation among reviewers for
 this benchmark is recommended.
