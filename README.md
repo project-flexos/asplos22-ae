@@ -82,6 +82,12 @@ Before you can run these experiments, you will need to prepare a physical host
 environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
+All benchmarks are performance and latency sensitive, as such it is critical to
+avoid any source of noise on the machine, such as concurrently running
+processes, other users, etc. If the machine is shared (as is the case for the
+ASPLOS'22 AE setup), it is critical that the different users coordinate on the
+use of the physical machine.
+
 All our results were run on an Intel® Xeon® Silver 4114 with 128.0 GB RAM,
 Debian 11.1, and Linux version `5.10.70-1`. This artifact may be run with
 any processor that supports Intel MPK, typically any Intel® Xeon® Scalable
