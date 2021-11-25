@@ -97,19 +97,25 @@ benchmark_kvm() {
 # FlexOS MPK 2 COMP noisolstack
 
 pushd flexos/apps/flexos-microbenchmarks-mpk2-noisolstack
-benchmark_kvm "flexos-mpk2-noisolstack"
+benchmark_kvm
 popd
 
 # FlexOS MPK 2 COMP isolstack
 
 pushd flexos/apps/flexos-microbenchmarks-mpk2-isolstack
-benchmark_kvm "flexos-mpk2-isolstack"
+benchmark_kvm
+popd
+
+# FlexOS MPK 2 COMP isolstack no DSS
+
+pushd flexos/apps/flexos-microbenchmarks-mpk2-isolstack-heap
+benchmark_kvm
 popd
 
 # FlexOS EPT 2 COMP
 
 pushd flexos/apps/flexos-microbenchmarks-ept2
-benchmark_kvm "flexos-ept2"
+benchmark_kvm
 popd
 
 # some of the KVM experiments mess the terminal up
