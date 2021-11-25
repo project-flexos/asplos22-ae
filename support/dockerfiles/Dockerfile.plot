@@ -8,4 +8,5 @@ ENV DEBIAN_FRONTEND=noninteractive
 # too old might result in broken plots, and possibly the same the other way
 # around
 
-RUN apt install gnuplot
+RUN apt update
+RUN apt install -y gnuplot
