@@ -7,11 +7,6 @@ PLOT_FORMAT ?= svg
 PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
 
 #
-# Tools
-#
-SNAKE ?= python3
-
-#
 # Targets
 #
 .PHONY: all
@@ -27,13 +22,13 @@ run:
 
 .PHONY: plot
 plot:
-	$(SNAKE) $(WORKDIR)/plot.py --data $(RESULTS) --output $(PLOT)
+	./plot.sh $(PLOT_FORMAT) $(PLOT)
 
 .PHONY: clean
 clean:
-	@-
+	rm -rf $(PLOT)
 
 .PHONY: properclean
 properclean:
-	@-
+	rm -rf $(PLOT)
 
