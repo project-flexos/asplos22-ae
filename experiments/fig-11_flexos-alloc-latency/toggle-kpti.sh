@@ -42,11 +42,11 @@ function prompt {
 function off {
 	checks
 
-	if grep -Fxq "pti=off" $GRUB_FILE; then
+	if grep -q "pti=off" $GRUB_FILE; then
 		die "[E] KPTI is already disabled."
 	fi
 
-	if grep -Fxq "nopti" $GRUB_FILE; then
+	if grep -q "nopti" $GRUB_FILE; then
 		die "[E] KPTI is already disabled."
 	fi
 
@@ -85,12 +85,12 @@ function off {
 function on {
 	checks
 
-	if grep -Fxq "pti=on" $GRUB_FILE; then
+	if grep -q "pti=on" $GRUB_FILE; then
 		die "[E] KPTI is already enabled."
 	fi
 
-	if ! grep -Fxq "nopti" $GRUB_FILE; then
-		if ! grep -Fxq "pti=off" $GRUB_FILE; then
+	if ! grep -q "nopti" $GRUB_FILE; then
+		if ! grep -q "pti=off" $GRUB_FILE; then
 			die "[E] KPTI is already enabled."
 		fi
 	fi
