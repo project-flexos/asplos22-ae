@@ -50,11 +50,10 @@ run-flexos:
 .PHONY: run-linux
 run-linux:
 	mkdir -p $(RESULTS)
-	taskset -c $(ISOLED_CPU) $(WORKDIR)/linux-latency/benchmark > $(RESULTS)/latency-linux.dat
-	# TODO reformat output here, handle KPTI / NOKPTI
+	$(WORKDIR)/tools/benchmark_linux.sh $(RESULTS) $(WORKDIR)/linux-latency $(ISOLED_CPU)
 
 .PHONY: run
-run: run-flexos run-linux
+run: run-linux run-flexos
 
 .PHONY: plot
 plot:
