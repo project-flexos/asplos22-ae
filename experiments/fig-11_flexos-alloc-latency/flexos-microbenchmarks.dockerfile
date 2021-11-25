@@ -24,6 +24,7 @@ WORKDIR /root/.unikraft/apps
 RUN kraftcleanup
 RUN cd /root/.unikraft/unikraft && git checkout 66f546dc6a2d8e13b47846ee29450f75b3ad388a
 COPY docker-data/configs/microbenchmarks-flexos-mpk2.config /root/.unikraft/apps/microbenchmarks/.config
+COPY docker-data/configs/kraft.yaml.mpk2 microbenchmarks/kraft.yaml
 RUN cd microbenchmarks && make prepare && kraft -v build --no-progress --fast --compartmentalize
 COPY docker-data/start-scripts/kvmflexos-start.sh /root/.unikraft/apps/microbenchmarks/kvm-start.sh
 RUN cd microbenchmarks && /root/build-images.sh && rm -rf build/
