@@ -19,11 +19,11 @@ function disclaimer {
 function checks {
 	disclaimer
 	users=$(who | wc -l)
-	if [ $users -ge 1 ]; then
+	if [ $users -gt 1 ]; then
 		die "[E] Cannot toggle KPTI: there are $users logged in; please coordinate on machine use."
 	fi
 
-	if test -f "$GRUB_FILE"; then
+	if ! test -f "$GRUB_FILE"; then
 		die "[E] This machine does not seem to use GRUB, but this script only supports GRUB."
 	fi
 }
@@ -53,21 +53,22 @@ function off {
 	prompt "This script is going disable KPTI on this machine, which requires a reboot. "
 
 	echo -n "[I] Command line before changes: "
-	echo $(cat $GRUB_FILE | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+	echo $(cat $GRUB_FILE | grep "GRUB_CMDLINE_LINUX=" | sed "s/.*GRUB_CMDLINE_LINUX=//g")
 
 	cp $GRUB_FILE /tmp/.tmp_grub
 
 	echo -n "[I] Editing kernel command line..."
 	sed -i "s/GRUB_CMDLINE_LINUX=\"/GRUB_CMDLINE_LINUX=\"pti=off /g" /tmp/.tmp_grub
 
-	if grep -Fxq "pti=off" /tmp/.tmp_grub; then
+	if grep -q "pti=off" /tmp/.tmp_grub; then
 		echo " done."
 	else
-		die "\n[E] Failed to edit kernel command line."
+		echo ""
+		die "[E] Failed to edit kernel command line."
 	fi
 
 	echo -n "[I] Command line after changes: "
-	echo $(cat /tmp/.tmp_grub | grep GRUB_CMDLINE_LINUX | sed "s/.*GRUB_CMDLINE_LINUX=//g")
+	echo $(cat /tmp/.tmp_grub | grep "GRUB_CMDLINE_LINUX=" | sed "s/.*GRUB_CMDLINE_LINUX=//g")
 
 	prompt ""
 
