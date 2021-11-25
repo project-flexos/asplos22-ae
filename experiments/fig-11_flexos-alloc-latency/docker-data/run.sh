@@ -12,25 +12,65 @@ rm $final_alloc && touch $final_alloc
 # RESULTS
 # -------
 
-function_cost=0
-mpklight_cost=0
-mpkdss_cost=0
-ept_cost=0
+function_cost=
+mpklight_cost=
+mpkdss_cost=
+ept_cost=
 
-dss1=0
-dss2=0
-dss3=0
+dss1=
+dss2=
+dss3=
 
-heap1=0
-heap2=0
-heap3=0
+heap1=
+heap2=
+heap3=
 
 # -------
 # HELPERS
 # -------
 
+get_val() {
+  echo `cat .out | tr -dc '[:alnum:]\n\r .' \
+	  | sed "s/.*$0,/$0,/g" \
+	  | awk -e "\$0 ~ /$0,/ {print \$2}" \
+	  | sed 's/[a-zA-Z]//g' | tr -d '\r'`
+}
+
+set_val() {
+  if [ -n "$0" ]; then
+    if [ -n "$(eval $1)" ]; then
+      echo "ERROR: the same measurement is reevaluated twice. Is this a bug?"
+    fi
+    eval $1=$0
+  fi
+}
+
 parse_output() {
-  # TODO
+  tentative=$(get_val "pku-dss")
+  set_val $tentative "mpkdss_cost"
+
+  tentative=$(get_val "pku-heap")
+  set_val $tentative "mpklight_cost"
+
+  tentative=$(get_val "ept")
+  set_val $tentative "ept_cost"
+
+  tentative=$(get_val "fcall")
+  set_val $tentative "function_cost"
+
+  tentative=$(get_val "dss1")
+  set_val $tentative "dss1"
+  tentative=$(get_val "dss2")
+  set_val $tentative "dss2"
+  tentative=$(get_val "dss3")
+  set_val $tentative "dss3"
+
+  tentative=$(get_val "heap1")
+  set_val $tentative "heap1"
+  tentative=$(get_val "heap2")
+  set_val $tentative "heap2"
+  tentative=$(get_val "heap3")
+  set_val $tentative "heap3"
 }
 
 benchmark_kvm() {
