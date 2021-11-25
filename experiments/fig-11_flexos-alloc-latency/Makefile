@@ -31,10 +31,12 @@ prepare-flexos:
 		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-microbenchmarks $(WORKDIR)
 
-.PHONY: prepare-linux
-prepare-linux:
+linux-latency:
 	git clone https://github.com/project-flexos/app-flexos-microbenchmarks.git
 	mv app-flexos-microbenchmarks linux-latency
+
+.PHONY: prepare-linux
+prepare-linux: linux-latency
 	make linux -C linux-latency
 
 .PHONY: prepare
