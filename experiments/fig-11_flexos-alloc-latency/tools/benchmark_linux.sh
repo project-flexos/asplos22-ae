@@ -23,8 +23,8 @@ function merge {
 	fi
 }
 
-if ! grep -Fxq "nopti" $GRUB_FILE; then
-	if ! grep -Fxq "pti=off" $GRUB_FILE; then
+if ! grep -q "nopti" $GRUB_FILE; then
+	if ! grep -q "pti=off" $GRUB_FILE; then
 		# KPTI is enabled
 		taskset -c ${3} ${2}/benchmark > .out
 		scall=`cat .out | tr -dc '[:alnum:]\n\r .,-' | sed "s/.*scall,/scall,/g" \

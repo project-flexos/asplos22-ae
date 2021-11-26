@@ -31,3 +31,15 @@ Note (especially to ASPLOS'22 AE reviewers): disabling KPTI will affect all
 other measurements, not only Linux for this figure. Make sure to re-enable KPTI
 as soon as you are done with this measurement. Cooperation among reviewers for
 this benchmark is recommended.
+
+## Troubleshooting
+
+- **Problem**: Every once in a while, EPT results increase to ~700 cycles
+  (instead of ~500 expected).
+
+  **Solution**: It is not entirely clear why this happens. We suspect a
+  combination of unlucky scheduling of vCPU threads (not pinned
+  in this specific case due to a missing implementation in `qemu-guest`), and
+  cache effects. In our measurements this was a rather rare symptom and
+  we therefore considered it as minor. We recommend to simply restart the benchmark
+  in this case.

@@ -11,11 +11,15 @@ GRUB_FILE="/proc/cmdline"
 die() { echo "$*" 1>&2 ; exit 1; }
 
 if grep -q "pti=off" $GRUB_FILE; then
-	die "[X] Not running FlexOS as KPTI is disabled."
+	echo "[X] Not running FlexOS as KPTI is disabled."
+	# exit 0 to not stop make run, this is not a failure
+	exit 0
 fi
 
 if grep -q "nopti" $GRUB_FILE; then
-	die "[X] Not running FlexOS as KPTI is disabled."
+	echo "[X] Not running FlexOS as KPTI is disabled."
+	# exit 0 to not stop make run, this is not a failure
+	exit 0
 fi
 
 # Run microbenchmark and process data for FlexOS.
