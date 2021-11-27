@@ -10,6 +10,9 @@ PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
 # Parameters
 #
 KRAFT_TOKEN ?=
+ISOLED_CPU1 ?= 5
+ISOLED_CPU2 ?= 6
+ISOLED_CPU3 ?= 7
 
 #
 # Tools
@@ -32,7 +35,8 @@ prepare:
 .PHONY: run
 run:
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged \
-		--security-opt seccomp:unconfined -ti flexos-iperf /root/run.sh
+		--security-opt seccomp:unconfined -ti flexos-iperf \
+		/root/run.sh $(ISOLED_CPU1) $(ISOLED_CPU2) $(ISOLED_CPU3)
 
 .PHONY: plot
 plot:

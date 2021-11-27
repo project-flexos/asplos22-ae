@@ -10,6 +10,8 @@ PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
 # Parameters
 #
 KRAFT_TOKEN ?=
+ISOLED_CPU1 ?= 5
+ISOLED_CPU2 ?= 6
 
 #
 # Tools

@@ -10,6 +10,16 @@ GRUB_FILE="/proc/cmdline"
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
+if [ -z "$CPU_ISOLED1" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_ISOLED2" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
 if grep -q "pti=off" $GRUB_FILE; then
 	echo "[X] Not running FlexOS as KPTI is disabled."
 	# exit 0 to not stop make run, this is not a failure

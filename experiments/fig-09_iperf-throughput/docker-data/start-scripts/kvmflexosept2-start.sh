@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPU_ISOLED1=$3
+CPU_ISOLED2=$4
+
 # -----
 
 # EDIT ME if you run me elsewhere
@@ -56,7 +59,7 @@ EOF
   chmod +x ${TEMP}/ifdown.sh
 
   # run compartment 0
-  $QEMU_BIN -enable-kvm -daemonize -display none \
+  taskset -c $CPU_ISOLED1 $QEMU_BIN -enable-kvm -daemonize -display none \
     -device myshmem,file=/data_shared,size=0x3000,paddr=0x105000 \
     -device myshmem,file=/rpc_page,size=0x100000,paddr=0x800000000 \
     -device myshmem,file=/heap,size=0x8000000,paddr=0x4000000000 \
@@ -68,7 +71,7 @@ EOF
   sleep 2
 
   # run compartment 1
-  $QEMU_BIN -enable-kvm -daemonize -display none \
+  taskset -c $CPU_ISOLED2 $QEMU_BIN -enable-kvm -daemonize -display none \
     -device myshmem,file=/data_shared,paddr=0x105000,size=0x3000 \
     -device myshmem,file=/rpc_page,paddr=0x800000000,size=0x100000 \
     -device myshmem,file=/heap,paddr=0x4000000000,size=0x8000000 \

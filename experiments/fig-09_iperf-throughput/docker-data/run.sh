@@ -2,10 +2,29 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
-#set -x
-
 # Run SQLite benchmark for Linux (userland process), Unikraft 0.5 (linuxu and
 # kvm), FlexOS (kvm), CubicleOS (linuxu).
+
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+CPU_ISOLED2=$3
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+if [ -z "$CPU_ISOLED1" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_ISOLED2" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_ISOLED3" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
 
 apt install -y bc iperf
 
@@ -56,11 +75,11 @@ benchmark_kvm() {
       c=$(($(($i - 4)) * $REPS + $j))
       echo "KVM / $1 run ${c}/${t}"
       isept=$( grep -e "CONFIG_LIBFLEXOS_VMEPT=y" .config )
-      ./kvm-start.sh run images/${cur}.img
+      ./kvm-start.sh run images/${cur}.img $CPU_ISOLED1 $CPU_ISOLED2
       if [ -n "$isept" ]; then
-        script .out -c "iperf -c 172.130.0.76 -p 12345 -t 10 --format g"
+        script .out -c "taskset -c $CPU_ISOLED3 iperf -c 172.130.0.76 -p 12345 -t 10 --format g"
       else
-        script .out -c "iperf -c 172.130.0.2  -p 12345 -t 10 --format g"
+        script .out -c "taskset -c $CPU_ISOLED3 iperf -c 172.130.0.2  -p 12345 -t 10 --format g"
       fi
       ./kvm-start.sh kill
       parse_output
