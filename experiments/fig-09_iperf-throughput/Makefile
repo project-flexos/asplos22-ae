@@ -10,6 +10,11 @@ PLOT ?= $(WORKDIR)/$(notdir $(WORKDIR)).$(PLOT_FORMAT)
 # Parameters
 #
 KRAFT_TOKEN ?=
+# These should be contiguous on the same NUMA node
+NOISOLED_CPU1 ?= 1
+NOISOLED_CPU2 ?= 2
+NOISOLED_CPU3 ?= 3
+NOISOLED_CPU4 ?= 4
 ISOLED_CPU1 ?= 5
 ISOLED_CPU2 ?= 6
 ISOLED_CPU3 ?= 7
@@ -36,7 +41,8 @@ prepare:
 run:
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged \
 		--security-opt seccomp:unconfined -ti flexos-iperf \
-		/root/run.sh $(ISOLED_CPU1) $(ISOLED_CPU2) $(ISOLED_CPU3)
+		/root/run.sh $(ISOLED_CPU1) $(ISOLED_CPU2) $(ISOLED_CPU3) \
+		$(NOISOLED_CPU1) $(NOISOLED_CPU2) $(NOISOLED_CPU3) $(NOISOLED_CPU4)
 
 .PHONY: plot
 plot:

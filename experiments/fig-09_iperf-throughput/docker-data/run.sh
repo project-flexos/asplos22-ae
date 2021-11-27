@@ -8,6 +8,10 @@
 CPU_ISOLED1=$1
 CPU_ISOLED2=$2
 CPU_ISOLED3=$3
+CPU_NOISOLED1=$4
+CPU_NOISOLED2=$5
+CPU_NOISOLED3=$6
+CPU_NOISOLED4=$7
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
@@ -22,6 +26,26 @@ then
 fi
 
 if [ -z "$CPU_ISOLED3" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_NOISOLED1" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_NOISOLED2" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_NOISOLED3" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_NOISOLED4" ]
 then
   die "isolated CPU list not provided (read the main README!)"
 fi
@@ -75,11 +99,12 @@ benchmark_kvm() {
       c=$(($(($i - 4)) * $REPS + $j))
       echo "KVM / $1 run ${c}/${t}"
       isept=$( grep -e "CONFIG_LIBFLEXOS_VMEPT=y" .config )
-      ./kvm-start.sh run images/${cur}.img $CPU_ISOLED1 $CPU_ISOLED2
+      ./kvm-start.sh run images/${cur}.img $CPU_ISOLED2 $CPU_ISOLED3 $CPU_NOISOLED1 \
+	      				$CPU_NOISOLED2 $CPU_NOISOLED3 $CPU_NOISOLED4
       if [ -n "$isept" ]; then
-        script .out -c "taskset -c $CPU_ISOLED3 iperf -c 172.130.0.76 -p 12345 -t 10 --format g"
+        script .out -c "taskset -c $CPU_ISOLED1 iperf -c 172.130.0.76 -p 12345 -t 10 --format g"
       else
-        script .out -c "taskset -c $CPU_ISOLED3 iperf -c 172.130.0.2  -p 12345 -t 10 --format g"
+        script .out -c "taskset -c $CPU_ISOLED1 iperf -c 172.130.0.2  -p 12345 -t 10 --format g"
       fi
       ./kvm-start.sh kill
       parse_output
