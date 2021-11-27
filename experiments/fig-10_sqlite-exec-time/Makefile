@@ -34,7 +34,8 @@ prepare:
 .PHONY: run
 run:
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged \
-		--security-opt seccomp:unconfined -ti flexos-sqlite /root/run.sh
+		--security-opt seccomp:unconfined -ti flexos-sqlite
+		/root/run.sh $(ISOLED_CPU1) $(ISOLED_CPU2)
 
 .PHONY: plot
 plot:

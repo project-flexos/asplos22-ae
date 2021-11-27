@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+
 # verbose output
 set -x
 
@@ -24,7 +27,7 @@ fi
 rm ${ram_disk}/database.db
 touch ${ram_disk}/database.db
 
-/root/linux-userland/sqlite-benchmark ${ram_disk}/database.db
+taskset -c $CPU_ISOLED1 /root/linux-userland/sqlite-benchmark ${ram_disk}/database.db
 
 if [ "$ram_disk" = "/mnt/sqlite_ramdisk" ]; then
     >&2 echo "Unmounting RAM disk"

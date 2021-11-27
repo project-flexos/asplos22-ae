@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+
 # verbose output
 set -x
 
@@ -11,7 +14,7 @@ function cleanup {
 
 trap "cleanup" EXIT
 
-/root/qemu-guest \
+taskset -c $CPU_ISOLED1 /root/qemu-guest -p $CPU_ISOLED2 \
 	-k /root/flexos/apps/sqlite-mpk3/build/sqlite_kvm-x86_64 \
 	-m 1000 -a "-mmap 0 database.db" -i /root/flexos/apps/sqlite-mpk3/sqlite.cpio
 

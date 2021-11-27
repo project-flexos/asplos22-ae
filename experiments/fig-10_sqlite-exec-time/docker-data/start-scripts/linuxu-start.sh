@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+
 # verbose output
 set -x
 
@@ -10,5 +13,6 @@ function cleanup {
 
 trap "cleanup" EXIT
 
-/root/unikraft-mainline/apps/app-sqlite-linuxu/build/app-sqlite_linuxu-x86_64 \
+taskset -c $CPU_ISOLED1 \
+	/root/unikraft-mainline/apps/app-sqlite-linuxu/build/app-sqlite_linuxu-x86_64 \
 	-mmap 0 database.db

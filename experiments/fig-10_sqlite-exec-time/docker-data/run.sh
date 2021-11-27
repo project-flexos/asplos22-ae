@@ -2,10 +2,23 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
-#set -x
-
 # Run SQLite benchmark for Linux (userland process), Unikraft 0.5 (linuxu and
 # kvm), FlexOS (kvm), CubicleOS (linuxu).
+
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+if [ -z "$CPU_ISOLED1" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
+
+if [ -z "$CPU_ISOLED2" ]
+then
+  die "isolated CPU list not provided (read the main README!)"
+fi
 
 apt install -y bc
 
@@ -64,7 +77,7 @@ output_avg() {
 benchmark_process() {
   header $1 "process"
   for j in $( seq 0 $REPS ); do
-    script .out -c "./process-start.sh"
+    script .out -c "./process-start.sh ${CPU_ISOLED1} ${CPU_ISOLED2}"
     parse_output $j
   done
   output_avg $2 $3
@@ -73,7 +86,7 @@ benchmark_process() {
 benchmark_linuxu() {
   header $1 "linuxu"
   for j in $( seq 0 $REPS ); do
-    script .out -c "./linuxu-start.sh"
+    script .out -c "./linuxu-start.sh ${CPU_ISOLED1} ${CPU_ISOLED2}"
     parse_output $j
   done
   output_avg $2 $3
@@ -86,7 +99,7 @@ benchmark_kvm() {
       sleep 3
       killall -9 qemu-system-x86
     } &
-    script .out -c "./kvm-start.sh"
+    script .out -c "./kvm-start.sh ${CPU_ISOLED1} ${CPU_ISOLED2}"
     wait
     parse_output $j
   done

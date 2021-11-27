@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPU_ISOLED1=$1
+CPU_ISOLED2=$2
+
 # -----
 
 # EDIT ME if you run me elsewhere
@@ -14,7 +17,7 @@ MEM=2G
 
 run() {
   # run compartment 1 (with delay)
-  sleep 3 && $QEMU_BIN -enable-kvm -daemonize -display none \
+  sleep 3 && taskset -c $CPU_ISOLED1 $QEMU_BIN -enable-kvm -daemonize -display none \
     -device myshmem,file=/data_shared,size=0x2000,paddr=0x105000 \
     -device myshmem,file=/rpc_page,size=0x100000,paddr=0x800000000 \
     -device myshmem,file=/heap,size=0x8000000,paddr=0x4000000000 \
@@ -22,7 +25,7 @@ run() {
     -m $MEM -L /root/pc-bios &
 
   # run compartment 0
-  $QEMU_BIN -enable-kvm -nographic \
+  taskset -c $CPU_ISOLED2 $QEMU_BIN -enable-kvm -nographic \
     -device myshmem,file=/data_shared,size=0x2000,paddr=0x105000 \
     -device myshmem,file=/rpc_page,size=0x100000,paddr=0x800000000 \
     -device myshmem,file=/heap,size=0x8000000,paddr=0x4000000000 \
