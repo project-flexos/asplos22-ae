@@ -44,8 +44,6 @@ clean:
 	rm -rf results $(PLOT)
 
 .PHONY: properclean
-properclean:
-	$(DOCKER) image rm flexos-iperf
+properclean: clean
+	$(DOCKER) image rm -f flexos-iperf
 	$(DOCKER) image prune
-	rm -rf results $(PLOT)
-
