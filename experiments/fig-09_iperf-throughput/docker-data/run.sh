@@ -7,7 +7,7 @@
 
 CPU_ISOLED1=$1
 CPU_ISOLED2=$2
-CPU_ISOLED2=$3
+CPU_ISOLED3=$3
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
