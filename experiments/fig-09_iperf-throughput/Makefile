@@ -46,7 +46,8 @@ run:
 
 .PHONY: plot
 plot:
-	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/iperf.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti \
+		ghcr.io/project-flexos/flexos-ae-plot $(GNUPLOT) /out/iperf.plot
 	mv $(WORKDIR)/iperf.svg $(PLOT)
 
 .PHONY: clean

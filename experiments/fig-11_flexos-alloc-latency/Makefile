@@ -59,9 +59,11 @@ run: run-flexos run-linux
 
 .PHONY: plot
 plot:
-	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/dss.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti \
+		ghcr.io/project-flexos/flexos-ae-plot $(GNUPLOT) /out/dss.plot
 	mv $(WORKDIR)/dss.svg $(PLOT-DSS)
-	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/latency.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti \
+		ghcr.io/project-flexos/flexos-ae-plot $(GNUPLOT) /out/latency.plot
 	mv $(WORKDIR)/latency.svg $(PLOT-LATENCY)
 
 .PHONY: clean

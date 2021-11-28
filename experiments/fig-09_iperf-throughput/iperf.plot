@@ -55,7 +55,7 @@ set style line 5 \
 #set yrange [0:3.5]
 set xrange [16:16384]
 
-plot 'results/iperf.dat' \
+plot '/out/results/iperf.dat' \
         index 4 with linespoints linestyle 1 t "Unikraft", \
      '' index 3 with linespoints linestyle 2 t "Chrysalis NONE", \
      '' index 1 with linespoints linestyle 3 t "Chrysalis MPK2-light", \

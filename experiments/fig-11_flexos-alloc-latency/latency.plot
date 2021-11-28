@@ -36,7 +36,7 @@ set label "Linux"     at 6.65,700 font ",16"
 set arrow from 2, graph 0 to 2, graph 1 nohead
 set arrow from 6, graph 0 to 6, graph 1 nohead
 
-plot "results/latency.dat" \
+plot "/out/results/latency.dat" \
 		   every 6::0 using 1:3:xtic(2) with boxes fs pattern 1 lc "black" notitle, \
                 "" every 6::1 using 1:3:xtic(2) with boxes fs pattern 2 lc "black" notitle, \
                 "" every 6::2 using 1:3:xtic(2) with boxes fs pattern 6 lc "black" notitle, \
