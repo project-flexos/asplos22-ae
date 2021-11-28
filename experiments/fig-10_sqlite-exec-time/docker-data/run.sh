@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
+SECONDS=0
+
 # Run SQLite benchmark for Linux (userland process), Unikraft 0.5 (linuxu and
 # kvm), FlexOS (kvm), CubicleOS (linuxu).
 
@@ -175,3 +177,6 @@ popd
 reset
 
 cat $tmp
+
+duration=$SECONDS
+echo "Runtime: $(($duration / 60)) minutes and $(($duration % 60)) seconds."

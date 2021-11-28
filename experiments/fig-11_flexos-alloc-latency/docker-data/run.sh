@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
+SECONDS=0
+
 # Do not run without KPTI
 
 CPU_ISOLED1=$1
@@ -164,3 +166,6 @@ echo "Buffers     Heap    DSS     Shared" >> $final_alloc
 echo "1           $heap1     $dss1       $function_cost" >> $final_alloc
 echo "2           $heap2     $dss2       $function_cost" >> $final_alloc
 echo "3           $heap3     $dss3       $function_cost" >> $final_alloc
+
+duration=$SECONDS
+echo "Runtime: $(($duration / 60)) minutes and $(($duration % 60)) seconds."
