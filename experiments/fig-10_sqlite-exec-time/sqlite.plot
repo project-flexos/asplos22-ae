@@ -3,7 +3,7 @@
 reset
 
 set terminal svg enhanced size 650,250 font 'Arial,20'
-set output 'sqlite.svg'
+set output '/out/sqlite.svg'
 
 set grid
 
@@ -68,7 +68,8 @@ set arrow from 7,  graph 0 to 7, graph 1 nohead
 set arrow from 9,  graph 0 to 9, graph 1 nohead
 set arrow from 11, graph 0 to 11, graph 1 nohead
 
-plot "sqlite.dat" every 9::0 using 1:3:xtic(2) with boxes fs pattern 1 lc "#91c6e7" title "QEMU/KVM", \
+plot "results/sqlite.dat" \
+                  every 9::0 using 1:3:xtic(2) with boxes fs pattern 1 lc "#91c6e7" title "QEMU/KVM", \
                "" every 9::1 using 1:3:xtic(2) with boxes fs pattern 6 lc "#a2d9d1" notitle, \
                "" every 9::2 using 1:3:xtic(2) with boxes fs pattern 1 lc "#91c6e7" notitle, \
                "" every 9::3 using 1:3:xtic(2) with boxes fs pattern 1 lc "#91c6e7" notitle, \

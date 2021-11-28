@@ -39,7 +39,7 @@ run:
 
 .PHONY: plot
 plot:
-	$(GNUPLOT) $(WORKDIR)/sqlite.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/sqlite.plot
 	mv $(WORKDIR)/sqlite.svg $(PLOT)
 
 .PHONY: clean
