@@ -23,7 +23,7 @@ function killimg {
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
-if [ $# -gt 4 ]; then
+if [ $# -gt 8 ]; then
     die "Usage:\t$0 run <image>\n\t$0 kill"
 elif [ $# -eq 0 ]; then
     die "Usage:\t$0 run <image>\n\t$0 kill"
