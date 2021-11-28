@@ -82,13 +82,19 @@ Before you can run these experiments, you will need to prepare a physical host
 environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
+Many of these benchmarks are highly latency-sensitive, and a change in a few
+cycles might create significant disrepancies with the paper's results. Although
+not strictly necessary, we therefore recommend a careful setup of the system to
+reproduce the results. Section 3.2 gives a few advice on this matter.
+
 ### 3.1. Hardware & Software Dependencies
 
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
 Scalable Processor starting with the Skylake generation (but the results might
-differ from the paper).  Our machine has 128.0 GB RAM, but any system with more
-than 12GB RAM should be suitable.
+differ from the paper).  We recommend choosing a machine with more than 8 cores
+(see 3.2). Our machine has 128.0 GB RAM, but any system with more than 12GB RAM
+should be suitable.
 
 On the software side, This artifact was tested on Debian 11.1 and Linux version
 `5.10.70-1`.  However, we expect that it should run on many more recent or
@@ -96,34 +102,61 @@ slightly older Debian releases.
 
 ### 3.2. Isolation of Cores
 
-This artifact expects two isolated cores via `isolcpu`. TODO more here.
+This artifact may use up to 7 cores for experiments: four non-isolated cores
+(so that the kernel's load balancer can be used), and three isolated cores (via
+`isolcpu`).  If the machine only has 8 cores, the remaining system load
+(however minimal) might not fit in the remaining core and create noise in
+experiments, so we recommend a larger core count.
 
-### 3.3. Avoiding Noise
+Since these benchmarks are using non-isolated cores as well, it is important to
+keep the noise level on them as minimal as possible, e.g., concurrently running
+processes, other users, etc. We recommend the following:
 
-All benchmarks are performance and latency sensitive, as such it is critical to
-avoid any source of noise on the machine, such as concurrently running
-processes, other users, etc. If the machine is shared (as is the case for the
-ASPLOS'22 AE setup), it is critical that the different users coordinate on the
-use of the physical machine.
+- Ideally the machine should be a fresh installation to avoid any non-necessary
+  deamon or process
+- If the machine is shared (as is the case for the ASPLOS'22 AE setup), it is
+  critical that the different users coordinate on the use of the physical
+  machine
+- The Docker daemon, the main source of noise on the system, should be pinned
+  to cores that are not used by the benchmark (see 3.3)
+
+### 3.3 Installing Docker
+
+Many of the experiments use Docker as an intermediate tool for creating build
+and test environments (along with testing Docker itself).  Please [install
+Docker](https://docs.docker.com/get-docker/) on your system to continue. This
+artifact makes heavy use of Docker containers, and so we recommend you to use a
+recent version of Docker to avoid storage pool issues.  See
+[troubleshooting](#5-troubleshooting). Our version of Docker is 20.10.10.
+
+As the docker daemon is the main source of noise on the system, we recommend
+you to pin it to a set of CPUs not used by the benchmark. In our testbed, we
+pinned it to core 11-19. You can do so by editing `ExecStart` in
+`/lib/systemd/system/docker.service` as following:
+
+```
+ExecStart=taskset -c 11-19 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+
+If your startup file is located elsewhere, you should be able to find its path via:
+
+```
+$ service docker status
+```
+
+*TODO*: document how to set core numbers for experiments.
 
 ## 4. Getting started
 
 1. Before running any of these experiments, prepare your host with the
    recommendations detailed above in [prerequisites](#3-prerequisites);
 
-2. Many of the experiments use Docker as an intermediate tool for creating build
-   and test environments (along with testing Docker itself).  Please
-   [install Docker](https://docs.docker.com/get-docker/) on your system to
-   continue. This artifact makes heavy use of Docker containers, and so we
-   recommend you to use a recent version of Docker to avoid storage pool issues.
-   See [troubleshooting](#5-troubleshooting).
-
-3. Once Docker is installed, clone this repository
+2. Clone the main AE repository
    ```bash
    git clone https://github.com/project-flexos/asplos22-ae.git
    ```
 
-4. All experiments should be `prepare`d first, which installs necessary tools
+3. All experiments should be `prepare`d first, which installs necessary tools
    and downloads additional resources, before they can run.  This can be done
    for a single experiment, for example:
    ```bash
@@ -133,7 +166,7 @@ use of the physical machine.
    ```
    make prepare
    ```
-5. Once one or many experiments have been prepared, they can be run, again using
+4. Once one or many experiments have been prepared, they can be run, again using
    a similar syntax as above:
    ```bash
    make run-fig-07
@@ -144,7 +177,7 @@ use of the physical machine.
    ```
    This will generate the relevant experimental results within the experimental
    folder of the specific experiment.
-6. To plot one or many experiment's figures, use, for example:
+5. To plot one or many experiment's figures, use, for example:
    ```bash
    make plot-fig-07
    ```
@@ -152,7 +185,7 @@ use of the physical machine.
    ```
    make plot
    ```
-7. You can clean, or "properclean" to completely reset any preparation, with
+6. You can clean, or "properclean" to completely reset any preparation, with
    `make clean` or `make properclean` and for individual experiments, for
    example: 
    ```bash
