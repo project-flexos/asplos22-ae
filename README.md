@@ -117,8 +117,6 @@ processes, other users, etc. We recommend the following:
 - If the machine is shared (as is the case for the ASPLOS'22 AE setup), it is
   critical that the different users coordinate on the use of the physical
   machine
-- The Docker daemon, the main source of noise on the system, should be pinned
-  to cores that are not used by the benchmark (see 3.3)
 
 ### 3.3 Installing Docker
 
@@ -128,21 +126,6 @@ Docker](https://docs.docker.com/get-docker/) on your system to continue. This
 artifact makes heavy use of Docker containers, and so we recommend you to use a
 recent version of Docker to avoid storage pool issues.  See
 [troubleshooting](#5-troubleshooting). Our version of Docker is 20.10.10.
-
-As the docker daemon is the main source of noise on the system, we recommend
-you to pin it to a set of CPUs not used by the benchmark. In our testbed, we
-pinned it to core 11-19. You can do so by editing `ExecStart` in
-`/lib/systemd/system/docker.service` as following:
-
-```
-ExecStart=taskset -c 11-19 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
-```
-
-If your startup file is located elsewhere, you should be able to find its path via:
-
-```
-$ service docker status
-```
 
 *TODO*: document how to set core numbers for experiments.
 
