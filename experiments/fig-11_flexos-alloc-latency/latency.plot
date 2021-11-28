@@ -3,7 +3,7 @@
 reset
 
 set terminal svg enhanced size 300,250 font 'Arial,18'
-set output 'latency.svg'
+set output '/out/latency.svg'
 
 set grid
 set style fill pattern border -1

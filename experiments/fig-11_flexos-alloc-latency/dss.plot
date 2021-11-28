@@ -3,7 +3,7 @@
 reset
 
 set terminal svg enhanced size 300,250 font 'Arial,18'
-set output 'dss.svg'
+set output '/out/dss.svg'
 
 set style data histogram
 set style histogram cluster gap 1

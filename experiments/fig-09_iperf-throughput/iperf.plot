@@ -3,7 +3,7 @@
 reset
 
 set terminal svg enhanced size 650,300 font 'Arial,20'
-set output 'iperf.svg'
+set output '/out/iperf.svg'
 
 set grid
 

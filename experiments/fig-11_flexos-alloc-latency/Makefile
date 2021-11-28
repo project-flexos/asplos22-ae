@@ -59,9 +59,9 @@ run: run-flexos run-linux
 
 .PHONY: plot
 plot:
-	$(GNUPLOT) $(WORKDIR)/dss.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/dss.plot
 	mv $(WORKDIR)/dss.svg $(PLOT-DSS)
-	$(GNUPLOT) $(WORKDIR)/latency.plot
+	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti flexos-ae-plot $(GNUPLOT) $(WORKDIR)/latency.plot
 	mv $(WORKDIR)/latency.svg $(PLOT-LATENCY)
 
 .PHONY: clean
