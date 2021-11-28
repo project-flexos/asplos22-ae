@@ -63,7 +63,7 @@ rm $tmp && touch $tmp
 # ---------
 
 # number of reps in this benchmark
-REPS=10
+REPS=5
 
 # -------
 # HELPERS
