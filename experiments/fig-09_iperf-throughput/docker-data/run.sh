@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Authors: Hugo Lefeuvre <hugo.lefeuvre@manchester.ac.uk>
 
+SECONDS=0
+
 # Run SQLite benchmark for Linux (userland process), Unikraft 0.5 (linuxu and
 # kvm), FlexOS (kvm), CubicleOS (linuxu).
 
@@ -61,7 +63,7 @@ rm $tmp && touch $tmp
 # ---------
 
 # number of reps in this benchmark
-REPS=5
+REPS=10
 
 # -------
 # HELPERS
@@ -96,7 +98,7 @@ benchmark_kvm() {
   for i in {4..20}; do
     cur=$(echo 2^$i | bc)
     for j in $( seq 1 $REPS); do
-      c=$(($(($i - 4)) * $REPS + $j))
+      c=$(($(($i - 4)) * $REPS + $(($j - 1))))
       echo "KVM / $1 run ${c}/${t}"
       isept=$( grep -e "CONFIG_LIBFLEXOS_VMEPT=y" .config )
       ./kvm-start.sh run images/${cur}.img $CPU_ISOLED2 $CPU_ISOLED3 $CPU_NOISOLED1 \
@@ -150,3 +152,6 @@ popd
 # remove the first two empty lines
 tail +3 $tmp
 cat $tmp
+
+duration=$SECONDS
+echo "Runtime: $(($duration / 60)) minutes and $(($duration % 60)) seconds."
