@@ -42,6 +42,7 @@ Q       ?= @
 # Tools
 #
 DOCKER  ?= docker
+CURL ?= curl
 
 #
 # Find shortname for experiment
@@ -99,3 +100,12 @@ $(DIMAGES):
 		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--file $(WORKDIR)/support/dockerfiles/Dockerfile.$(@:docker-%=%) \
 		$(WORKDIR)/support/dockerfiles
+
+# Prepare the final Zenodo archive
+zenodo:
+	mkdir -p $(WORKDIR)/repositories
+	# clone all repos in the flexos organization
+	cd $(WORKDIR)/repositories && \
+		$(CURL) -s https://github.com:@api.github.com/orgs/${ORG}/repos?per_page=200 | \
+		jq .[].ssh_url | xargs -n 1 git clone
+	tar -czf $(WORKDIR)/../flexos-asplos22-ae.tar.gz $(WORKDIR)

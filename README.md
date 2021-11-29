@@ -203,7 +203,18 @@ well!
   might be old or using the Debian/Ubuntu repositories. In this case, we recommend
   a fresh reinstall of Docker.
 
-## 6. Beyond the Paper
+## 6. Zenodo artifact
+
+In addition to this repository, we have archived this artifact on
+[Zenodo](https://zenodo.org/). In order to make the Zenodo artifact as
+self-contained as possible, we included a copy of all public repositories of
+the [`project-flexos` GitHub organization](https://github.com/project-flexos/)
+under `repositories`. Note, however, that the `repositories` archive will not
+be used by the benchmark script, which will still rely on online GitHub
+repositories.  They are therefore provided for the sole purpose of archival.
+You can generate a new organization snapshot with `make zenodo`.
+
+## 7. Beyond the Paper
 
 This repository contains all scripts necessary to reproduce the experiments of
 our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
@@ -215,14 +226,14 @@ instructions on porting applications and building your own FlexOS images in the
 core kernel repository's
 [`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
 
-## 7. Disclaimer
+## 8. Disclaimer
 
 This artifact is the first release of a research proof-of-concept for flexible
 OS isolation. Like any research prototype, it contains hacks, bugs, and TODOs. We
 do not recommend using it in production, but whish that it will foster further
 research!
 
-## 8. Acknowledgements
+## 9. Acknowledgements
 
 This artifact would not exist without the hard work of the Unikraft community.
 We encourage interested researchers to visit the project's [web
