@@ -1,6 +1,6 @@
 # SQLite Performance Comparison
 
-<img align="right" src="../../plots/fig-10_sqlite-exec-time.svg" width="300" />
+<img align="right" src="fig-10_sqlite-exec-time.svg" width="300" />
 
 | Estimated Runtime |
 | ----------------- |
@@ -13,6 +13,13 @@ Time to perform 5000 INSERT queries with SQLite on Unikraft, FlexOS, Linux, SeL4
 axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two
 compartments with EPT, PT2/3: two/three compartments with page-table-based
 isolation).
+
+### Plot
+
+The plot contains some hardcoded data. If you want to generate a plot
+for your new run, you will need to edit the plot script. The values that you
+will want to adapt are the labels in the latency plot (and potentially their
+position).
 
 ## Troubleshooting
 

@@ -22,12 +22,12 @@ set xrange [0:9]
 set yrange [0:800]
 set boxwidth 0.5
 
-set label "5"   at 0.82,55  font ",16"
-set label "74"  at 2.65,124 font ",16"
-set label "135" at 3.45,185 font ",16"
-set label "569" at 4.46,619 font ",16"
-set label "524" at 6.40,574 font ",16"
-set label "109" at 7.40,159 font ",16"
+set label "2"   at 0.82,55  font ",16"
+set label "62"  at 2.65,117 font ",16"
+set label "108" at 3.45,161 font ",16"
+set label "462" at 4.46,515 font ",16"
+set label "470" at 6.40,523 font ",16"
+set label "146" at 7.40,199 font ",16"
 
 set label "all"       at 0.60,700 font ",16"
 set label "Chrysalis" at 2.50,700 font ",16"

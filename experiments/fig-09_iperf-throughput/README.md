@@ -1,6 +1,6 @@
 # iPerf throughput
 
-<img align="right" src="../../plots/fig-09_iperf-throughput.svg" width="300" />
+<img align="right" src="fig-09_iperf-throughput.svg" width="300" />
 
 | Estimated Runtime |
 | ----------------- |

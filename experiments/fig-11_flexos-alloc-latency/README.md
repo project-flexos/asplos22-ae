@@ -1,6 +1,6 @@
 # FlexOS Latency Microbenchmarks
 
-<img align="right" src="../../plots/fig-11_flexos-alloc-latency.svg" width="300" />
+<img align="right" src="fig-11_flexos-alloc-latency-a.svg" width="150" /> <img align="right" src="fig-11_flexos-alloc-latency-b.svg" width="150" />
 
 | Estimated Runtime |
 | ----------------- |
@@ -31,6 +31,12 @@ Note (especially to ASPLOS'22 AE reviewers): disabling KPTI will affect all
 other measurements, not only Linux for this figure. Make sure to re-enable KPTI
 as soon as you are done with this measurement. Cooperation among reviewers for
 this benchmark is recommended.
+
+### Plot
+
+The latency plot contains some hardcoded data. If you want to generate a plot
+for your new run, you will need to edit the plot script. The values that you
+will want to adapt are the labels (and potentially their position).
 
 ## Troubleshooting
 
