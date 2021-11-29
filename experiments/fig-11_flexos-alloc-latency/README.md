@@ -1,6 +1,6 @@
 # FlexOS Latency Microbenchmarks
 
-<img align="right" src="../../plots/fig-11_flexos-alloc-latency.svg" width="300" />
+<img align="right" src="../../plots/fig-11_flexos-alloc-latency-a.svg" width="150" /> <img align="right" src="../../plots/fig-11_flexos-alloc-latency-b.svg" width="150" />
 
 | Estimated Runtime |
 | ----------------- |

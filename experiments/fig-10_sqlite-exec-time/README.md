@@ -1,6 +1,6 @@
 # SQLite Performance Comparison
 
-<img align="right" src="../../plots/fig-10_sqlite-exec-time.svg" width="300" />
+<img align="right" src="fig-10_sqlite-exec-time.svg" width="300" />
 
 | Estimated Runtime |
 | ----------------- |
