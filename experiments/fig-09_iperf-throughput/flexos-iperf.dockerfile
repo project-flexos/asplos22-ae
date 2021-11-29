@@ -77,6 +77,10 @@ RUN mv /root/.unikraft /root/flexos
 
 WORKDIR /root/unikraft-mainline/libs
 
+# page table support patch
+COPY docker-data/unikraft-pagetable.patch /tmp/pt.patch
+RUN cd /root/unikraft-mainline/unikraft && git apply /tmp/pt.patch --ignore-whitespace
+
 RUN git clone https://github.com/unikraft/lib-newlib.git
 RUN cd lib-newlib && git checkout ddc25cf1f361e33d1003ce1842212e8ff37b1e08
 
