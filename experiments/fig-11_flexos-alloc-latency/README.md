@@ -32,6 +32,12 @@ other measurements, not only Linux for this figure. Make sure to re-enable KPTI
 as soon as you are done with this measurement. Cooperation among reviewers for
 this benchmark is recommended.
 
+### Plot
+
+The latency plot contains some hardcoded data. If you want to generate a plot
+for your new run, you will need to edit the plot script. The values that you
+will want to adapt are the labels (and potentially their position).
+
 ## Troubleshooting
 
 - **Problem**: Every once in a while, EPT results increase to ~700 cycles

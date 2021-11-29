@@ -59,6 +59,7 @@ run: run-flexos run-linux
 
 .PHONY: plot
 plot:
+	rm -rf $(PLOT-LATENCY) $(PLOT-DSS)
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged -ti \
 		ghcr.io/project-flexos/flexos-ae-plot $(GNUPLOT) /out/dss.plot
 	mv $(WORKDIR)/dss.svg $(PLOT-DSS)

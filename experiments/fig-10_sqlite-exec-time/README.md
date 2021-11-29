@@ -14,6 +14,13 @@ axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two
 compartments with EPT, PT2/3: two/three compartments with page-table-based
 isolation).
 
+### Plot
+
+The plot contains some hardcoded data. If you want to generate a plot
+for your new run, you will need to edit the plot script. The values that you
+will want to adapt are the labels in the latency plot (and potentially their
+position).
+
 ## Troubleshooting
 
 - **Problem**: The run script hangs while benchmarking CubicleOS, with messages
