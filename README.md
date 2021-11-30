@@ -28,9 +28,10 @@ the paper:
 > configurations, FlexOS performs similarly or better than several
 > baselines/competitors.
 
-
 If at all possible, please read through this entire document before installing
-or running experiments.
+or running experiments. This document and all READMEs are best read on
+[GitHub](https://github.com/project-flexos/asplos22-ae), with a Markdown
+viewer, or Markdown editor.
 
 ## 1. Experiments
 
@@ -125,7 +126,7 @@ and test environments (along with testing Docker itself).  Please [install
 Docker](https://docs.docker.com/get-docker/) on your system to continue. This
 artifact makes heavy use of Docker containers, and so we recommend you to use a
 recent version of Docker to avoid storage pool issues.  See
-[troubleshooting](#5-troubleshooting). Our version of Docker is 20.10.10.
+[troubleshooting](#5-troubleshooting). Our version of Docker is `20.10.10`.
 
 *TODO*: document how to set core numbers for experiments.
 
@@ -181,10 +182,10 @@ recent version of Docker to avoid storage pool issues.  See
    make properclean
    ```
 
-**Note**: some experiments have a slightly different workflow. Figure 8
-is only a plot and requires some manual steps. Figure 11 requires a reboot
-of the machine with different kernel parameters. In all of these cases, the
-local `README.md` provides appropriate explanations.
+**Note**: some experiments have a slightly different workflow. Figure 8 is only
+a plot and requires some manual steps. Figure 11 requires a reboot of the
+machine with different kernel parameters. Table 1 is manual. In all of these
+cases, the local `README.md` provides appropriate explanations.
 
 ## 5. Troubleshooting
 
