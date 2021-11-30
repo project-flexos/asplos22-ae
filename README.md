@@ -54,7 +54,7 @@ Each figure, table and corresponding experiment are listed below:
 | [`fig-11`](/experiments/fig-11_flexos-alloc-latency/)   | <img src="experiments/fig-11_flexos-alloc-latency/fig-11_flexos-alloc-latency-a.svg" width="100" /> <img src="experiments/fig-11_flexos-alloc-latency/fig-11_flexos-alloc-latency-b.svg" width="100" />   | FlexOS latency microbenchmarks.                                                                                                                                                                                       | 0h 0m                | 0h 0m              |
 
 | Table                                           | Description                                                                                            | Estimated prep. time | Estimated run time |
-| ----------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------- | ------------------ |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------- | ------------------ |
 | [`tab-01`](/experiments/fig-01_porting-effort/) | Porting effort: size of the patch (including automatic gate replacements), number of shared variables. | N/A                  | max ~25mn          |
 
 ## 2. Repository structure
