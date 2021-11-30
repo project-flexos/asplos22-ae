@@ -14,8 +14,8 @@ KRAFT_TOKEN ?=
 #
 # Tools
 #
-SNAKE ?= python3
 DOCKER ?= docker
+TIME ?= /usr/bin/time
 
 #
 # Targets
@@ -25,23 +25,22 @@ all: prepare run plot
 
 .PHONY: prepare
 prepare:
-	$(DOCKER) build -f $(WORKDIR)/flexos-porting.dockerfile \
+	$(TIME) $(DOCKER) build -f $(WORKDIR)/flexos-porting.dockerfile \
 		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-porting $(WORKDIR)
 
 .PHONY: run
 run:
-	mkdir results
 	$(DOCKER) run --rm -v $(WORKDIR):/out --privileged \
-		--security-opt seccomp:unconfined -ti flexos-porting /root/run.sh
+		--security-opt seccomp:unconfined -ti flexos-porting bash
 
 .PHONY: plot
 plot:
-	$(SNAKE) $(WORKDIR)/plot.py --data $(RESULTS) --output $(PLOT)
+	@-
 
 .PHONY: clean
 clean:
-	rm -rf results
+	@-
 
 .PHONY: properclean
 properclean:

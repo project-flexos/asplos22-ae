@@ -24,6 +24,3 @@ RUN mv /root/.unikraft /root/flexos
 # Finish
 
 WORKDIR /root
-
-COPY docker-data/run.sh .
-RUN chmod u+x run.sh
