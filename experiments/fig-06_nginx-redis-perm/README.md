@@ -2,9 +2,9 @@
 
 <img align="right" src="../../plots/fig-06_nginx-redis-perm.svg" width="300" />
 
-| Estimated Runtime |
-| ----------------- |
-| 0h 0m             |
+| Estimated prep. time | Estimated runtime |
+| -------------------- | ----------------- |
+| 0h 0m                | 0h 00m            |
 
 ## Overview
 

@@ -2,9 +2,9 @@
 
 <img align="right" src="fig-11_flexos-alloc-latency-a.svg" width="150" /> <img align="right" src="fig-11_flexos-alloc-latency-b.svg" width="150" />
 
-| Estimated Runtime |
-| ----------------- |
-| 0h 0m             |
+| Estimated prep. time | Estimated runtime |
+| -------------------- | ----------------- |
+| 0h 0m                | 0h 00m            |
 
 ## Overview
 

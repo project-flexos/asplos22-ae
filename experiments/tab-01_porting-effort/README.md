@@ -1,6 +1,6 @@
 # Porting Effort
 
-| Estimated prep. time | Estimated Runtime |
+| Estimated prep. time | Estimated runtime |
 | -------------------- | ----------------- |
 | 0h 2m                | 0h 25m (manual)   |
 

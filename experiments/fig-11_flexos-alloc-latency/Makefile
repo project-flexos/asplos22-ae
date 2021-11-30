@@ -19,6 +19,7 @@ ISOLED_CPU2 ?= 6
 #
 GNUPLOT ?= gnuplot
 DOCKER ?= docker
+TIME ?= /usr/bin/time
 
 #
 # Targets
@@ -28,7 +29,7 @@ all: prepare run plot
 
 .PHONY: prepare-flexos
 prepare-flexos:
-	$(DOCKER) build -f $(WORKDIR)/flexos-microbenchmarks.dockerfile \
+	$(TIME) $(DOCKER) build -f $(WORKDIR)/flexos-microbenchmarks.dockerfile \
 		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-microbenchmarks $(WORKDIR)
 
@@ -38,7 +39,7 @@ linux-latency:
 
 .PHONY: prepare-linux
 prepare-linux: linux-latency
-	make linux -C linux-latency
+	$(TIME) make linux -C linux-latency
 
 .PHONY: prepare
 prepare: prepare-flexos prepare-linux

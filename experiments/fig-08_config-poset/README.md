@@ -2,9 +2,9 @@
 
 <img align="right" src="fig-08_config-poset.svg" width="300" />
 
-| Estimated Runtime |
-| ----------------- |
-| N/A               |
+| Estimated prep. time | Estimated runtime |
+| -------------------- | ----------------- |
+| N/A                  | 1h 00m (manual)   |
 
 ## Overview
 

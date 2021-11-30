@@ -2,9 +2,9 @@
 
 <img align="right" src="fig-09_iperf-throughput.svg" width="300" />
 
-| Estimated Runtime |
-| ----------------- |
-| 0h 0m             |
+| Estimated prep. time | Estimated runtime |
+| -------------------- | ----------------- |
+| 0h 0m                | 0h 00m            |
 
 ## Overview
 
