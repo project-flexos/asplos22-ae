@@ -32,9 +32,19 @@ not part of FlexOS but not yet merged into the Unikraft master at the time when
 FlexOS was forked from Unikraft. We do not want to count these in the diff.
 
 Here is a list of external, non-FlexOS patches applied:
-- lwip: move `socket.c` to the glue code [[link]](https://github.com/project-flexos/asplos22-ae/tree/main/experiments/tab-01_porting-effort/lwip-patches)
-- vfscore: CPIO support [[link]](https://github.com/unikraft/eurosys21-artifacts/tree/master/support/patches-unikraft-eurosys21/cpio-series)
-- mm: page table support [[link]](https://github.com/project-flexos/asplos22-ae/blob/main/experiments/fig-09_iperf-throughput/docker-data/unikraft-pagetable.patch)
+- lwip: move `socket.c` to the glue code **[[link]](https://github.com/project-flexos/asplos22-ae/tree/main/experiments/tab-01_porting-effort/lwip-patches)**
+- vfscore: CPIO support **[[link]](https://github.com/unikraft/eurosys21-artifacts/tree/master/support/patches-unikraft-eurosys21/cpio-series)**
+- mm: page table support **[[link]](https://github.com/project-flexos/asplos22-ae/blob/main/experiments/fig-09_iperf-throughput/docker-data/unikraft-pagetable.patch)**
+
+Note that the iperf app was developed for this paper; you can use the
+[`unikraft-baseline`](https://github.com/project-flexos/lib-iperf/tree/unikraft-baseline)
+branch as baseline for both the
+[application](https://github.com/project-flexos/app-iperf) and the
+[library](https://github.com/project-flexos/lib-iperf).
+
+A similar situation affects sqlite; you can use [this unmodified
+application](https://github.com/project-flexos/asplos22-ae/blob/main/experiments/fig-10_sqlite-exec-time/docker-data/main.c)
+as baseline.
 
 In order to simply the operation, we provide a simple docker container that
 clones all relevant repositories into `/root/flexos`. You can build it with
