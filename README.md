@@ -53,9 +53,9 @@ Each figure, table and corresponding experiment are listed below:
 | [`fig-10`](/experiments/fig-10_sqlite-exec-time/)       | <img src="experiments/fig-10_sqlite-exec-time/fig-10_sqlite-exec-time.svg" width="200" />       | Time to perform 5000 INSERT queries with SQLite on Unikraft, FlexOS, Linux, SeL4 (with the Genode system), and CubicleOS. The isolation profile is shown on the x axis (NONE: no isolation, MPK3: MPK with three compartments, EPT2: two compartments with EPT, PT2/3: two/three compartments with page-table-based isolation). | 0h 0m                | 0h 0m              |
 | [`fig-11`](/experiments/fig-11_flexos-alloc-latency/)   | <img src="experiments/fig-11_flexos-alloc-latency/fig-11_flexos-alloc-latency-a.svg" width="100" /> <img src="experiments/fig-11_flexos-alloc-latency/fig-11_flexos-alloc-latency-b.svg" width="100" />   | FlexOS latency microbenchmarks.                                                                                                                                                                                       | 0h 0m                | 0h 0m              |
 
-| Table                                           |                                                           | Description                                                                                            | Estimated prep. time | Estimated run time |
+| Table                                           | Description                                                                                            | Estimated prep. time | Estimated run time |
 | ----------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------- | ------------------ |
-| [`tab-01`](/experiments/fig-01_porting-effort/) | <img src="plots/tab-01_porting-effort.svg" width="200" /> | Porting effort: size of the patch (including automatic gate replacements), number of shared variables. | N/A                  | max ~25mn          |
+| [`tab-01`](/experiments/fig-01_porting-effort/) | Porting effort: size of the patch (including automatic gate replacements), number of shared variables. | N/A                  | max ~25mn          |
 
 ## 2. Repository structure
 
