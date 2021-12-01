@@ -57,7 +57,12 @@ generated from this artifact to match one-to-one with the results in the paper,
 given that we used this artifact/scripts to actually generate all figures in the
 paper.
 
-Each figure, table and corresponding experiment are listed below:
+Each figure, table and corresponding experiment are listed below. *Estimated
+preparation time* indicates the amount of time needed to execute `make prepare`
+for this experiment. *Estimated run time* indicated the amount of time needed
+to execute `make run` for this experiment. Unless explicitely stated in the
+column, these tasks are *fire and forget* and do not require any form of human
+interaction.
 
 | Figure                                                  |                                                                                                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                     | Estimated prep. time | Estimated run time |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ------------------ |
@@ -293,6 +298,13 @@ repository](https://github.com/project-flexos/unikraft).  You can find
 instructions on porting applications and building your own FlexOS images in the
 core kernel repository's
 [`README.md`](https://github.com/project-flexos/unikraft/blob/staging/README.md).
+
+This artifact represents the stable part of FlexOS that we were able to release
+for artifact evaluation as of December 2021. During this process, we became
+aware of a number of bugs and issues that we patched on an ad-hoc basis, some
+only in the form of patches in this repository. We are planning a second release
+in a few months that will incorporate proper fixes for these issues, along with
+an improved EPT backend.
 
 ## 8. Disclaimer
 
