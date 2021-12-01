@@ -1,0 +1,125 @@
+diff --git a/lib/uknetdev/include/uk/netdev_core.h b/lib/uknetdev/include/uk/netdev_core.h
+index 24454e1..fc8e0a4 100644
+--- a/lib/uknetdev/include/uk/netdev_core.h
++++ b/lib/uknetdev/include/uk/netdev_core.h
+@@ -426,7 +426,8 @@ struct uk_netdev_event_handler {
+ struct uk_netdev_data {
+ 	enum uk_netdev_state state;
+ 
+-	struct uk_netdev_event_handler *rxq_handler;
++	struct uk_netdev_event_handler
++			    rxq_handler[CONFIG_LIBUKNETDEV_MAXNBQUEUES];
+ 
+ 	const uint16_t       id;    /**< ID is assigned during registration */
+ 	const char           *drv_name;
+@@ -470,7 +471,7 @@ struct uk_netdev {
+ 	struct uk_netdev_einfo *_einfo;
+ 
+ #if (CONFIG_UK_NETDEV_SCRATCH_SIZE > 0)
+-	char *scratch_pad;
++	char scratch_pad[CONFIG_UK_NETDEV_SCRATCH_SIZE];
+ #endif /* CONFIG_UK_NETDEV_SCRATCH_SIZE */
+ };
+ 
+diff --git a/lib/uknetdev/netdev.c b/lib/uknetdev/netdev.c
+index 33d436b..1ae2c41 100644
+--- a/lib/uknetdev/netdev.c
++++ b/lib/uknetdev/netdev.c
+@@ -100,16 +100,19 @@ static struct uk_netdev_data *_alloc_data(struct uk_alloc *a,
+ {
+ 	struct uk_netdev_data *data;
+ 
++	/* FIXME: these two should be identical, and yet they result in a small
++	 * performance difference. We should investigate further to remove this
++	 * hack. */
++#if CONFIG_LIBFLEXOS_NONE
+ 	data = uk_calloc(a, 1, sizeof(*data));
++#else
++	data = flexos_calloc_whitelist(1, sizeof(*data));
++#endif
+ 	if (!data)
+ 		return NULL;
+ 
+ 	data->drv_name = drv_name;
+ 	data->state    = UK_NETDEV_UNCONFIGURED;
+-	data->rxq_handler = flexos_calloc_whitelist(sizeof(struct uk_netdev_event_handler),
+-				CONFIG_LIBUKNETDEV_MAXNBQUEUES);
+-	if (!data->rxq_handler)
+-		return NULL;
+ 
+ 	/* This is the only place where we set the device ID;
+ 	 * during the rest of the device's life time this ID is read-only
+diff --git a/plat/drivers/virtio/virtio_net.c b/plat/drivers/virtio/virtio_net.c
+index 3202246..f77f69a 100644
+--- a/plat/drivers/virtio/virtio_net.c
++++ b/plat/drivers/virtio/virtio_net.c
+@@ -157,9 +157,7 @@ struct virtio_net_device {
+ 	/* The mtu */
+ 	__u16 mtu;
+ 	/* The hw address of the netdevice */
+-	/* NOTE FLEXOS: as a pointer here, we want to be able to share
+-	 * this with lwip */
+-	struct uk_hwaddr *hw_addr;
++	struct uk_hwaddr hw_addr;
+ 	/*  Netdev state */
+ 	__u8 state;
+ 	/* RX promiscuous mode. */
+@@ -821,7 +819,7 @@ static const struct uk_hwaddr *virtio_net_mac_get(struct uk_netdev *n)
+ 
+ 	UK_ASSERT(n);
+ 	d = to_virtionetdev(n);
+-	return d->hw_addr;
++	return &d->hw_addr;
+ }
+ 
+ static __u16 virtio_net_mtu_get(struct uk_netdev *n)
+@@ -868,7 +866,7 @@ static int virtio_netdev_feature_negotiate(struct virtio_net_device *vndev)
+ 	 */
+ 	hw_len = virtio_config_get(vndev->vdev,
+ 				   __offsetof(struct virtio_net_config, mac),
+-				   &vndev->hw_addr->addr_bytes[0],
++				   &vndev->hw_addr.addr_bytes[0],
+ 				   UK_NETDEV_HWADDR_LEN, 1);
+ 	if (unlikely(hw_len != UK_NETDEV_HWADDR_LEN)) {
+ 		uk_pr_err("Failed to retrieve the mac address from device\n");
+@@ -1124,7 +1122,14 @@ static int virtio_net_add_dev(struct virtio_dev *vdev)
+ 
+ 	UK_ASSERT(vdev != NULL);
+ 
++	/* FIXME: these two should be identical, and yet they result in a small
++	 * performance difference. We should investigate further to remove this
++	 * hack. */
++#if CONFIG_LIBFLEXOS_NONE
+ 	vndev = uk_calloc(a, 1, sizeof(*vndev));
++#else
++	vndev = flexos_calloc_whitelist(1, sizeof(*vndev));
++#endif
+ 	if (!vndev) {
+ 		rc = -ENOMEM;
+ 		goto err_out;
+@@ -1134,10 +1139,6 @@ static int virtio_net_add_dev(struct virtio_dev *vdev)
+ 	vndev->netdev.rx_one = virtio_netdev_recv;
+ 	vndev->netdev.tx_one = virtio_netdev_xmit;
+ 	vndev->netdev.ops = &virtio_netdev_ops;
+-	vndev->hw_addr = flexos_calloc_whitelist(1, sizeof(*(vndev->hw_addr)));
+-	/* TODO FLEXOS: investigate, can we actually put this in lwip's domain
+-	 * instead of the shared one? */
+-	vndev->netdev.scratch_pad = flexos_calloc_whitelist(1, __PAGE_SIZE);
+ 
+ 	rc = uk_netdev_drv_register(&vndev->netdev, a, drv_name);
+ 	if (rc < 0) {
+@@ -1155,9 +1156,12 @@ static int virtio_net_add_dev(struct virtio_dev *vdev)
+ exit:
+ 	return rc;
+ err_netdev_data:
+-        flexos_free_whitelist(vndev->hw_addr);
+-        flexos_free_whitelist(vndev->netdev.scratch_pad);
++#if CONFIG_LIBFLEXOS_NONE
++	/* same comment as above */
+ 	uk_free(a, vndev);
++#else
++	flexos_free_whitelist(vndev);
++#endif
+ err_out:
+ 	goto exit;
+ }
