@@ -1,8 +1,5 @@
 [fetch]
 prioritise_origin = true
-mirrors = [
-  "https://releases.unikraft.org/mirrors",
-]
 
 [configure]
 platform = "kvm"
@@ -10,15 +7,15 @@ architecture = "x86_64"
 
 [list]
 origins = [
+  "https://github.com/project-flexos/unikraft.git",
+  "https://github.com/project-flexos/app-iperf.git",
+  "https://github.com/project-flexos/app-sqlite.git",
+  "https://github.com/project-flexos/app-flexos-microbenchmarks.git",
   "https://github.com/project-flexos/lib-newlib.git",
   "https://github.com/project-flexos/lib-tlsf.git",
   "https://github.com/project-flexos/lib-lwip.git",
   "https://github.com/project-flexos/lib-iperf.git",
-  "https://github.com/project-flexos/app-iperf.git",
   "https://github.com/project-flexos/lib-sqlite.git",
-  "https://github.com/project-flexos/app-sqlite.git",
-  "https://github.com/project-flexos/app-flexos-microbenchmarks.git",
-  "https://github.com/project-flexos/lib-flexos-microbenchmarks.git",
-  "https://github.com/project-flexos/unikraft.git",
   "https://github.com/project-flexos/lib-pthread-embedded.git"
+  "https://github.com/project-flexos/lib-flexos-microbenchmarks.git",
 ]
