@@ -94,7 +94,7 @@ reproduce the results. Section 3.2 gives a few advice on this matter.
 | -------- | ------------------------------------------- |
 | CPU      | Intel® Xeon® Scalable, > Skylake, > 8 cores |
 | RAM      | > 128GB                                     |
-| Disk     | > TODO GB                                   |
+| Disk     | > 100 GB                                    |
 
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
@@ -102,7 +102,9 @@ Scalable Processor starting with the Skylake generation (but the results might
 differ from the paper).  We recommend choosing a machine with more than 8 cores
 (see 3.2). Our machine has 128.0 GB RAM. We do not recommend running this
 artifact on a machine with less RAM given the high memory requirements of
-Wayfinder for Figure 6.
+Wayfinder for Figure 6. On disk side, we recommend more than 100.0 GB of free
+disk space to be on the safe side (roughly 60 GB for Figure 6, and 10 GB for each
+of Figures 9, 10, 11, and Table 1).
 
 | Software | Requirements                    |
 | -------- | ------------------------------- |
