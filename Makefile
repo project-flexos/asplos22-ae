@@ -6,7 +6,7 @@ WORKDIR ?= $(CURDIR)
 #
 # Parameters
 #
-KRAFT_TOKEN ?= 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
+KRAFT_TOKEN ?=
 
 #
 # General configuration
