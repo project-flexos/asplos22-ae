@@ -98,13 +98,20 @@ reproduce the results. Section 3.2 gives a few advice on this matter.
 
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
-Scalable Processor starting with the Skylake generation (but the results might
-differ from the paper).  We recommend choosing a machine with more than 8 cores
-(see 3.2). Our machine has 128.0 GB RAM. We do not recommend running this
-artifact on a machine with less RAM given the high memory requirements of
-Wayfinder for Figure 6. On the disk side, we recommend more than 100.0 GB of free
-disk space to be on the safe side (roughly 60 GB for Figure 6, and 10 GB for each
-of Figures 9, 10, 11, and Table 1).
+Scalable Processor starting with the Skylake generation. In this case, however,
+the results might differ from the paper.  We recommend choosing a machine with
+more than 8 cores.
+
+Our the RAM side, our machine has 128.0 GB RAM. We do not recommend running
+this artifact on a machine with less RAM given the high memory requirements of
+Wayfinder for Figure 6.
+
+On the disk side, we recommend > 100.0 GB of free disk space to be on the safe
+side; roughly 60 GB for Figure 6, and 10 GB for each of Figures 9, 10, 11, and
+Table 1.
+
+Note that these are *not* the minimal requirements to run FlexOS, they are only
+necessary to reproduce the paper's results.
 
 | Software | Requirements                    |
 | -------- | ------------------------------- |
@@ -114,10 +121,8 @@ of Figures 9, 10, 11, and Table 1).
 
 On the software side, This artifact was tested on Debian 11.1 and Linux version
 `5.10.70-1`.  However, we expect that it should run on many more recent or
-slightly older Debian releases.
-
-Note that these are not the minimal requirements to run FlexOS, they are only
-necessary to reproduce the paper's results.
+slightly older Debian releases. All docker guests use Debian 10; this is a hard
+requirement.
 
 ### 3.2. Isolation of Cores
 
@@ -126,13 +131,15 @@ This artifact may use up to 7 cores for experiments: four non-isolated cores
 `isolcpu`, see the Linux kernel
 [documentation](https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt)).
 If the machine only has 8 cores, the remaining system load (however minimal)
-might not fit in the remaining core and create noise in experiments, so we
-recommend a larger core count.
+might not fit in the remaining core and create noise in experiments, so, as
+mentioned in the previous section, we recommend a larger core count.
 
 For each experiment, you should declare the cores that you want to use
 (isolated and non-isolated), either by editing the `NOISOLED_CPUX` and
 `ISOLED_CPUX` variables in each experiment's `Makefile`, or by exporting these
-variables in the shell.
+variables in the shell. The `Makefile`s should be fairly self-explanatory. In
+the artifact evaluation testbed, we use core 1-4 as non-isolated
+core, and core 5-7 as isolated cores.
 
 **Note for the ASPLOS AEC**: the test machine is already set up to fit the
 default values of this artifact, you do not need to update these variables
@@ -231,6 +238,17 @@ well!
   might be old or using the Debian/Ubuntu repositories. In this case, we recommend
   a fresh reinstall of Docker.
 
+- **Problem**: Application X (e.g., Redis, or Nginx) crash when I stress test
+  them with tool Y or Z.
+
+  **Solution**: As explained in the paper and in the main tree
+  [`README.md`](https://github.com/project-flexos/unikraft/README.md), applications
+  are ported manually and as such we cannot guarantee that this porting is complete
+  for every possible execution path. Porting is not a contribution of this paper
+  or proof-of-concept. Since it takes a safety-first approach, incomplete porting
+  may therefore result in false-positives, and crashes, when tested with other tools
+  than the ones we used.
+
 ## 6. Zenodo artifact
 
 In addition to this repository, we have archived this artifact on
@@ -247,7 +265,7 @@ You can generate a new organization snapshot with `make zenodo`.
 This repository contains all scripts necessary to reproduce the experiments of
 our ASPLOS'22 paper. It does not contain the FlexOS kernel, libraries, and
 applications themselves. You can find all other repositories hosted under the
-[same GitHub organization](https://github.com/unikraft/eurosys21-artifacts).
+[same GitHub organization](https://github.com/project-flexos).
 The FlexOS core kernel repository, in particular, lives in [this
 repository](https://github.com/project-flexos/unikraft).  You can find
 instructions on porting applications and building your own FlexOS images in the
