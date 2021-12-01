@@ -57,7 +57,7 @@ set xrange [16:16384]
 
 plot '/out/results/iperf.dat' \
         index 0 with linespoints linestyle 1 t "Unikraft", \
-     '' index 1 with linespoints linestyle 2 t "Chrysalis NONE", \
-     '' index 3 with linespoints linestyle 3 t "Chrysalis MPK2-light", \
-     '' index 2 with linespoints linestyle 4 t "Chrysalis MPK2-dss", \
-     '' index 4 with linespoints linestyle 5 t "Chrysalis EPT2"
+     '' index 1 with linespoints linestyle 2 t "FlexOS NONE", \
+     '' index 3 with linespoints linestyle 3 t "FlexOS MPK2-light", \
+     '' index 2 with linespoints linestyle 4 t "FlexOS MPK2-dss", \
+     '' index 4 with linespoints linestyle 5 t "FlexOS EPT2"

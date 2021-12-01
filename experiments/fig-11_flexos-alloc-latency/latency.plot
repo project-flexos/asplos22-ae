@@ -29,9 +29,9 @@ set label "462" at 4.46,515 font ",16"
 set label "470" at 6.40,523 font ",16"
 set label "146" at 7.40,199 font ",16"
 
-set label "all"       at 0.60,700 font ",16"
-set label "Chrysalis" at 2.50,700 font ",16"
-set label "Linux"     at 6.65,700 font ",16"
+set label "all"    at 0.60,700 font ",16"
+set label "FlexOS" at 2.50,700 font ",16"
+set label "Linux"  at 6.65,700 font ",16"
 
 set arrow from 2, graph 0 to 2, graph 1 nohead
 set arrow from 6, graph 0 to 6, graph 1 nohead
