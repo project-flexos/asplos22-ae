@@ -90,12 +90,25 @@ reproduce the results. Section 3.2 gives a few advice on this matter.
 
 ### 3.1. Hardware & Software Dependencies
 
+| Hardware | Minimal requirements             |
+| -------- | -------------------------------- |
+| CPU      | Intel® Xeon® Scalable, > Skylake |
+| RAM      | > 128GB                          |
+| Disk     | > TODO GB                        |
+
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
 Scalable Processor starting with the Skylake generation (but the results might
 differ from the paper).  We recommend choosing a machine with more than 8 cores
-(see 3.2). Our machine has 128.0 GB RAM, but any system with more than 12GB RAM
-should be suitable.
+(see 3.2). Our machine has 128.0 GB RAM. We do not recommend running this
+artifact on a machine with less RAM given the high memory requirements of
+Wayfinder for Figure 6.
+
+| Software | Requirements                    |
+| -------- | ------------------------------- |
+| Debian   | 11.1 (host), 10 (Docker guests) |
+| Linux    | `5.10.70-1`                     |
+| Docker   | `20.10.10`                      |
 
 On the software side, This artifact was tested on Debian 11.1 and Linux version
 `5.10.70-1`.  However, we expect that it should run on many more recent or
