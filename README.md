@@ -33,6 +33,20 @@ or running experiments. This document and all READMEs are best read on
 [GitHub](https://github.com/project-flexos/asplos22-ae), with a Markdown
 viewer, or Markdown editor.
 
+## Table of Contents
+- [1. Experiments](#1-experiments)
+- [2. Repository structure](#2-repository-structure)
+- [3. Prerequisites](#3-prerequisites)
+  - [3.1. Hardware & Software Dependencies](#31-hardware--software-dependencies)
+  - [3.2. Isolation of Cores](#32-isolation-of-cores)
+  - [3.3 Installing Docker](#33-installing-docker)
+- [4. Getting started](#4-getting-started)
+- [5. Troubleshooting](#5-troubleshooting)
+- [6. Zenodo Artifact & Tags](#6-zenodo-artifact--tags)
+- [7. Beyond the Paper](#7-beyond-the-paper)
+- [8. Disclaimer](#8-disclaimer)
+- [9. Acknowledgements](#9-acknowledgements)
+
 ## 1. Experiments
 
 The paper comes with 11 figures and 1 tables worth of experiments (although not
