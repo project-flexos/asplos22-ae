@@ -84,9 +84,9 @@ environment.  Access to the physical host environment is important as it is
 required to run Virtual Machine (VM) images.
 
 Many of these benchmarks are highly latency-sensitive, and a change in a few
-cycles might create significant disrepancies with the paper's results. Although
+cycles might create significant discrepancies with the paper's results. Although
 not strictly necessary, we therefore recommend a careful setup of the system to
-reproduce the results. Section 3.2 gives a few advice on this matter.
+reproduce the results. Section 3.2 gives advice on this matter.
 
 ### 3.1. Hardware & Software Dependencies
 
@@ -99,16 +99,16 @@ reproduce the results. Section 3.2 gives a few advice on this matter.
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
 Scalable Processor starting with the Skylake generation. In this case, however,
-the results might differ from the paper.  We recommend choosing a machine with
+the results might differ from the paper.  Ideally, the processor should have
 more than 8 cores.
 
-Our the RAM side, our machine has 128.0 GB RAM. We do not recommend running
-this artifact on a machine with less RAM given the high memory requirements of
-Wayfinder for Figure 6.
+Our machine has 128.0 GB RAM. We do not recommend running this artifact on a
+machine with less RAM given the high memory requirements of Wayfinder for
+Figure 6.
 
-On the disk side, we recommend > 100.0 GB of free disk space to be on the safe
-side; roughly 60 GB for Figure 6, and 10 GB for each of Figures 9, 10, 11, and
-Table 1.
+On the disk side, we recommend > 100.0 GB of free space to be on the safe side;
+this is roughly equivalent to 60 GB for Figure 6, and 10 GB for each of Figures
+9-11, and Table 1.
 
 Note that these are *not* the minimal requirements to run FlexOS, they are only
 necessary to reproduce the paper's results.
@@ -119,7 +119,7 @@ necessary to reproduce the paper's results.
 | Linux    | `5.10.70-1`                     |
 | Docker   | `20.10.10`                      |
 
-On the software side, This artifact was tested on Debian 11.1 and Linux version
+On the software side, this artifact was tested on Debian 11.1 and Linux version
 `5.10.70-1`.  However, we expect that it should run on many more recent or
 slightly older Debian releases. All docker guests use Debian 10; this is a hard
 requirement.
@@ -141,10 +141,6 @@ variables in the shell. The `Makefile`s should be fairly self-explanatory. In
 the artifact evaluation testbed, we use core 1-4 as non-isolated
 core, and core 5-7 as isolated cores.
 
-**Note for the ASPLOS AEC**: the test machine is already set up to fit the
-default values of this artifact, you do not need to update these variables
-unless you attempt to run this artifact on another setup.
-
 Since these benchmarks are using non-isolated cores as well, it is important to
 keep the noise level on them as minimal as possible, e.g., concurrently running
 processes, other users, etc. We recommend the following:
@@ -154,6 +150,10 @@ processes, other users, etc. We recommend the following:
 - If the machine is shared (as is the case for the ASPLOS'22 AE setup), it is
   critical that the different users coordinate on the use of the physical
   machine
+
+**Note for the ASPLOS AEC**: the test machine is already set up to fit the
+default values of this artifact, you do not need to update these variables
+unless you attempt to run this artifact on another setup.
 
 ### 3.3 Installing Docker
 
@@ -238,18 +238,19 @@ well!
   might be old or using the Debian/Ubuntu repositories. In this case, we recommend
   a fresh reinstall of Docker.
 
-- **Problem**: Application X (e.g., Redis, or Nginx) crash when I stress test
-  them with tool Y or Z.
+- **Problem**: Application X (e.g., Redis, or Nginx) crashes when I stress test
+  it with tool Y or Z.
 
   **Solution**: As explained in the paper and in the main tree
   [`README.md`](https://github.com/project-flexos/unikraft/README.md), applications
   are ported manually and as such we cannot guarantee that this porting is complete
   for every possible execution path. Porting is not a contribution of this paper
-  or proof-of-concept. Since it takes a safety-first approach, incomplete porting
-  may therefore result in false-positives, and crashes, when tested with other tools
-  than the ones we used.
+  or proof-of-concept. Incomplete porting may result in false-positives, and crashes,
+  when tested with other tools than the ones we used. In this case we recommend
+  debugging the crash as explained in the document of the main tree to pinpoint the
+  invalid access.
 
-## 6. Zenodo artifact
+## 6. Zenodo Artifact & Tags
 
 In addition to this repository, we have archived this artifact on
 [Zenodo](https://zenodo.org/). In order to make the Zenodo artifact as
@@ -259,6 +260,9 @@ under `repositories`. Note, however, that the `repositories` archive will not
 be used by the benchmark script, which will still rely on online GitHub
 repositories.  They are therefore provided for the sole purpose of archival.
 You can generate a new organization snapshot with `make zenodo`.
+
+We tagged each repository of the organization with `asplos22-ae` before
+submission.
 
 ## 7. Beyond the Paper
 
@@ -276,7 +280,7 @@ core kernel repository's
 
 This artifact is the first release of a research proof-of-concept for flexible
 OS isolation. Like any research prototype, it contains hacks, bugs, and TODOs. We
-do not recommend using it in production, but whish that it will foster further
+do not recommend using it in production, but wish that it will foster further
 research!
 
 ## 9. Acknowledgements
