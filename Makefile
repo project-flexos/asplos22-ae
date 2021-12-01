@@ -6,7 +6,7 @@ WORKDIR ?= $(CURDIR)
 #
 # Parameters
 #
-KRAFT_TOKEN ?=
+KRAFT_TOKEN ?= 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
 
 #
 # General configuration
@@ -135,3 +135,6 @@ zenodo:
 		$(CURL) -s https://github.com:@api.github.com/orgs/${ORG}/repos?per_page=200 | \
 		jq .[].ssh_url | xargs -n 1 git clone
 	tar -czf $(WORKDIR)/../flexos-asplos22-ae.tar.gz $(WORKDIR)
+
+dependencies:
+	apt install time

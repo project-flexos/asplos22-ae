@@ -187,6 +187,10 @@ recent version of Docker to avoid storage pool issues.  See
    ```bash
    git clone https://github.com/project-flexos/asplos22-ae.git
    ```
+   and install dependencies with
+   ```bash
+   make dependencies
+   ```
 
 3. All experiments should be `prepare`d first, which installs necessary tools
    and downloads additional resources, before they can run.  This can be done
