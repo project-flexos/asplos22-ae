@@ -31,6 +31,32 @@ TARGETS ?= prepare \
            clean \
            properclean
 
+ifeq ($(KRAFT_TOKEN),)
+define ERROR_MISSING_TOKEN
+
+
+<!> Missing `KRAFT_TOKEN` environmental variable <!>
+
+This variable is used to connect the command-line utility `kraft` to the GitHub
+API and download additional Unikraft repositories.  To generate a new token,
+go to https://github.com/settings/tokens/new and select permission:
+
+  - repo:public_repo
+
+Once you have generated this token, simply export it in your command-line, like
+so:
+
+  $$ export KRAFT_TOKEN=ghp_...
+
+Once this is done, please re-run your command:
+
+  $$ $(MAKE) $(MAKECMDGOALS)
+
+
+endef
+  $(error $(ERROR_MISSING_TOKEN))
+endif
+
 #
 # Utility vars
 #
