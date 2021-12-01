@@ -34,7 +34,7 @@ COPY resources/kraftcleanup /usr/local/bin/kraftcleanup
 COPY resources/kraftrc.default /root/.kraftrc
 
 RUN git clone https://github.com/project-flexos/kraft.git
-RUN cd /root/kraft && git checkout cb1cdb5464954e96283bd16c70083ce9640b7319 && pip3 install -e .
+RUN cd /root/kraft && git checkout 064f67431c2b8206ee15db4530c7fe65d16e44b9 && pip3 install -e .
 
 RUN git clone https://github.com/coccinelle/coccinelle
 RUN cd coccinelle && git checkout ae337fce1512ff15aabc3ad5b6d2e537f97ab62a && \
