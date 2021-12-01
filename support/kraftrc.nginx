@@ -1,0 +1,17 @@
+[fetch]
+prioritize_origin = true
+
+[configure]
+platform = "kvm"
+architecture = "x86_64"
+
+[list]
+origins = [
+  "https://github.com/project-flexos/unikraft.git",
+  "https://github.com/project-flexos/app-nginx.git",
+  "https://github.com/project-flexos/lib-newlib.git",
+  "https://github.com/project-flexos/lib-lwip.git",
+  "https://github.com/project-flexos/lib-nginx.git",
+  "https://github.com/project-flexos/lib-pthread-embedded.git",
+  "https://github.com/project-flexos/lib-tlsf.git",
+]
