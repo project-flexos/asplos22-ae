@@ -10,7 +10,7 @@ FIG6DIR ?= $(WORKDIR)/../fig-06_nginx-redis-perm/
 REDIS_PERMS_CSV ?= apps/redis/permutations-3.csv
 NGINX_PERMS_CSV ?= apps/nginx/permutations-3.csv
 # Change to results/ to use your freshly run results
-REDIS_RES_CSV ?= paperresults/nginx.csv
+REDIS_RES_CSV ?= paperresults/redis.csv
 NGINX_RES_CSV ?= paperresults/nginx.csv
 
 #

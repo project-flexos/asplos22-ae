@@ -145,7 +145,7 @@ def collate(permutations_file_redis=None, permutations_file_nginx=None, results_
   plt.grid(linestyle='--')
   plt.ylabel("Nginx norm. perf.")
   plt.xlabel("Redis normalized performance")
-  plt.savefig("nginx-redis-scatter.svg", format="svg", bbox_inches="tight")
+  plt.savefig("/out/nginx-redis-scatter.svg", format="svg", bbox_inches="tight")
   plt.show()
 if __name__ == "__main__":
   if len(sys.argv) < 2:
