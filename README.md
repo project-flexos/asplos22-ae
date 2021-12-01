@@ -102,7 +102,7 @@ Scalable Processor starting with the Skylake generation (but the results might
 differ from the paper).  We recommend choosing a machine with more than 8 cores
 (see 3.2). Our machine has 128.0 GB RAM. We do not recommend running this
 artifact on a machine with less RAM given the high memory requirements of
-Wayfinder for Figure 6. On disk side, we recommend more than 100.0 GB of free
+Wayfinder for Figure 6. On the disk side, we recommend more than 100.0 GB of free
 disk space to be on the safe side (roughly 60 GB for Figure 6, and 10 GB for each
 of Figures 9, 10, 11, and Table 1).
 
@@ -123,9 +123,20 @@ necessary to reproduce the paper's results.
 
 This artifact may use up to 7 cores for experiments: four non-isolated cores
 (so that the kernel's load balancer can be used), and three isolated cores (via
-`isolcpu`).  If the machine only has 8 cores, the remaining system load
-(however minimal) might not fit in the remaining core and create noise in
-experiments, so we recommend a larger core count.
+`isolcpu`, see the Linux kernel
+[documentation](https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt)).
+If the machine only has 8 cores, the remaining system load (however minimal)
+might not fit in the remaining core and create noise in experiments, so we
+recommend a larger core count.
+
+For each experiment, you should declare the cores that you want to use
+(isolated and non-isolated), either by editing the `NOISOLED_CPUX` and
+`ISOLED_CPUX` variables in each experiment's `Makefile`, or by exporting these
+variables in the shell.
+
+**Note for the ASPLOS AEC**: the test machine is already set up to fit the
+default values of this artifact, you do not need to update these variables
+unless you attempt to run this artifact on another setup.
 
 Since these benchmarks are using non-isolated cores as well, it is important to
 keep the noise level on them as minimal as possible, e.g., concurrently running
@@ -145,8 +156,6 @@ Docker](https://docs.docker.com/get-docker/) on your system to continue. This
 artifact makes heavy use of Docker containers, and so we recommend you to use a
 recent version of Docker to avoid storage pool issues.  See
 [troubleshooting](#5-troubleshooting). Our version of Docker is `20.10.10`.
-
-*TODO*: document how to set core numbers for experiments.
 
 ## 4. Getting started
 
