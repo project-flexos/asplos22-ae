@@ -30,7 +30,7 @@ SNAKE            ?= python3
 WGET             ?= wget
 APT              ?= apt
 MKDIR            ?= mkdir -p
-WAYFINDER        ?= wayfinder
+WAYFINDER        ?= $(TMPDIR)/wayfinder/dist/wayfinder
 RM               ?= rm
 TASKSET          ?= taskset
 TOTALCPUS        ?= $(lscpu | grep '^CPU(s):' | awk '{ print $$2 }')
@@ -47,6 +47,7 @@ DOCKER_RUN       ?= $(DOCKER) run --rm $(2) \
 CAT              ?= cat
 JQ               ?= jq
 GCC              ?= gcc
+GIT              ?= git
 
 #
 # Targets
@@ -179,12 +180,16 @@ $(foreach APP,$(APPS), \
 )
  
 .PHONY: install-wayfinder
+install-wayfinder: $(TMPDIR)
 install-wayfinder: WAYFINDER_VERSION=0.1.0
-install-wayfinder: $(TMPDIR)/wayfinder.deb
-	$(APT) install $(TMPDIR)/wayfinder.deb
+install-wayfinder: $(WAYFINDER)
 
-$(TMPDIR)/wayfinder.deb: $(TMPDIR)
-	$(WGET) -O $(TMPDIR)/wayfinder.deb https://github.com/lancs-net/wayfinder/releases/download/v$(WAYFINDER_VERSION)/wayfinder_$(WAYFINDER_VERSION)_linux_amd64.deb
+$(WAYFINDER): $(TMPDIR)/wayfinder
+	$(MAKE) -C $(TMPDIR)/wayfinder container
+	$(MAKE) -C $(TMPDIR)/wayfinder build
+
+$(TMPDIR)/wayfinder:
+	$(GIT) clone --branch v$(WAYFINDER_VERSION) https://github.com/lancs-net/wayfinder.git $(TMPDIR)/wayfinder
 
 $(TMPDIR):
 	$(MKDIR) $@
