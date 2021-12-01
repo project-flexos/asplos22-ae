@@ -5,7 +5,7 @@ FROM ghcr.io/project-flexos/flexos-base:latest
 #
 ARG UK_KRAFT_GITHUB_TOKEN=
 ENV UK_KRAFT_GITHUB_TOKEN=${UK_KRAFT_GITHUB_TOKEN}
-COPY .kraftrc /usr/src/unikraft/.kraftrc
+COPY kraftrc.redis /usr/src/unikraft/.kraftrc
 RUN set -xe; \
     kraft list update; \
     kraft -v list pull unikraft@staging; \

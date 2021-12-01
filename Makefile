@@ -125,7 +125,7 @@ $(DIMAGES):
 		--tag $(REG)/$(ORG)/$(@:docker-%=%):$(TAG) \
 		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--file $(WORKDIR)/support/dockerfiles/Dockerfile.$(@:docker-%=%) \
-		$(WORKDIR)/support/dockerfiles
+		$(WORKDIR)/support
 
 # Prepare the final Zenodo archive
 zenodo:

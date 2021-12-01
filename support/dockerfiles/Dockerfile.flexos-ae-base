@@ -30,8 +30,8 @@ WORKDIR /root
 RUN wget https://raw.githubusercontent.com/unikraft/kraft/6217d48668cbdf0847c7864bc6368a6adb94f6a6/scripts/qemu-guest
 RUN chmod a+x /root/qemu-guest
 
-COPY resources/kraftcleanup /usr/local/bin/kraftcleanup
-COPY resources/kraftrc.default /root/.kraftrc
+COPY kraftcleanup /usr/local/bin/kraftcleanup
+COPY kraftrc.default /root/.kraftrc
 
 RUN git clone https://github.com/project-flexos/kraft.git
 RUN cd /root/kraft && git checkout 064f67431c2b8206ee15db4530c7fe65d16e44b9 && pip3 install -e .
@@ -53,7 +53,7 @@ WORKDIR /root/qemu
 
 RUN apt install -y ninja-build
 RUN git checkout 9ad4c7c9b63f89c308fd988d509bed1389953c8b
-COPY resources/0001-Myshmem.patch /root/0001-Myshmem.patch
+COPY 0001-Myshmem.patch /root/0001-Myshmem.patch
 RUN git apply /root/0001-Myshmem.patch
 RUN ./configure --target-list=x86_64-softmmu
 RUN sed -i -e 's/-lstdc++ -Wl,--end-group/-lrt -lstdc++ -Wl,--end-group/g' build/build.ninja
@@ -67,7 +67,7 @@ RUN rm /root/0001-Myshmem.patch
 # latest version of the backend in the artifact. In order to obtain the
 # same performance behavior, this hack patch mimics the behavior of the
 # new backend. It is used by a number of figures.
-COPY resources/ept2-tmpfix.patch /root/
+COPY ept2-tmpfix.patch /root/
 
 ##############
 # Unikraft 0.5 (KVM and linuxu)
@@ -83,6 +83,6 @@ RUN cd /root/unikraft-mainline/unikraft && \
 
 RUN mkdir libs apps
 
-COPY resources/img.cpio /root/
+COPY img.cpio /root/
 
 WORKDIR /root
