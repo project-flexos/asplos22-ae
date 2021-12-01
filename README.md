@@ -90,11 +90,11 @@ reproduce the results. Section 3.2 gives a few advice on this matter.
 
 ### 3.1. Hardware & Software Dependencies
 
-| Hardware | Minimal requirements             |
-| -------- | -------------------------------- |
-| CPU      | Intel® Xeon® Scalable, > Skylake |
-| RAM      | > 128GB                          |
-| Disk     | > TODO GB                        |
+| Hardware | Minimal requirements                        |
+| -------- | ------------------------------------------- |
+| CPU      | Intel® Xeon® Scalable, > Skylake, > 8 cores |
+| RAM      | > 128GB                                     |
+| Disk     | > TODO GB                                   |
 
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
@@ -113,6 +113,9 @@ Wayfinder for Figure 6.
 On the software side, This artifact was tested on Debian 11.1 and Linux version
 `5.10.70-1`.  However, we expect that it should run on many more recent or
 slightly older Debian releases.
+
+Note that these are not the minimal requirements to run FlexOS, they are only
+necessary to reproduce the paper's results.
 
 ### 3.2. Isolation of Cores
 
