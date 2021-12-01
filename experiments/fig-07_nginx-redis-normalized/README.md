@@ -1,6 +1,6 @@
 # NGINX versus Redis normalized performance
 
-<img align="right" src="../../plots/fig-07_nginx-redis-normalized.svg" width="300" />
+<img align="right" src="fig-07_nginx-redis-normalized.svg" width="300" />
 
 | Estimated prep. time | Estimated runtime |
 | -------------------- | ----------------- |
