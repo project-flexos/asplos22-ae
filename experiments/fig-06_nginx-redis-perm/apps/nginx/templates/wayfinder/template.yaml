@@ -1,0 +1,66 @@
+#@ load("@ytt:data",   "data")
+#@ load("@ytt:assert", "assert")
+#!
+#@ num_compartments = int(data.values.num_compartments) or \
+#@                    assert.fail("num_compartments must be specified")
+#@ compartments = [x for x in range(1, num_compartments + 1)]
+#!
+#@yaml/text-templated-strings
+---
+params:
+  - name: NUM_COMPARTMENTS
+    type: int
+    only:
+      - #@ num_compartments
+
+#@ for lib in data.values.libraries:
+#@ libname = lib.name.replace("-", "_").upper()
+  - name: #@ "LIB{}_COMPARTMENT".format(libname)
+    type: int
+#@ if lib.compartmentalizable:
+    only: #@ compartments
+#@ else:
+    only: [1]
+#@ end
+  - name: #@ "LIB{}_SFI".format(libname)
+    type: string
+#@ if libname == "TLSF" or libname == "PTHREAD_EMBEDDED":
+    only: ["n"]
+#@ else:
+    only: ["y", "n"]
+#@ end
+#@ end
+
+#@ for i in compartments:
+  - name: #@ "COMPARTMENT{}_DRIVER".format(i)
+    type: string
+    #! only: ["intel-pku", "vmept"]
+    only: ["intel-pku"]
+  - name: #@ "COMPARTMENT{}_ISOLSTACK".format(i)
+    type: string
+    only: ["false"]
+    #! only: ["true", "false"]
+#@ end
+
+inputs:
+  - source: /etc/resolv.conf
+    destination: /etc/resolv.conf
+  - source: /etc/environment
+    destination: /etc/environment
+  - source: ./apps/nginx/build.sh
+    destination: /build.sh
+  - source: ./apps/nginx/templates/kraft
+    destination: /kraft-yaml-template
+
+outputs:
+  - path: /usr/src/unikraft/apps/nginx/build/nginx_kvm-x86_64
+  - path: /usr/src/unikraft/apps/nginx/build/nginx_kvm-x86_64.dbg
+  - path: /usr/src/unikraft/apps/nginx/kraft.yaml
+  - path: /usr/src/unikraft/apps/nginx/config
+  - path: /usr/src/unikraft/apps/nginx/build.log
+
+runs:
+  - name: build
+    image: ghcr.io/project-flexos/nginx:latest
+    cores: 2
+    cmd: /build.sh
