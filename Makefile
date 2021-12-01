@@ -136,5 +136,5 @@ zenodo:
 		jq .[].ssh_url | xargs -n 1 git clone
 	tar -czf $(WORKDIR)/../flexos-asplos22-ae.tar.gz $(WORKDIR)
 
-dependencies:
+dependencies: docker
 	apt install time
