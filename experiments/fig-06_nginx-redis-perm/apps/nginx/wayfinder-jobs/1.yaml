@@ -1,0 +1,85 @@
+params:
+- name: NUM_COMPARTMENTS
+  type: int
+  only:
+  - 1
+- name: LIBTLSF_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBTLSF_SFI
+  type: string
+  only:
+  - "n"
+- name: LIBLWIP_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBLWIP_SFI
+  type: string
+  only:
+  - "y"
+  - "n"
+- name: LIBNGINX_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBNGINX_SFI
+  type: string
+  only:
+  - "y"
+  - "n"
+- name: LIBNEWLIB_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBNEWLIB_SFI
+  type: string
+  only:
+  - "y"
+  - "n"
+- name: LIBUKSCHED_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBUKSCHED_SFI
+  type: string
+  only:
+  - "y"
+  - "n"
+- name: LIBPTHREAD_EMBEDDED_COMPARTMENT
+  type: int
+  only:
+  - 1
+- name: LIBPTHREAD_EMBEDDED_SFI
+  type: string
+  only:
+  - "n"
+- name: COMPARTMENT1_DRIVER
+  type: string
+  only:
+  - intel-pku
+- name: COMPARTMENT1_ISOLSTACK
+  type: string
+  only:
+  - "false"
+inputs:
+- source: /etc/resolv.conf
+  destination: /etc/resolv.conf
+- source: /etc/environment
+  destination: /etc/environment
+- source: ./apps/nginx/build.sh
+  destination: /build.sh
+- source: ./apps/nginx/templates/kraft
+  destination: /kraft-yaml-template
+outputs:
+- path: /usr/src/unikraft/apps/nginx/build/nginx_kvm-x86_64
+- path: /usr/src/unikraft/apps/nginx/build/nginx_kvm-x86_64.dbg
+- path: /usr/src/unikraft/apps/nginx/kraft.yaml
+- path: /usr/src/unikraft/apps/nginx/config
+- path: /usr/src/unikraft/apps/nginx/build.log
+runs:
+- name: build
+  image: ghcr.io/project-flexos/nginx:latest
+  cores: 2
+  cmd: /build.sh

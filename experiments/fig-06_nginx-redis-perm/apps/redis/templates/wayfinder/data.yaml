@@ -1,0 +1,18 @@
+#@data/values
+---
+num_compartments: 1
+libraries:
+  - name: tlsf
+    compartmentalizable: false
+  - name: lwip
+    compartmentalizable: true
+  - name: redis
+    compartmentalizable: false
+  - name: newlib
+    compartmentalizable: false
+  - name: uksched
+    compartmentalizable: true
+  - name: pthread-embedded
+    compartmentalizable: false
+  #! - name: uktime
+  #!   compartmentalizable: true

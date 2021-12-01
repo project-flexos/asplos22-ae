@@ -1,0 +1,84 @@
+#@ load("@ytt:data",   "data")
+#@ load("@ytt:assert", "assert")
+#!
+#@ compartments = data.values.compartments or \
+#@                assert.fail("compartments must be specified")
+#@ libraries    = data.values.libraries or \
+#@                assert.fail("libraries must be specified")
+#!
+#@yaml/text-templated-strings
+---
+specification: '0.6'
+name: redis
+unikraft:
+  version: staging
+  kconfig:
+    - CONFIG_LIBCPIO=y
+    - CONFIG_LIBINITRAMFS=y
+    - CONFIG_OPTIMIZE_PERF=y
+    - CONFIG_LIBUK9P=n
+    - CONFIG_LIB9PFS=n
+    - CONFIG_LIBDEVFS=y
+    - CONFIG_LIBDEVFS_AUTOMOUNT=y
+    - CONFIG_LIBVFSCORE_AUTOMOUNT_ROOTFS=y
+    - CONFIG_LIBVFSCORE_ROOTFS_RAMFS=y
+    - CONFIG_LIBUKLIBPARAM=y
+    - CONFIG_LIBUKDEBUG=y
+    - CONFIG_LIBUKALLOC=y
+    - CONFIG_LIBUKSCHED=y
+    - CONFIG_LIBPOSIX_SYSINFO=y
+    - CONFIG_LIBPOSIX_LIBDL=y
+    - CONFIG_LIBFLEXOS=y
+    - CONFIG_LIBFLEXOS_ENABLE_DSS=y
+    - CONFIG_LIBFLEXOS_INTELPKU=y
+
+targets:
+  - architecture: x86_64
+    platform: kvm
+
+compartments:
+#@ for compartment in compartments:
+  - #@ compartment
+#@ end
+
+libraries:
+  uksched:
+    compartment: #@ "comp{}".format(libraries["LIBUKSCHED"])
+    is_core: true
+  ukschedcoop:
+    compartment: #@ "comp{}".format(libraries["LIBUKSCHED"])
+    is_core: true
+  #! uktime:
+  #!   compartment: #@ "comp{}".format(libraries["LIBUKTIME"])
+  #!   is_core: true
+  tlsf:
+    version: staging
+    kconfig:
+      - CONFIG_LIBTLSF=y
+    compartment: #@ "comp{}".format(libraries["LIBTLSF"])
+  pthread-embedded:
+    version: staging
+    compartment: #@ "comp{}".format(libraries["LIBPTHREAD_EMBEDDED"])
+  newlib:
+    version: staging
+    kconfig:
+      - CONFIG_LIBNEWLIBC=y
+      - CONFIG_LIBNEWLIBC_WANT_IO_C99_FORMATS=y
+      - CONFIG_LIBNEWLIBC_LINUX_ERRNO_EXTENSIONS=y
+    compartment: #@ "comp{}".format(libraries["LIBNEWLIB"])
+  lwip:
+    version: staging
+    kconfig:
+      - CONFIG_LWIP_IPV6=y
+      - CONFIG_LWIP_POOLS=y
+      - CONFIG_LWIP_UKNETDEV_POLLONLY=y
+      - CONFIG_LWIP_TCP_KEEPALIVE=y
+    compartment: #@ "comp{}".format(libraries["LIBLWIP"])
+  redis:
+    version: staging
+    kconfig:
+      - CONFIG_LIBREDIS_SERVER=y
+      - CONFIG_LIBREDIS_COMMON=y
+      - CONFIG_LIBREDIS_LIBREDIS_LUA=y
+      - CONFIG_LIBREDIS_SERVER_MAIN_FUNCTION=y
+    compartment: #@ "comp{}".format(libraries["LIBREDIS"])
