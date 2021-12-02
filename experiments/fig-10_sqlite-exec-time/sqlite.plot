@@ -47,7 +47,7 @@ set yrange [0:2.5]
 set xrange [0:14]
 
 set label "Unikraft"  at 0.750,2.25 font ",18"
-set label "FlexOS"    at 4.050,2.25 font ",18"
+set label "FlexOS"    at 4.220,2.25 font ",18"
 set label "Linux"     at 7.450,2.25 font ",18"
 set label "SeL4/"     at 9.400,2.25 font ",18"
 set label "Genode"    at 9.200,2.00 font ",18"

@@ -242,7 +242,7 @@
 	<path stroke='black'  d='M98.00,57.01 L98.00,205.00 L635.99,205.00 L635.99,57.01 L98.00,57.01 Z  '/>	<g transform="translate(126.82,77.66)" stroke="none" fill="black" font-family="Arial" font-size="18.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >Unikraft</tspan></text>
 	</g>
-	<g transform="translate(253.63,77.66)" stroke="none" fill="black" font-family="Arial" font-size="18.00"  text-anchor="start">
+	<g transform="translate(260.17,77.66)" stroke="none" fill="black" font-family="Arial" font-size="18.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >FlexOS</tspan></text>
 	</g>
 	<g transform="translate(384.29,77.66)" stroke="none" fill="black" font-family="Arial" font-size="18.00"  text-anchor="start">
