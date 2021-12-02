@@ -134,7 +134,9 @@ zenodo:
 	cd $(WORKDIR)/repositories && \
 		$(CURL) -s https://github.com:@api.github.com/orgs/${ORG}/repos?per_page=200 | \
 		jq .[].ssh_url | xargs -n 1 git clone
+	# remove this one otherwise we'd be duplicate
+	rm -rf repositories/asplos22-ae
 	tar -czf $(WORKDIR)/../flexos-asplos22-ae.tar.gz $(WORKDIR)
 
 dependencies: docker
-	apt install time
+	apt install time jq
