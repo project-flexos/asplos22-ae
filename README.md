@@ -112,8 +112,8 @@ reproduce the results. Section 3.2 gives advice on this matter.
 | Hardware | Minimal requirements                        |
 | -------- | ------------------------------------------- |
 | CPU      | Intel® Xeon® Scalable, > Skylake, > 8 cores |
-| RAM      | > 128GB                                     |
-| Disk     | > 100 GB                                    |
+| RAM      | >= 128GB                                    |
+| Disk     | >= 100 GB (of free space)                   |
 
 All our results were run on an Intel® Xeon® Silver 4114, but this artifact may
 be run with any processor that supports Intel MPK, typically any Intel® Xeon®
