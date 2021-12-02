@@ -39,7 +39,7 @@ viewer, or Markdown editor.
 - [3. Prerequisites](#3-prerequisites)
   - [3.1. Hardware & Software Dependencies](#31-hardware--software-dependencies)
   - [3.2. Isolation of Cores](#32-isolation-of-cores)
-  - [3.3 Installing Docker](#33-installing-docker)
+  - [3.3. Installing Docker](#33-installing-docker)
 - [4. Getting started](#4-getting-started)
 - [5. Troubleshooting](#5-troubleshooting)
 - [6. Zenodo Artifact & Tags](#6-zenodo-artifact--tags)

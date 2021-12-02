@@ -22,15 +22,15 @@ set xrange [0:9]
 set yrange [0:800]
 set boxwidth 0.5
 
-set label "2"   at 0.82,55  font ",16"
-set label "62"  at 2.65,117 font ",16"
-set label "108" at 3.45,161 font ",16"
-set label "462" at 4.46,515 font ",16"
+set label "2"   at 0.80,55  font ",16"
+set label "62"  at 2.60,117 font ",16"
+set label "108" at 3.40,161 font ",16"
+set label "462" at 4.41,515 font ",16"
 set label "470" at 6.40,523 font ",16"
 set label "146" at 7.40,199 font ",16"
 
 set label "all"    at 0.60,700 font ",16"
-set label "FlexOS" at 2.50,700 font ",16"
+set label "FlexOS" at 2.80,700 font ",16"
 set label "Linux"  at 6.65,700 font ",16"
 
 set arrow from 2, graph 0 to 2, graph 1 nohead

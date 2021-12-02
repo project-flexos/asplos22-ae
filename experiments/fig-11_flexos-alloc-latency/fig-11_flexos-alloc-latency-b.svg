@@ -239,16 +239,16 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M88.20,13.51 L88.20,182.50 L287.39,182.50 L287.39,13.51 L88.20,13.51 Z  '/>	<g transform="translate(106.35,176.08)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
+	<path stroke='black'  d='M88.20,13.51 L88.20,182.50 L287.39,182.50 L287.39,13.51 L88.20,13.51 Z  '/>	<g transform="translate(105.91,176.08)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >2</tspan></text>
 	</g>
-	<g transform="translate(146.85,162.99)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
+	<g transform="translate(145.74,162.99)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >62</tspan></text>
 	</g>
-	<g transform="translate(164.56,153.69)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
+	<g transform="translate(163.45,153.69)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >108</tspan></text>
 	</g>
-	<g transform="translate(186.91,78.91)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
+	<g transform="translate(185.80,78.91)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >462</tspan></text>
 	</g>
 	<g transform="translate(229.85,77.22)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
@@ -260,7 +260,7 @@
 	<g transform="translate(101.48,39.83)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >all</tspan></text>
 	</g>
-	<g transform="translate(143.53,39.83)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
+	<g transform="translate(150.17,39.83)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
 		<text><tspan font-family="Arial" >FlexOS</tspan></text>
 	</g>
 	<g transform="translate(235.38,39.83)" stroke="none" fill="black" font-family="Arial" font-size="16.00"  text-anchor="start">
