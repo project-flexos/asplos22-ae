@@ -57,8 +57,11 @@ all: prepare run plot
 
 .PHONY: prepare
 prepare: install-wayfinder
+prepare: install-deps
 prepare: prepare-templates
-prepare: $(WORKDIR)/apps/redis/redis-benchmark
+
+.PHONY: install-deps
+install-deps:
 	$(APT) update
 	$(APT) install --no-install-recommends \
 		bridge-utils \
@@ -106,7 +109,7 @@ $$(APPSDIR)/$(1)/wayfinder-jobs/$$(NUM_COMPARTMENTS).yaml:
 		--file $$(APPSDIR)/$(1)/templates/wayfinder > $$(APPSDIR)/$(1)/wayfinder-jobs/$$(NUM_COMPARTMENTS).yaml
 
 # Make the general preparation step have these dynamic entries as dependents
-$$(.DOCKER_PROXY)prepare-templates: $$(.DOCKER_PROXY)prepare-wayfinder-app-$(1)
+prepare-templates: prepare-wayfinder-app-$(1)
 
 # Make the general run step have these dynamic entries as dependents
 run-wayfinder: run-wayfinder-app-$(1)
