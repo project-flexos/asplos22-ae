@@ -86,8 +86,8 @@ prepare-wayfinder-app-%:
 	$(info Running target via $(REG)/$(ORG)/flexos-base:$(TAG)...)
 	$(Q)$(call DOCKER_RUN,flexos-base,,$(MAKE) $@)
 plot-app-%:
-	$(info Running target via $(REG)/$(ORG)/flexos-ae-base:$(TAG)...)
-	$(Q)$(call DOCKER_RUN,flexos-ae-base,,$(MAKE) $@)
+	$(info Running target via $(REG)/$(ORG)/flexos-ae-plot:$(TAG)...)
+	$(Q)$(call DOCKER_RUN,flexos-ae-plot,,$(MAKE) $@)
 endif
 
 #
@@ -163,8 +163,8 @@ $$(APPSDIR)/$(1)/permutations-$$(NUM_COMPARTMENTS).csv:
 			$$@
 
 # Create a plot entrypoint for the app
-.PHONY: plot-app-$(1)
-plot-app-$(1):
+.PHONY: $$(.DOCKER_PROXY)plot-app-$(1)
+$$(.DOCKER_PROXY)plot-app-$(1):
 	$$(SNAKE) $$(APPSDIR)/$(1)/plot.py \
 		$$(APPSDIR)/$(1)/permutations-$$(NUM_COMPARTMENTS).csv \
 		$$(RESULTSDIR)/$(1).csv \

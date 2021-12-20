@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -xe; \
     apt update; \
     apt install -y --no-install-recommends \
+      make \
       gnuplot \
       python3 \
       python3-tk \
