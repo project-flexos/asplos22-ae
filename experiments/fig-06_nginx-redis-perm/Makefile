@@ -18,8 +18,7 @@ Q                ?= @
 WAYFINDER_CORES  ?= 1,2
 # HOST_CORES       ?= 3-19
 HOST_CORES       ?= 13-30
-APPS             ?= nginx \
-                    redis
+APPS             ?= nginx redis
 NUM_COMPARTMENTS ?= 3
 TEST_ITERATIONS  ?= 1
 
@@ -112,7 +111,7 @@ $$(APPSDIR)/$(1)/wayfinder-jobs/$$(NUM_COMPARTMENTS).yaml:
 prepare-templates: prepare-wayfinder-app-$(1)
 
 # Make the general run step have these dynamic entries as dependents
-run-wayfinder: run-wayfinder-app-$(1)
+run-wayfinder: run-wayfinder-app-$(1) test-app-$(1)
 
 # This is an entry which is used to create a unique run-entry for the app,
 # allowing you to run a specific application (and thus its permutations).  We
@@ -148,7 +147,6 @@ test-app-$(1): $$(RESULTSDIR)
 test-app-$(1): RESULTS ?= $$(RESULTSDIR)/$(1).csv
 test-app-$(1): UNIKERNEL_INITRD ?= $$(APPSDIR)/$(1)/$(1).cpio
 test-app-$(1):
-	QEMU_GUEST=$$(WORKDIR)/support/qemu-guest \
 	ITERATIONS=$$(TEST_ITERATIONS) \
 	RESULTS=$$(RESULTS) \
 	UNIKERNEL_INITRD=$$(UNIKERNEL_INITRD) \

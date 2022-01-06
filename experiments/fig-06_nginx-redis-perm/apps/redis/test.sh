@@ -15,7 +15,7 @@ echo "performance" > /sys/devices/system/cpu/cpu${WAYFINDER_CORE_ID0}/cpufreq/sc
 echo "performance" > /sys/devices/system/cpu/cpu${WAYFINDER_CORE_ID1}/cpufreq/scaling_governor
 echo "performance" > /sys/devices/system/cpu/cpu${WAYFINDER_CORE_ID2}/cpufreq/scaling_governor
 
-QEMU_GUEST=${QEMU_GUEST:-./qemu-guest}
+QEMU_GUEST=${QEMU_GUEST:-./support/qemu-guest}
 BRIDGE=asplosae$WAYFINDER_CORE_ID0 # create a unique bridge
 BRIDGE_IP="172.${WAYFINDER_CORE_ID0}.${WAYFINDER_CORE_ID1}.1"
 UNIKERNEL_INITRD=${UNIKERNEL_INITRD:-./redis.cpio}
@@ -69,7 +69,7 @@ DOCKER_EXEC ifconfig ${BRIDGE} up
 
 for D in ${DIR}/*; do
   if [[ ! -d ${D} ]]; then continue; fi
- 
+
   TASKID=$(basename ${D})
   UNIKERNEL_IMAGE=${D}/usr/src/unikraft/apps/redis/build/redis_kvm-x86_64
 
