@@ -48,9 +48,9 @@ function DOCKER_EXEC {
 
 echo "Starting intermediate docker container"
 docker run -d -it --rm --name asplos22-ae-fig-06-redis \
-  -v $(pwd):/workspace \
+  -v $(pwd):$(pwd) \
   -v ${DIR}:${DIR} \
-  -w /workspace \
+  -w $(pwd) \
   --security-opt seccomp:unconfined \
   --privileged \
   ghcr.io/project-flexos/flexos-ae-base:latest bash -c "while true; do sleep 1; done"
