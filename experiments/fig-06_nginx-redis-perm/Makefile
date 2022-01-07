@@ -39,8 +39,8 @@ DOCKER           ?= docker
 DOCKER_RUN       ?= $(DOCKER) run --rm $(2) \
                       $(foreach E, $(shell printenv), -e "$(E)") \
                       --entrypoint "" \
-                      -w /workspace \
-                      -v $(WORKDIR):/workspace \
+                      -w $(WORKDIR) \
+                      -v $(WORKDIR):$(WORKDIR) \
                       $(REG)/$(ORG)/$(1):$(TAG) \
                         $(3)
 CAT              ?= cat
