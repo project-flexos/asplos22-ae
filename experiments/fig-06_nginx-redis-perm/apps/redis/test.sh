@@ -108,7 +108,7 @@ for D in ${DIR}/*; do
             -t get,set \
             -d ${I} | \
               awk -v prefix="${TASKID},${CHUNK},${I}" '{ print prefix "," $0 }' >> ${RESULTS}
-      sed -i 's/"//g' sed -i 's/"//g'
+      sed -i 's/"//g' ${RESULTS}
       DOCKER_EXEC pkill qemu-system-x86
     done
   done
