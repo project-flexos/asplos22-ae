@@ -45,5 +45,4 @@ clean:
 .PHONY: properclean
 properclean:
 	$(DOCKER) image rm -f flexos-porting
-	$(DOCKER) image prune
-
+	$(DOCKER) image prune -f

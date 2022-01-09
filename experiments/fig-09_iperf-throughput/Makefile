@@ -58,4 +58,4 @@ clean:
 .PHONY: properclean
 properclean: clean
 	$(DOCKER) image rm -f flexos-iperf
-	$(DOCKER) image prune
+	$(DOCKER) image prune -f

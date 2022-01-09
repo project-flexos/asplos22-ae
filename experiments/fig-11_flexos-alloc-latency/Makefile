@@ -75,4 +75,4 @@ clean:
 .PHONY: properclean
 properclean: clean
 	$(DOCKER) image rm -f flexos-microbenchmarks
-	$(DOCKER) image prune
+	$(DOCKER) image prune -f
