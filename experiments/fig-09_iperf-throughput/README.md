@@ -4,7 +4,7 @@
 
 | Estimated prep. time | Estimated runtime |
 | -------------------- | ----------------- |
-| 0h 0m                | 0h 00m            |
+| 0h 45m               | 1h 30m            |
 
 ## Overview
 
