@@ -34,7 +34,7 @@ all: prepare run plot
 .PHONY: prepare
 prepare:
 	$(DOCKER) build -f $(WORKDIR)/flexos-iperf.dockerfile \
-		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
+		--build-arg GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-iperf $(WORKDIR)
 
 .PHONY: run

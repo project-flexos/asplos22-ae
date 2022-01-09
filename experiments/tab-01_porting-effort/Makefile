@@ -26,7 +26,7 @@ all: prepare run plot
 .PHONY: prepare
 prepare:
 	$(TIME) $(DOCKER) build -f $(WORKDIR)/flexos-porting.dockerfile \
-		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
+		--build-arg GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-porting $(WORKDIR)
 
 .PHONY: run

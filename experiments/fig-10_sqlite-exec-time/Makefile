@@ -29,7 +29,7 @@ all: prepare run plot
 .PHONY: prepare
 prepare:
 	$(TIME) $(DOCKER) build -f $(WORKDIR)/flexos-sqlite.dockerfile \
-		--build-arg UK_KRAFT_GITHUB_TOKEN="$(KRAFT_TOKEN)" \
+		--build-arg GITHUB_TOKEN="$(KRAFT_TOKEN)" \
 		--tag flexos-sqlite $(WORKDIR)
 
 .PHONY: run
