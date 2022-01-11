@@ -241,10 +241,11 @@ recent version of Docker to avoid storage pool issues.  See
    make properclean
    ```
 
-**Note**: some experiments have a slightly different workflow. Figure 8 is only
-a plot and requires some manual steps. Figure 11 requires a reboot of the
-machine with different kernel parameters. Table 1 is manual. In all of these
-cases, the local `README.md` provides appropriate explanations.
+**Note**: some experiments have a slightly different workflow. Figure 6 requires
+you to set `HOST_CORES` with a set of cores to be used for the experiment.
+Figure 8 is only a plot and requires some manual steps. Figure 11 requires a
+reboot of the machine with different kernel parameters. Table 1 is manual. In
+all of these cases, the local `README.md` provides appropriate explanations.
 
 ## 5. Troubleshooting
 

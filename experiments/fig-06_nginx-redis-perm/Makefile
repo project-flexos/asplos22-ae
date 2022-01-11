@@ -16,8 +16,7 @@ Q                ?= @
 # Experiment variables
 #
 WAYFINDER_CORES  ?= 1,2
-# HOST_CORES       ?= 3-19
-HOST_CORES       ?= 13-30
+HOST_CORES       ?= 3,4
 APPS             ?= nginx redis
 NUM_COMPARTMENTS ?= 3
 TEST_ITERATIONS  ?= 1
