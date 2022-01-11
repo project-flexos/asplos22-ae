@@ -51,9 +51,15 @@ make plot-fig-06
 ```
 
 ...And the experiment will run.  However, more likely you wish to tune the
-experiment to your needs.  There are a number of internal targets which can run
-independently of the high-level `Makefile` ASPLOS'22 AE repo.  To get started,
-clone this repository and `cd` into this directory:
+experiment to your needs.
+
+> For better overall experiment execution time (i.e. for the experiment to take
+> less time), adjust the `HOST_CORES` variable in the `Makefile`.  Providing
+> more cores results in more simultaneous unikernel permutation builds.
+
+There are a number of internal targets which can run independently of the
+high-level `Makefile` ASPLOS'22 AE repo.  To get started, clone this repository
+and `cd` into this directory:
 
 ```bash
 git clone https://github.com/project-flexos/asplos-ae.git
