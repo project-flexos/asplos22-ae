@@ -119,3 +119,24 @@ Finally, plot the specific application via:
 ```
 NUM_COMPARTMENTS=2 make plot-app-nginx
 ```
+
+## Troubleshooting
+
+- **Problem**: There are missing bars on my figure?
+
+  **Solution**: Likely not all permutations were built and thus the experiments
+  could not be performed for those individual permutations.  Ensure that
+  wayfinder is properly building all permutations.  You can check the number of
+  built images with:
+
+  ```bash
+  tree /tmp/fig-06_nginx-redis-perm/wayfinder-build-$APP/ | grep dbg | wc | awk '{ print $1 }'
+  ```
+
+  This should return `96` for both `nginx` and `redis` of this experiment.  If
+  the number is less than this value, it could be that wayfinder has been
+  provided not enough or invalid cores.  The `HOST_CORES` variable in this
+  experiment's `Makefile` must be adjusted to a set of cores available on the
+  host machine that can be used to run the individual permutation build.  Adjust
+  according to your machine.  The recommended values for wayfinder are around
+  powers of two and greater than 4.
