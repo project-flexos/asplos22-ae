@@ -42,7 +42,7 @@ COLORS = [
   '#fff3cd',  # yellow
   '#91c6e7',  # light blue
   '#618c84',  # dark green
-  '#49687c',  # dark blue 
+  '#49687c',  # dark blue
   '#7c4f4f',  # dark yellow
 ]
 
@@ -63,7 +63,7 @@ def collate(permutations_file=None, results_file=None):
     cols = next(csvdata)
     for row in csvdata:
       permutations[row[0]] = (dict(zip(cols[1:], row[1:])))
-  
+
   with open(results_file, 'r') as csvfile:
     print("Processing %s..." % results_file)
     csvdata = csv.reader(csvfile, delimiter=",")
@@ -77,7 +77,7 @@ def collate(permutations_file=None, results_file=None):
 
       if data["METHOD"] not in permutations[row[0]]:
         permutations[row[0]][data["METHOD"]] = {}
-      
+
       if data["CHUNK"] not in permutations[row[0]][data["METHOD"]]:
         permutations[row[0]][data["METHOD"]][data["CHUNK"]] = []
 
@@ -123,19 +123,19 @@ def collate(permutations_file=None, results_file=None):
     data = permutations[taskid]
     if int(data['NUM_COMPARTMENTS']) != 3:
       continue
-    
+
     used_comps = []
 
     for library in libraries:
       comp_key = "%s_COMPARTMENT" % libraries[library]
       used_comps.append(int(data[comp_key]))
-    
+
     if (int(data["LIBLWIP_COMPARTMENT"]) > 2):
       continue
 
     if 2 not in used_comps and 3 in used_comps:
       continue
-    
+
     valid_permutations[taskid] = data
 
   return valid_permutations
@@ -173,7 +173,7 @@ def plot(permutations={}, output_file=None):
   if len(permutations.keys()) == 0:
     print("No data ):")
     return
-  
+
   # Get a list of all libraries
   libraries = {}
   for col in permutations[list(permutations.keys())[0]]:
@@ -190,24 +190,24 @@ def plot(permutations={}, output_file=None):
     'lwip': 'LIBLWIP',
   }
 
-  
+
   print("Sorting the data and re-createing the permutations object...")
   permutations_perf = {}
   for taskid in permutations:
     if "REQ" in permutations[taskid]:
-      permutations_perf[taskid] = permutations[taskid]["REQ"]["5"][MEAN_KEY]
+      permutations_perf[taskid] = permutations[taskid]["REQ"]["0"][MEAN_KEY]
     else:
       permutations_perf[taskid] = 0
-  
+
   permutations_perf = {
     k: v for k, v in sorted(permutations_perf.items(), key=lambda item: item[1])
   }
 
-  
+
   permutations_sorted = OrderedDict()
   for taskid in permutations_perf:
     permutations_sorted[taskid] = permutations[taskid]
-  
+
   # Create a matrix of the boolean use of SPI per library and a separate matrix
   # containing the ID of the compartment
   sfi_matrix = []
@@ -222,7 +222,7 @@ def plot(permutations={}, output_file=None):
   set_max_matrix = []
   taskids = []
 
-  chunk = '5'
+  chunk = '0'
   rules = {}
   k = 0
 
@@ -248,7 +248,7 @@ def plot(permutations={}, output_file=None):
 
     sfi_matrix.append(sfi_usage)
     comp_matrix.append(comp_usage)
-    
+
     _get = 0
     _get_min = 0
     _get_max = 0
@@ -310,7 +310,7 @@ def plot(permutations={}, output_file=None):
   ax1.set_xticks(x)
   ax1.set_xticklabels(labels)
   # ax1.legend()
-  
+
   width = 0.5  # the width of the bars
 
   print("Adding bars...")
