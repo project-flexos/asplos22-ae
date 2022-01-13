@@ -194,12 +194,31 @@ recent version of Docker to avoid storage pool issues.  See
    ```bash
    git clone https://github.com/project-flexos/asplos22-ae.git
    ```
-   and install dependencies with
+
+3. Generate a GitHub token ([instructions here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token))
+   and set it in the Makefiles. There are two approaches. Either you can set it
+   for the entire system with
+   ```bash
+   export KRAFT_TOKEN="<your token>"
+   ```
+   or set it in every Makefile by editing the `KRAFT_TOKEN` variable
+   ```bash
+   ...
+   #
+   # Parameters
+   #
+   KRAFT_TOKEN ?= <your token>
+   ...
+   ```
+   Note that if `KRAFT_TOKEN` is set system-wide, definitions in Makefiles will
+   not override it.
+
+4. Install dependencies with
    ```bash
    make dependencies
    ```
 
-3. All experiments should be `prepare`d first, which installs necessary tools
+5. All experiments should be `prepare`d first, which installs necessary tools
    and downloads additional resources, before they can run.  This can be done
    for a single experiment, for example:
    ```bash
@@ -209,7 +228,7 @@ recent version of Docker to avoid storage pool issues.  See
    ```
    make prepare
    ```
-4. Once one or many experiments have been prepared, they can be run, again using
+6. Once one or many experiments have been prepared, they can be run, again using
    a similar syntax as above:
    ```bash
    make run-fig-07
@@ -220,7 +239,7 @@ recent version of Docker to avoid storage pool issues.  See
    ```
    This will generate the relevant experimental results within the experimental
    folder of the specific experiment.
-5. To plot one or many experiment's figures, use, for example:
+7. To plot one or many experiment's figures, use, for example:
    ```bash
    make plot-fig-07
    ```
@@ -228,7 +247,7 @@ recent version of Docker to avoid storage pool issues.  See
    ```
    make plot
    ```
-6. You can clean, or "properclean" to completely reset any preparation, with
+8. You can clean, or "properclean" to completely reset any preparation, with
    `make clean` or `make properclean` and for individual experiments, for
    example: 
    ```bash
@@ -263,6 +282,26 @@ well!
   show `overlay2`. If it indicates `devicemapper`, your installation
   might be old or using the Debian/Ubuntu repositories. In this case, we recommend
   a fresh reinstall of Docker.
+
+- **Problem**: `make prepare` fails for most experiments with this kind of error:
+   ```bash
+   Step 7/67 : RUN kraftcleanup
+    ---> Running in b073220c85f5
+   make: *** No rule to make target 'properclean'.  Stop.
+   [CRITICAL] 401 {"message": "Bad credentials", "documentation_url": "https://docs.github.com/rest"}
+   kraft caches are out-of-date. Would you like to update? [Y/n]: Aborted!
+   The command '/bin/sh -c kraftcleanup' returned a non-zero code: 1
+   make: *** [Makefile:36: prepare] Error 1
+   ```
+
+  **Solution**: You did not define the GitHub token variable (see [Getting Started](#4-getting-started)) or your
+  GitHub token has become invalid (expired, revoked, etc.). You can check whether your GitHub
+  token is valid with the following command:
+   ```bash
+   curl -v -H "Authorization: token <your token>" https://api.github.com/user/issues
+   ```
+  If it isn't, simply regenerate one. If it is, there might be a bug and you are welcome to open
+  a bug report.
 
 - **Problem**: Application X (e.g., Redis, or Nginx) crashes when I stress test
   it with tool Y or Z.
