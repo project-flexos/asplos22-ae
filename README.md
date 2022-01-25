@@ -1,6 +1,6 @@
 # FlexOS ASPLOS'22 Artifact Evaluation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5748505.svg)](https://doi.org/10.5281/zenodo.5748505)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5902507.svg)](https://doi.org/10.5281/zenodo.5902507)
 
 This repository contains the artifacts, including experiments and graphs, for
 the paper:
