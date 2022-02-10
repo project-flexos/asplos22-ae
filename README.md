@@ -1,5 +1,8 @@
+<img width="35%" src="https://user-images.githubusercontent.com/905927/113136804-14c70f80-9224-11eb-8d44-f910166660dd.png" align="right" />
+
 # FlexOS ASPLOS'22 Artifact Evaluation
 
+[![](https://img.shields.io/badge/arXiv-paper-red)](https://arxiv.org/abs/2112.06566)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5902507.svg)](https://doi.org/10.5281/zenodo.5902507)
 
 This repository contains the artifacts, including experiments and graphs, for
