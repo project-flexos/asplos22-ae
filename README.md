@@ -4,6 +4,7 @@
 
 [![](https://img.shields.io/badge/arXiv-paper-red)](https://arxiv.org/abs/2112.06566)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5902507.svg)](https://doi.org/10.5281/zenodo.5902507)
+[![](https://img.shields.io/badge/ASPLOS'22-Distinguished%20Artifact%20Award%20%F0%9F%8F%86-yellow)](https://asplos-conference.org/2022/)
 
 This repository contains the artifacts, including experiments and graphs, for
 the paper:
